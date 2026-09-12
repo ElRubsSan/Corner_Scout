@@ -1,0 +1,24 @@
+{
+  "manifest_version": "raw-manifest-v0.1",
+  "provider": "statsbomb_open_data",
+  "competition_id": 11,
+  "season_id": 27,
+  "expected": {
+    "matches": 380,
+    "event_files": 380,
+    "teams": 20
+  },
+  "observed": {
+    "matches": null,
+    "event_files": null,
+    "teams": null,
+    "events": null
+  },
+  "source": {
+    "export_notebook": "Third_Man_Analytics_Ingesta_de_Datos.ipynb",
+    "statsbomb_repository_revision": null
+  },
+  "generated_at": null,
+  "raw_manifest_sha256": null,
+  "notes": []
+}

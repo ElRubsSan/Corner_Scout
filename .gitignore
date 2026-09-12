@@ -1,0 +1,67 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Operating systems and editors
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/
+*.swp
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Node and Angular
+node_modules/
+dist/
+.angular/
+coverage/
+
+# Logs and temporary files
+*.log
+tmp/
+temp/
+
+# Local databases
+*.duckdb
+*.duckdb.wal
+*.db
+*.sqlite
+*.sqlite3
+
+# Data layers: keep only documentation and placeholders
+/data/raw/**
+!/data/raw/.gitkeep
+/data/interim/**
+!/data/interim/.gitkeep
+/data/processed/**
+!/data/processed/.gitkeep
+
+# Generated analytical artifacts
+/artifacts/**
+!/artifacts/README.md
+
+# Model binaries and columnar datasets outside data/
+*.joblib
+*.pkl
+*.pickle
+*.onnx
+*.parquet
+*.feather
