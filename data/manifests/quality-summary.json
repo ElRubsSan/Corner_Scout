@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "matches": 380,
+  "teams": 20,
+  "events": 1295354,
+  "corners": 3841,
+  "errors": [],
+  "source_manifest_sha256": "245c9b3a151e59b6b3abe966f4b69d71c1bcdba8dadc63f6abbf5df71fbb0530",
+  "processed_at": "2026-09-12T05:35:17.806145+00:00",
+  "rule_version": "scr15-v0.2-team-inclusive",
+  "pipeline_version": "0.2.0",
+  "excluded_sequences": 6,
+  "excluded_spatial": 1,
+  "timestamp_regressions": 126,
+  "out_of_bounds_events": 25
+}

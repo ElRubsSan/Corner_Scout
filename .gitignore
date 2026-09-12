@@ -27,6 +27,8 @@ venv/
 
 # Jupyter
 .ipynb_checkpoints/
+# Original supplied by user; preserve locally pending review/sanitization
+/notebooks/Third_Man_Analytics_Ingesta_de_Datos.ipynb
 
 # Node and Angular
 node_modules/

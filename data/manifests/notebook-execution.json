@@ -1,0 +1,14 @@
+[
+  {
+    "notebook": "01_ingesta_statsbomb.ipynb",
+    "status": "executed"
+  },
+  {
+    "notebook": "02_limpieza_eda.ipynb",
+    "status": "executed"
+  },
+  {
+    "notebook": "03_secuencias_scr15.ipynb",
+    "status": "executed"
+  }
+]

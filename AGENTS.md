@@ -10,14 +10,16 @@
 
 ## Fase actual
 
-La fase 1 solo permite estructura del monorepo, documentacion, contratos de datos y manifiestos. No se deben construir todavia:
+La fase 1 documental esta aprobada. El usuario autoriza ejecucion integral, pruebas, commits por fases y push a origin/main de fases validadas. No desplegar externamente hasta validar localmente y preparar configuraciones. Implementaciones autorizadas:
 
 - Pipelines analiticos ejecutables.
 - FastAPI o bases de datos.
 - Angular u otra interfaz.
 - Docker o despliegues.
 - Modelos supervisados o no supervisados.
-- Integraciones con LLM o agentes.
+- Integracion Gemini exclusivamente desde FastAPI, Structured Outputs/Pydantic y fallback determinista.
+
+Angular standalone, FastAPI/OpenAPI, frontend en Vercel y LLM son obligatorios. No usar interfaces alternativas. Modelos: baseline, regresion logistica, Random Forest y K-Means; modelado solo despues de validar datos. El notebook original aportado por el usuario se conserva intacto y no se incluye en commits hasta sanitizarlo; los notebooks nuevos son independientes.
 
 ## Prioridades del MVP
 
@@ -78,6 +80,12 @@ La especificacion completa se mantiene en `docs/scr15-methodology.md`.
 - Mantener los cambios de cada fase pequenos y verificables.
 
 ## Comandos disponibles
+
+### Fase 2 validada localmente
+
+Usar uv de preferencia: `uv sync --extra dev`, `uv run cornerscout ingest`, `uv run cornerscout build`, `uv run --extra dev pytest`, `uv run --extra dev python scripts/notebooks.py --execute --through 3`.
+
+Cobertura real: 380 partidos, 20 equipos, 1,295,354 eventos, 3,841 corners. Seis secuencias no evaluables por reloj regresivo y un corner excluido de visualizacion espacial. Ver docs/data-audit.md. Seis pruebas de limites SCR-15 pasan. Tres notebooks nuevos ejecutados localmente; validacion remota en Google Colab pendiente. Jupyter local emite avisos de transporte TCP/Windows, no se afirma ejecucion sin warnings en Colab. No entrenar sin quality.passed=true.
 
 Todavia no hay aplicaciones ni dependencias instaladas. En fase 1 solo son aplicables verificaciones no destructivas:
 
