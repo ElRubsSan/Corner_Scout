@@ -4,7 +4,7 @@
 
 La copia canonica actual de los datos exportados por Colab permanece en Google Drive, en `/content/drive/MyDrive/Corner_Scout/data/raw`. La restauracion local se realiza en `data/raw/`, que esta excluido de Git.
 
-No se debe configurar todavia una descarga automatica con credenciales. En la siguiente fase se elegira un mecanismo reproducible despues de conocer la ubicacion y permisos reales de Drive.
+Alternativa implementada y autorizada: `uv run cornerscout ingest` descarga explicitamente archivos faltantes desde la revision publica fijada de StatsBomb. No usa credenciales ni sustituye raw existente. La copia nueva usa eventos anidados; el adaptador tambien admite la exportacion aplanada del notebook original. `CORNERSCOUT_DATA_DIR` permite apuntar al padre de raw/ en Drive o en una restauracion local.
 
 ## Archivos que deben permanecer en Google Drive
 
@@ -84,6 +84,8 @@ El manifiesto versionable debe incluir una fila para cada uno de los cuatro arch
 El manifiesto no debe incluir rutas absolutas. `relative_path` siempre parte desde `data/raw/`.
 
 ## Verificaciones previas al procesamiento
+
+Estas verificaciones se ejecutan mediante analytics/pipeline.py; sus resultados reales y excepciones auditadas estan en docs/data-audit.md. El manifiesto efectivo es data/manifests/raw.json (ruta relativa, bytes y SHA-256); quality-summary.json contiene conteos agregados. Las plantillas CSV/JSON de fase 1 son referencias documentales y no sustituyen estos manifiestos generados.
 
 - Existen exactamente 380 archivos en `events/`.
 - Los nombres de archivo son `match_id` validos y unicos.

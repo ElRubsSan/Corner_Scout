@@ -31,6 +31,7 @@ test('insufficient history and target-match selection',async({page})=>{
  await expect(page.getByLabel('Equipo rival')).toHaveValue('Barcelona');
  await page.getByLabel('Fecha de corte (exclusiva)').fill('2015-08-01');
  await page.getByRole('button',{name:'Ver ocho partidos anteriores'}).click();
+ await expect(page.getByText('Datos insuficientes: 0 de 8 partidos anteriores al corte.')).toBeVisible();
  await expect(page.getByRole('button',{name:'Confirmar y analizar'})).toHaveCount(0);
  await page.getByLabel('Tipo de corte').selectOption('match');
  const option=page.getByRole('combobox',{name:'Partido objetivo',exact:true}).locator('option').nth(1);

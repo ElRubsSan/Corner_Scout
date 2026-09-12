@@ -2,7 +2,7 @@
 
 ## Estado de la decision
 
-Este documento describe la arquitectura aprobada para CornerScout. En la fase 1 solo existen la estructura y sus contratos; los componentes ejecutables se implementaran en fases posteriores.
+Este documento describe la arquitectura implementada localmente para CornerScout. Las fases de datos, modelos, backend, Gemini y Angular cuentan con codigo y pruebas. Vercel y contenedor backend estan configurados, sin despliegue externo.
 
 ## Principios
 
@@ -12,7 +12,7 @@ Este documento describe la arquitectura aprobada para CornerScout. En la fase 1 
 - Las transformaciones se ejecutan offline y producen Parquet consultable.
 - Una consulta web no descarga datos ni entrena modelos.
 - Toda cifra visible se puede rastrear a partidos, eventos y versiones de reglas.
-- El LLM, si se agrega, solo redacta evidencia estructurada calculada previamente.
+- El LLM es obligatorio como modulo backend; solo redacta evidencia estructurada validada. Gemini usa Structured Outputs/Pydantic con plantilla de respaldo automatica.
 
 ## Componentes previstos
 
@@ -36,7 +36,7 @@ analytics: validacion, secuencias, variables y KPIs
 backend: FastAPI y consultas DuckDB controladas
         |
         v
-frontend: Angular y visualizaciones
+frontend: Angular standalone y visualizaciones (Vercel)
 ```
 
 ## Responsabilidades
@@ -51,15 +51,15 @@ Futura libreria Python para validar contratos, normalizar eventos, seleccionar v
 
 ### Backend
 
-Futura API FastAPI. Leera artefactos procesados mediante consultas fijas y parametros validados. No accedera a Google Drive en cada solicitud ni procesara los 380 JSONL en tiempo de respuesta.
+FastAPI expone contratos OpenAPI consumidos mediante openapi-fetch y tipos generados. Consulta Parquet con DuckDB y parametros validados, sin Google Drive en solicitudes. El nombre exacto del rival es clave de seleccion; match_id conserva el ID del proveedor. Runs reproducibles se guardan en processed/runs. Las claves Gemini solo existen en backend.
 
 ### Frontend
 
-Futura aplicacion Angular standalone. Consumira un cliente generado desde OpenAPI y dibujara la cancha desde coordenadas StatsBomb de 120 por 80.
+Angular standalone obligatorio, desplegable exclusivamente en Vercel. Dibuja cancha SVG desde coordenadas StatsBomb 120 por 80. Tailwind y CSS para layout. Streamlit, Gradio, Tableau y Power BI no son interfaces finales permitidas. tools/codegen aisla el generador TS5 de Angular TS6.
 
 ### Reporting
 
-La primera implementacion sera una plantilla determinista. Una integracion LLM posterior recibira exclusivamente objetos estructurados y debera conservar las referencias de evidencia.
+La plantilla determinista es respaldo, no reemplazo de la integracion obligatoria. FastAPI recibe la solicitud de Angular, muestra el plan mediante endpoint previo, recopila ReportInput validado (rival, partidos, KPIs, clusters, probabilidad baseline, evidencia y limitaciones) y llama Gemini. Structured Outputs se valida con Pydantic; errores, cuota, timeout o clave ausente activan plantilla. La UI muestra modo y motivo. Ninguna llamada Gemini sale de Angular.
 
 ## Capas de datos
 
@@ -98,4 +98,8 @@ Una futura ejecucion de scouting debera quedar identificada por el rival, fecha 
 5. Patrones recurrentes.
 6. API y frontend.
 7. Prediccion supervisada.
-8. Integracion LLM opcional.
+8. Integracion Gemini obligatoria con fallback probado.
+9. Build Angular, comprobacion de tipos y E2E con datos reales.
+10. Documentacion academica y configuracion de Vercel/contenedor.
+
+Los resultados observados y las exclusiones se documentan en data-audit.md. Los candidatos supervisados no superaron consistentemente baseline; model-card.md documenta la decision de no promocionarlos. El reporte descriptivo sigue siendo el centro del producto.

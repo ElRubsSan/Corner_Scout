@@ -10,6 +10,8 @@ SCR-15 = corners ofensivos que generan al menos un tiro valido en 15 segundos
 
 La unidad de observacion es un corner ofensivo. El resultado `shot_within_15s` es booleano y cada corner contribuye una sola vez al numerador, aunque su secuencia contenga mas de un tiro valido.
 
+Implementacion actual `scr15-v0.2-team-inclusive`: si el reloj hace indeterminada una secuencia, target/xG son nulos, no falsos. SCR-15 y xG por corner se publican sobre corners evaluables, mostrando tambien totales y excluidos. En el dataset auditado son seis secuencias; la geometria invalida no excluye del KPI temporal, solo del mapa/clustering. Ver data-audit.md.
+
 ## Inicio
 
 Una secuencia comienza en un evento StatsBomb que cumpla simultaneamente:

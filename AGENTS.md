@@ -14,7 +14,7 @@ La fase 1 documental esta aprobada. El usuario autoriza ejecucion integral, prue
 
 - Pipelines analiticos ejecutables.
 - FastAPI o bases de datos.
-- Angular u otra interfaz.
+- Angular standalone.
 - La interfaz final es exclusivamente Angular standalone; nunca Streamlit, Gradio, Tableau o Power BI.
 - Docker o despliegues.
 - Modelos supervisados o no supervisados.
@@ -51,6 +51,7 @@ Angular standalone, FastAPI/OpenAPI, frontend en Vercel y LLM son obligatorios. 
 - No cerrar automaticamente por saque de banda, saque de meta, tiro libre u otra reanudacion en esta fase.
 - Esas reanudaciones deben registrarse para auditoria antes de decidir si forman parte de la regla definitiva.
 - Nunca atribuir un tiro de una posesion posterior al corner.
+- En la regla actual, posesion posterior significa que el equipo en posesion cambio; un nuevo ID con el mismo equipo es solo auditoria. Seis secuencias temporalmente ambiguas se excluyen del denominador evaluable y se muestran como desconocidas.
 
 La especificacion completa se mantiene en `docs/scr15-methodology.md`.
 
@@ -109,6 +110,12 @@ Gemini SDK oficial google-genai 2.23.0, Structured Outputs/Pydantic, timeout HTT
 Angular standalone 22.1.6 y CLI/build 22.1.8, Node 24.19.0, TS 6.0.3. `npm ci` completo corrigio @angular/common y common/http sin external. `npm run build` pasa (247 kB iniciales); `npm run typecheck` pasa; `npm run e2e` pasa 2 recorridos Chromium con FastAPI y datos reales (dashboard, mapa, patrones, reporte fallback, calidad, corte por fecha y partido). Ejecutar npm dentro de frontend. Playwright inicia y detiene ambos servidores; no usa claves reales.
 
 OpenAPI generado en contracts/openapi.json y frontend/src/app/core/api.generated.ts. Codegen aislado en tools/codegen por peer TS5. Vercel configurado, backend Docker preparado, despliegues externos no realizados. Docker requiere validacion con motor disponible. Ver docs/deployment.md.
+
+### Fase 7 — cierre local
+
+Documentados README de instalacion uv/npm, guia Colab, demo de cinco minutos, guion de video, estructura academica y fuentes oficiales. Rubrica concreta no recibida: la matriz academica es provisional. Build produccion Angular, typecheck y dos E2E pasan; suite Python completa: 18 pruebas pasan, dos warnings de dependencias TestClient. Cinco notebooks ejecutados localmente; no afirmar prueba remota en Colab ni ausencia de warnings de Jupyter.
+
+Pendientes manuales: validar en Colab, instalar Docker y probar contenedor, configurar clave Gemini en backend y hacer prueba real, elegir backend HTTPS/volumen y configurar apiBaseUrl antes de Vercel; incorporar logo oficial StatsBomb para publicacion. No se desplego externamente. Estado detallado y siguiente accion en RESUMEN_DE_CONTINUIDAD.md.
 
 ```powershell
 git status --short

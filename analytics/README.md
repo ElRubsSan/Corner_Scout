@@ -1,5 +1,5 @@
 # Analytics
 
-Espacio reservado para la futura libreria Python de validacion, secuencias, KPIs y patrones.
+Libreria Python de ingesta inmutable, validacion, secuencias, KPIs y modelos temporales. CLI: `uv run cornerscout ingest`, `uv run cornerscout build`, `uv run --extra ml cornerscout train`.
 
-No contiene codigo durante la fase 1. SCR-15 debe implementarse aqui solo despues de restaurar y auditar los datos reales.
+SCR-15 implementado con exclusiones explicitas y pruebas de limites. Ver docs/data-audit.md y docs/model-card.md. El modelado exige auditoria aprobada.
