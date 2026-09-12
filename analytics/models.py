@@ -111,7 +111,9 @@ def train() -> dict:
             joblib.dump(payload, artifact / f"clusters-{cutoff}.joblib")
             cluster_info.append({"available_from": cutoff, "k": km.n_clusters, "silhouette": float(score), "sizes": sizes.tolist(), "centers": scaler.inverse_transform(km.cluster_centers_).tolist()})
             # Save IDs for every prior corner in this snapshot; backend needs no raw/model load.
-            for event_id, label in zip(history.event_id, km.labels_):
+            spatial = corners[corners.spatial_valid]
+            labels = km.predict(scaler.transform(spatial[["end_x", "end_y"]].to_numpy()))
+            for event_id, label in zip(spatial.event_id, labels):
                 assignments.append({"available_from": cutoff, "event_id": event_id, "cluster": int(label)})
     pd.DataFrame(assignments).to_parquet(root / "processed/clusters.parquet", index=False)
     report = {"selected": selected, "available_from": "2016-06-01", "features": FEATURES, "evaluations": evaluations, "clusters": cluster_info,

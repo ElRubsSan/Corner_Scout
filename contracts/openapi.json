@@ -1,0 +1,1456 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "CornerScout",
+    "description": "StatsBomb Open Data. Analisis historico de LaLiga 2015/16.",
+    "version": "0.4.0"
+  },
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object",
+                  "title": "Response Health"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/teams": {
+      "get": {
+        "summary": "Teams",
+        "operationId": "getTeams",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Team"
+                  },
+                  "type": "array",
+                  "title": "Response Getteams"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/matches": {
+      "get": {
+        "summary": "Matches",
+        "operationId": "getMatches",
+        "parameters": [
+          {
+            "name": "rival",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Rival"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Before"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 380,
+              "minimum": 1,
+              "default": 380,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Match"
+                  },
+                  "title": "Response Getmatches"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/scouting-runs": {
+      "post": {
+        "summary": "Create Run",
+        "operationId": "createRun",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RunRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Run"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/scouting-runs/{run_id}": {
+      "get": {
+        "summary": "Get Run",
+        "operationId": "getRun",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Run"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/scouting-runs/{run_id}/summary": {
+      "get": {
+        "summary": "Summary",
+        "operationId": "getSummary",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Summary"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/scouting-runs/{run_id}/corners": {
+      "get": {
+        "summary": "Corners",
+        "operationId": "getCorners",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          },
+          {
+            "name": "player",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Player"
+            }
+          },
+          {
+            "name": "side",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Side"
+            }
+          },
+          {
+            "name": "delivery",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Delivery"
+            }
+          },
+          {
+            "name": "cluster",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cluster"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 1000,
+              "minimum": 1,
+              "default": 500,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Corner"
+                  },
+                  "title": "Response Getcorners"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/scouting-runs/{run_id}/patterns": {
+      "get": {
+        "summary": "Patterns",
+        "operationId": "getPatterns",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Pattern"
+                  },
+                  "title": "Response Getpatterns"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/scouting-runs/{run_id}/quality": {
+      "get": {
+        "summary": "Quality",
+        "operationId": "getQuality",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Quality"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/scouting-runs/{run_id}/model": {
+      "get": {
+        "summary": "Model",
+        "operationId": "getModel",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/scouting-runs/{run_id}/report-plan": {
+      "get": {
+        "summary": "Report Plan",
+        "operationId": "getReportPlan",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "title": "Response Getreportplan"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/scouting-runs/{run_id}/report": {
+      "post": {
+        "summary": "Report",
+        "operationId": "createReport",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Report"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Claim": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 1500,
+            "minLength": 1,
+            "title": "Text"
+          },
+          "evidence_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Evidence Ids"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "text",
+          "evidence_ids"
+        ],
+        "title": "Claim"
+      },
+      "Corner": {
+        "properties": {
+          "match_id": {
+            "type": "integer",
+            "title": "Match Id"
+          },
+          "event_id": {
+            "type": "string",
+            "title": "Event Id"
+          },
+          "player": {
+            "type": "string",
+            "title": "Player"
+          },
+          "x": {
+            "type": "number",
+            "title": "X"
+          },
+          "y": {
+            "type": "number",
+            "title": "Y"
+          },
+          "end_x": {
+            "type": "number",
+            "title": "End X"
+          },
+          "end_y": {
+            "type": "number",
+            "title": "End Y"
+          },
+          "side": {
+            "type": "string",
+            "title": "Side"
+          },
+          "delivery": {
+            "type": "string",
+            "title": "Delivery"
+          },
+          "zone": {
+            "type": "string",
+            "title": "Zone"
+          },
+          "height": {
+            "type": "string",
+            "title": "Height"
+          },
+          "shot_within_15s": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shot Within 15S"
+          },
+          "xg": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Xg"
+          },
+          "valid_sequence": {
+            "type": "boolean",
+            "title": "Valid Sequence"
+          },
+          "spatial_valid": {
+            "type": "boolean",
+            "title": "Spatial Valid"
+          },
+          "end_reason": {
+            "type": "string",
+            "title": "End Reason"
+          },
+          "shot_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Shot Ids"
+          },
+          "restart_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Restart Ids"
+          },
+          "possession_change_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Possession Change Ids"
+          },
+          "cluster": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cluster"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "match_id",
+          "event_id",
+          "player",
+          "x",
+          "y",
+          "end_x",
+          "end_y",
+          "side",
+          "delivery",
+          "zone",
+          "height",
+          "shot_within_15s",
+          "xg",
+          "valid_sequence",
+          "spatial_valid",
+          "end_reason",
+          "shot_ids",
+          "restart_ids",
+          "possession_change_ids"
+        ],
+        "title": "Corner"
+      },
+      "Evidence": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "value": {
+            "type": "string",
+            "title": "Value"
+          },
+          "event_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Event Ids"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "description",
+          "value"
+        ],
+        "title": "Evidence"
+      },
+      "Group": {
+        "properties": {
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "label",
+          "count"
+        ],
+        "title": "Group"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Match": {
+        "properties": {
+          "match_id": {
+            "type": "integer",
+            "title": "Match Id"
+          },
+          "match_date": {
+            "type": "string",
+            "title": "Match Date"
+          },
+          "kick_off": {
+            "type": "string",
+            "title": "Kick Off"
+          },
+          "home_team": {
+            "type": "string",
+            "title": "Home Team"
+          },
+          "away_team": {
+            "type": "string",
+            "title": "Away Team"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "match_id",
+          "match_date",
+          "kick_off",
+          "home_team",
+          "away_team"
+        ],
+        "title": "Match"
+      },
+      "ModelResult": {
+        "properties": {
+          "served": {
+            "type": "string",
+            "title": "Served"
+          },
+          "probability": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Probability"
+          },
+          "evaluation_scope": {
+            "type": "string",
+            "title": "Evaluation Scope"
+          },
+          "evaluations": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Evaluations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "served",
+          "probability",
+          "evaluation_scope",
+          "evaluations"
+        ],
+        "title": "ModelResult"
+      },
+      "Narrative": {
+        "properties": {
+          "observations": {
+            "items": {
+              "$ref": "#/components/schemas/Claim"
+            },
+            "type": "array",
+            "maxItems": 8,
+            "minItems": 1,
+            "title": "Observations"
+          },
+          "recommendations": {
+            "items": {
+              "$ref": "#/components/schemas/Claim"
+            },
+            "type": "array",
+            "maxItems": 5,
+            "title": "Recommendations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "observations",
+          "recommendations"
+        ],
+        "title": "Narrative"
+      },
+      "Pattern": {
+        "properties": {
+          "cluster": {
+            "type": "integer",
+            "title": "Cluster"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          },
+          "evaluable": {
+            "type": "integer",
+            "title": "Evaluable"
+          },
+          "scr15": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scr15"
+          },
+          "xg_per_corner": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Xg Per Corner"
+          },
+          "dominant_zone": {
+            "type": "string",
+            "title": "Dominant Zone"
+          },
+          "main_taker": {
+            "type": "string",
+            "title": "Main Taker"
+          },
+          "example_event_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Example Event Ids"
+          },
+          "snapshot": {
+            "type": "string",
+            "title": "Snapshot"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "cluster",
+          "count",
+          "evaluable",
+          "scr15",
+          "xg_per_corner",
+          "dominant_zone",
+          "main_taker",
+          "example_event_ids",
+          "snapshot"
+        ],
+        "title": "Pattern"
+      },
+      "Quality": {
+        "properties": {
+          "provider": {
+            "type": "string",
+            "title": "Provider",
+            "default": "StatsBomb Open Data"
+          },
+          "season": {
+            "type": "string",
+            "title": "Season",
+            "default": "LaLiga 2015/16"
+          },
+          "competition_id": {
+            "type": "integer",
+            "title": "Competition Id",
+            "default": 11
+          },
+          "season_id": {
+            "type": "integer",
+            "title": "Season Id",
+            "default": 27
+          },
+          "processed_at": {
+            "type": "string",
+            "title": "Processed At"
+          },
+          "source_manifest_sha256": {
+            "type": "string",
+            "title": "Source Manifest Sha256"
+          },
+          "rule_version": {
+            "type": "string",
+            "title": "Rule Version"
+          },
+          "coverage_matches": {
+            "type": "integer",
+            "title": "Coverage Matches"
+          },
+          "coverage_events": {
+            "type": "integer",
+            "title": "Coverage Events"
+          },
+          "excluded_sequences": {
+            "type": "integer",
+            "title": "Excluded Sequences"
+          },
+          "excluded_spatial": {
+            "type": "integer",
+            "title": "Excluded Spatial"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "processed_at",
+          "source_manifest_sha256",
+          "rule_version",
+          "coverage_matches",
+          "coverage_events",
+          "excluded_sequences",
+          "excluded_spatial",
+          "limitations"
+        ],
+        "title": "Quality"
+      },
+      "Report": {
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "deterministic",
+              "gemini"
+            ],
+            "title": "Mode"
+          },
+          "fallback_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fallback Reason"
+          },
+          "plan": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Plan"
+          },
+          "input": {
+            "$ref": "#/components/schemas/ReportInput"
+          },
+          "narrative": {
+            "$ref": "#/components/schemas/Narrative"
+          },
+          "sources": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Sources"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "mode",
+          "fallback_reason",
+          "plan",
+          "input",
+          "narrative",
+          "sources"
+        ],
+        "title": "Report"
+      },
+      "ReportInput": {
+        "properties": {
+          "rival": {
+            "type": "string",
+            "title": "Rival"
+          },
+          "cutoff_date": {
+            "type": "string",
+            "title": "Cutoff Date"
+          },
+          "matches": {
+            "items": {
+              "$ref": "#/components/schemas/Match"
+            },
+            "type": "array",
+            "title": "Matches"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/Summary"
+          },
+          "patterns": {
+            "items": {
+              "$ref": "#/components/schemas/Pattern"
+            },
+            "type": "array",
+            "title": "Patterns"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/Evidence"
+            },
+            "type": "array",
+            "title": "Evidence"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "rival",
+          "cutoff_date",
+          "matches",
+          "summary",
+          "patterns",
+          "evidence",
+          "limitations"
+        ],
+        "title": "ReportInput"
+      },
+      "Run": {
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "title": "Run Id"
+          },
+          "rival": {
+            "type": "string",
+            "title": "Rival"
+          },
+          "analyst": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Analyst"
+          },
+          "cutoff_date": {
+            "type": "string",
+            "title": "Cutoff Date"
+          },
+          "matches": {
+            "items": {
+              "$ref": "#/components/schemas/Match"
+            },
+            "type": "array",
+            "title": "Matches"
+          },
+          "dataset_version": {
+            "type": "string",
+            "title": "Dataset Version"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "run_id",
+          "rival",
+          "analyst",
+          "cutoff_date",
+          "matches",
+          "dataset_version"
+        ],
+        "title": "Run"
+      },
+      "RunRequest": {
+        "properties": {
+          "rival": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Rival"
+          },
+          "cutoff_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cutoff Date"
+          },
+          "target_match_id": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Match Id"
+          },
+          "analyst": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Analyst"
+          },
+          "expected_match_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array",
+                "maxItems": 8,
+                "minItems": 8
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expected Match Ids"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "rival"
+        ],
+        "title": "RunRequest"
+      },
+      "Summary": {
+        "properties": {
+          "rival": {
+            "type": "string",
+            "title": "Rival"
+          },
+          "cutoff_date": {
+            "type": "string",
+            "title": "Cutoff Date"
+          },
+          "matches": {
+            "type": "integer",
+            "title": "Matches"
+          },
+          "corners": {
+            "type": "integer",
+            "title": "Corners"
+          },
+          "evaluable_corners": {
+            "type": "integer",
+            "title": "Evaluable Corners"
+          },
+          "excluded_corners": {
+            "type": "integer",
+            "title": "Excluded Corners"
+          },
+          "shots": {
+            "type": "integer",
+            "title": "Shots"
+          },
+          "scr15": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scr15"
+          },
+          "xg_per_corner": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Xg Per Corner"
+          },
+          "probability": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Probability"
+          },
+          "probability_method": {
+            "type": "string",
+            "title": "Probability Method"
+          },
+          "players": {
+            "items": {
+              "$ref": "#/components/schemas/Group"
+            },
+            "type": "array",
+            "title": "Players"
+          },
+          "sides": {
+            "items": {
+              "$ref": "#/components/schemas/Group"
+            },
+            "type": "array",
+            "title": "Sides"
+          },
+          "deliveries": {
+            "items": {
+              "$ref": "#/components/schemas/Group"
+            },
+            "type": "array",
+            "title": "Deliveries"
+          },
+          "zones": {
+            "items": {
+              "$ref": "#/components/schemas/Group"
+            },
+            "type": "array",
+            "title": "Zones"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "rival",
+          "cutoff_date",
+          "matches",
+          "corners",
+          "evaluable_corners",
+          "excluded_corners",
+          "shots",
+          "scr15",
+          "xg_per_corner",
+          "probability",
+          "probability_method",
+          "players",
+          "sides",
+          "deliveries",
+          "zones"
+        ],
+        "title": "Summary"
+      },
+      "Team": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "Team"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

@@ -95,6 +95,10 @@ Validacion fase 3: ocho pruebas pasan y cinco notebooks nuevos ejecutados localm
 
 Verificaciones Git no destructivas:
 
+### Fase 4 validada
+
+FastAPI implementado. `uv run --extra api uvicorn backend.main:app --host 127.0.0.1 --port 8000`. OpenAPI: `uv run --extra api python scripts/export_openapi.py`. API usa nombre exacto del rival como clave de seleccion y match_id del proveedor; no inventa IDs de equipo. Corte por fecha exclusivo (partido objetivo usa su fecha). Diez pruebas locales pasan, incluyendo flujo real de ocho partidos, errores y reproducibilidad. DuckDB hace SELECT de Parquet con conexiones por consulta. Runs persistidos en processed/runs. Reporte determinista y endpoint de plan previo. Advertencias de dependencias TestClient registradas; Colab remoto pendiente.
+
 ```powershell
 git status --short
 git diff --check
