@@ -87,7 +87,13 @@ Usar uv de preferencia: `uv sync --extra dev`, `uv run cornerscout ingest`, `uv 
 
 Cobertura real: 380 partidos, 20 equipos, 1,295,354 eventos, 3,841 corners. Seis secuencias no evaluables por reloj regresivo y un corner excluido de visualizacion espacial. Ver docs/data-audit.md. Seis pruebas de limites SCR-15 pasan. Tres notebooks nuevos ejecutados localmente; validacion remota en Google Colab pendiente. Jupyter local emite avisos de transporte TCP/Windows, no se afirma ejecucion sin warnings en Colab. No entrenar sin quality.passed=true.
 
-Todavia no hay aplicaciones ni dependencias instaladas. En fase 1 solo son aplicables verificaciones no destructivas:
+### Fase 3
+
+`uv sync --extra dev --extra ml`; `uv run --extra ml cornerscout train`. Entrenados baseline, LR, RF y K-Means mensual. Baseline seleccionado: LR/RF no mejoran consistentemente validacion. Metricas reales: docs/model-evaluation.json, docs/model-card.md. Ocho partidos previos estrictos; no promocionar un modelo con entrenamiento/evaluacion posterior al corte.
+
+Validacion fase 3: ocho pruebas pasan y cinco notebooks nuevos ejecutados localmente con nbclient. No se ha ejecutado Google Colab remoto. Artefactos y Parquet ignorados por Git.
+
+Verificaciones Git no destructivas:
 
 ```powershell
 git status --short

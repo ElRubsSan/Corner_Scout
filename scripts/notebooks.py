@@ -29,6 +29,8 @@ def main():
             nbformat.v4.new_markdown_cell(f"# CornerScout: {title}\nStatsBomb Open Data, LaLiga 2015/16. Ver docs/colab.md para instalar con uv. Datos reales; no ejecutar modelos hasta pasar el gate. Este notebook nuevo no modifica el original de Colab."),
             nbformat.v4.new_code_cell("import os, sys\nfrom pathlib import Path\nroot = Path.cwd() if (Path.cwd() / 'pyproject.toml').exists() else Path.cwd().parent\nsys.path.insert(0, str(root))"),
             nbformat.v4.new_code_cell(code)], metadata={"kernelspec": {"name": "python3", "display_name": "Python 3", "language": "python"}})
+        for index, cell in enumerate(book.cells):
+            cell.id = f"{name}-{index}"
         nbformat.write(book, path)
         if args.execute:
             manager = AsyncKernelManager(kernel_name="python3")

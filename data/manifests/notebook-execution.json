@@ -10,5 +10,13 @@
   {
     "notebook": "03_secuencias_scr15.ipynb",
     "status": "executed"
+  },
+  {
+    "notebook": "04_ingenieria_variables.ipynb",
+    "status": "executed"
+  },
+  {
+    "notebook": "05_modelos_evaluacion.ipynb",
+    "status": "executed"
   }
 ]
