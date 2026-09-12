@@ -75,4 +75,5 @@ def report_plan(run_id: str) -> list[str]:
 
 @app.post(PREFIX + "/scouting-runs/{run_id}/report", operation_id="createReport")
 def report(run_id: str) -> Report:
-    return deterministic(service.report_input(service.get_run(run_id)))
+    from backend.gemini import generate
+    return generate(service.report_input(service.get_run(run_id)))

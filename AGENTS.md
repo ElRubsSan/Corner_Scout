@@ -99,6 +99,10 @@ Verificaciones Git no destructivas:
 
 FastAPI implementado. `uv run --extra api uvicorn backend.main:app --host 127.0.0.1 --port 8000`. OpenAPI: `uv run --extra api python scripts/export_openapi.py`. API usa nombre exacto del rival como clave de seleccion y match_id del proveedor; no inventa IDs de equipo. Corte por fecha exclusivo (partido objetivo usa su fecha). Diez pruebas locales pasan, incluyendo flujo real de ocho partidos, errores y reproducibilidad. DuckDB hace SELECT de Parquet con conexiones por consulta. Runs persistidos en processed/runs. Reporte determinista y endpoint de plan previo. Advertencias de dependencias TestClient registradas; Colab remoto pendiente.
 
+### Fase 5 validada con mocks
+
+Gemini SDK oficial google-genai 2.23.0, Structured Outputs/Pydantic, timeout HTTP y fallback por clave ausente, cuota, fallo o salida invalida. Diez pruebas de API/Gemini pasan. Sin llamada real al proveedor: requiere GEMINI_API_KEY en backend; ver docs/gemini.md. `uv sync --all-extras` y `uv run --all-extras pytest`. Validar IDs/cifras no garantiza toda la semantica del texto; limitacion documentada.
+
 ```powershell
 git status --short
 git diff --check
