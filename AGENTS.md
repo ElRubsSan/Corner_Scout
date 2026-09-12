@@ -15,6 +15,7 @@ La fase 1 documental esta aprobada. El usuario autoriza ejecucion integral, prue
 - Pipelines analiticos ejecutables.
 - FastAPI o bases de datos.
 - Angular u otra interfaz.
+- La interfaz final es exclusivamente Angular standalone; nunca Streamlit, Gradio, Tableau o Power BI.
 - Docker o despliegues.
 - Modelos supervisados o no supervisados.
 - Integracion Gemini exclusivamente desde FastAPI, Structured Outputs/Pydantic y fallback determinista.
@@ -102,6 +103,12 @@ FastAPI implementado. `uv run --extra api uvicorn backend.main:app --host 127.0.
 ### Fase 5 validada con mocks
 
 Gemini SDK oficial google-genai 2.23.0, Structured Outputs/Pydantic, timeout HTTP y fallback por clave ausente, cuota, fallo o salida invalida. Diez pruebas de API/Gemini pasan. Sin llamada real al proveedor: requiere GEMINI_API_KEY en backend; ver docs/gemini.md. `uv sync --all-extras` y `uv run --all-extras pytest`. Validar IDs/cifras no garantiza toda la semantica del texto; limitacion documentada.
+
+### Fase 6 validada localmente
+
+Angular standalone 22.1.6 y CLI/build 22.1.8, Node 24.19.0, TS 6.0.3. `npm ci` completo corrigio @angular/common y common/http sin external. `npm run build` pasa (247 kB iniciales); `npm run typecheck` pasa; `npm run e2e` pasa 2 recorridos Chromium con FastAPI y datos reales (dashboard, mapa, patrones, reporte fallback, calidad, corte por fecha y partido). Ejecutar npm dentro de frontend. Playwright inicia y detiene ambos servidores; no usa claves reales.
+
+OpenAPI generado en contracts/openapi.json y frontend/src/app/core/api.generated.ts. Codegen aislado en tools/codegen por peer TS5. Vercel configurado, backend Docker preparado, despliegues externos no realizados. Docker requiere validacion con motor disponible. Ver docs/deployment.md.
 
 ```powershell
 git status --short

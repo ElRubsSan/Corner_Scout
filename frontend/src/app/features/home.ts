@@ -1,0 +1,6 @@
+import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
+@Component({standalone:true,imports:[RouterLink],template:`
+<section class="hero"><div class="eyebrow">PREPARACIÓN DEFENSIVA CON EVIDENCIA</div><h1>El próximo córner.<br><em>Mejor preparado.</em></h1><p>Explora cómo ejecutó sus córners tu rival en sus ocho partidos anteriores. Del evento al patrón, con cada conclusión a la vista.</p><a class="button" routerLink="/analysis/new">Preparar un análisis →</a><div class="hero-note">Caso de estudio histórico · LaLiga 2015/16</div></section>
+<section class="grid md:grid-cols-3 gap-5"><article class="card"><span class="eyebrow">01 / OBSERVAR</span><h2>Una ventana concreta</h2><p>Ocho partidos anteriores al corte, seleccionados automáticamente y confirmados por ti.</p></article><article class="card"><span class="eyebrow">02 / COMPRENDER</span><h2>Del envío al tiro</h2><p>SCR-15 observado, destinos y patrones recurrentes. Sin confundir un pase con un remate.</p></article><article class="card"><span class="eyebrow">03 / PREPARAR</span><h2>Un reporte trazable</h2><p>Redacción táctica sobre evidencia calculada, con sus fuentes y limitaciones.</p></article></section>`})
+export class Home {}

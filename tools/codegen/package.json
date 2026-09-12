@@ -1,0 +1,1 @@
+{"name":"cornerscout-codegen","private":true,"scripts":{"generate":"openapi-typescript ../../contracts/openapi.json -o ../../frontend/src/app/core/api.generated.ts"},"devDependencies":{"openapi-typescript":"7.13.0","typescript":"~5.9.0"}}

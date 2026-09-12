@@ -1,0 +1,12 @@
+services:
+  backend:
+    build: .
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      CORNERSCOUT_DATA_DIR: /data
+      CORNERSCOUT_ORIGINS: http://localhost:4200,http://127.0.0.1:4200
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.5-flash}
+    volumes:
+      - ./data/processed:/data/processed
