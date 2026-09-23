@@ -1,0 +1,119 @@
+{
+  "manifest_version": "notebook-sources-v1",
+  "adopted_at": "2026-09-19",
+  "policy": "Notebook-first: validate scientific evidence before extracting production modules.",
+  "source_hash_scope": "The sha256 fields under notebooks identify the preserved Colab sources, not later corrected canonical copies.",
+  "phase_b_local_validation": {
+    "validated_at": "2026-09-19",
+    "notebooks": [
+      {
+        "canonical": "notebooks/01_ingesta_statsbomb.ipynb",
+        "source_sha256": "e27f9ce0fadbb54993d310f295f8c655e382891378d8225db23fabff6e48d767",
+        "executed_sha256": "1deacbcedd2bc6cb1ef365466717e80427df20f16ce545cb399ff5f73a7c360f",
+        "contract": "01-ingestion-v1"
+      },
+      {
+        "canonical": "notebooks/02_limpieza_eda.ipynb",
+        "source_sha256": "7d80f4be73b47018c0c1ef5a4ce78908d83c33de63fdbe83e4d42e0a1cbe0d97",
+        "executed_sha256": "279c4a34f22cbaa24797be81b0e64e7a4b08f19e5f421360ba30c4e193f01380",
+        "contract": "02-clean-v2"
+      },
+      {
+        "canonical": "notebooks/03_secuencias_scr15.ipynb",
+        "source_sha256": "4658f82ca0c1bfd8215ef0f819f44a4b82d511885ee7b111970ba80585e0e8ee",
+        "executed_sha256": "be609ec39bcf3ef5db91009765a53d4a01f9b07026120f01d58bb904f7d159db",
+        "contract": "03-scr15-v2"
+      }
+    ],
+    "result": {
+      "matches": 380,
+      "events": 1295354,
+      "corners": 3841,
+      "evaluable": 3835,
+      "excluded": 6,
+      "shared_shots": 0,
+      "synthetic_tests_passed": 11
+    },
+    "remote_validation": "pending_clean_colab_runtime"
+  },
+  "notebooks": [
+    {
+      "canonical": "notebooks/01_ingesta_statsbomb.ipynb",
+      "preserved_source": "notebooks/prueba/01 - CornerScout - Ingesta de Datos",
+      "sha256": "31299ce257b2ed640afc0b6720b44f53b7b705acf7f5a82283e16d4e0e6b0110",
+      "cells": 36,
+      "executed_code_cells": 0,
+      "saved_outputs": 20,
+      "evidence_status": "historical_outputs_without_execution_counts"
+    },
+    {
+      "canonical": "notebooks/02_limpieza_eda.ipynb",
+      "preserved_source": "notebooks/prueba/02_limpieza_eda(1).ipynb",
+      "sha256": "2e2338ccc03f06add1280744ecdf3b269a26f94233dd0b6bb30ec2e6dc711d1c",
+      "cells": 25,
+      "executed_code_cells": 15,
+      "saved_outputs": 31,
+      "evidence_status": "saved_colab_execution"
+    },
+    {
+      "canonical": "notebooks/03_secuencias_scr15.ipynb",
+      "preserved_source": "notebooks/prueba/03_secuencias_scr15(1).ipynb",
+      "sha256": "e4a528467613c7329808dbe43dc3e54069cb02767d9467c96038cc1658bb89d5",
+      "cells": 28,
+      "executed_code_cells": 16,
+      "saved_outputs": 33,
+      "evidence_status": "saved_colab_execution"
+    },
+    {
+      "canonical": "notebooks/04_ingenieria_variables.ipynb",
+      "preserved_source": "notebooks/prueba/04_ingenieria_variables(1) (1).ipynb",
+      "sha256": "211dfe808e4963f25497eec215cf759b1014f8c637806a7b03fae0647b51ebc8",
+      "cells": 61,
+      "executed_code_cells": 40,
+      "saved_outputs": 85,
+      "evidence_status": "saved_colab_execution"
+    },
+    {
+      "canonical": "notebooks/05_modelos_evaluacion.ipynb",
+      "preserved_source": "notebooks/prueba/05_modelos_evaluacion(1) (1).ipynb",
+      "sha256": "3d5f47285337c80e02930cc8d0f002fb6665bf5ffed8ed5d71d52408fdc44ac1",
+      "cells": 40,
+      "executed_code_cells": 19,
+      "saved_outputs": 34,
+      "evidence_status": "saved_colab_execution"
+    }
+  ],
+  "local_evidence": [
+    {
+      "path": "data/interim/02_clean-20260919T170311Z-1-001.zip",
+      "sha256": "da25f1e41fd5467959ae40361ae52d3d8d66adcc10b77444e07da393f404ac56",
+      "archive_entries": 387
+    },
+    {
+      "path": "data/interim/03_scr15-20260919T170314Z-1-001.zip",
+      "sha256": "d273758c47ffd4dc038c15369b2aa1ac0a09574242fe3575068c11aea3403824",
+      "archive_entries": 11
+    },
+    {
+      "path": "data/processed/04_features-20260919T170245Z-1-001.zip",
+      "sha256": "d8c609a26904dacae77ccefecde13156c4a40cf11fa81b5935a8ecd614fbc142",
+      "archive_entries": 34
+    },
+    {
+      "path": "data/processed/05_modeling-20260919T170249Z-1-001.zip",
+      "sha256": "19a5ccd51b18b44d1c258cf9075958c251573db9327ff2243201159299bc9013",
+      "archive_entries": 15
+    },
+    {
+      "path": "data/manual_labels/short_corner_review.csv",
+      "sha256": "f75d4dffb481031593dfec327fb36210027fcbb3318db59a1c5634b5be04424c",
+      "rows": 40,
+      "label_distribution": {
+        "short": 30,
+        "not_short": 10
+      },
+      "audit_note": "The 10 negative labels retain the same manual note as the positive labels; preserve and clarify the review method before interpreting agreement metrics.",
+      "evidence_status": "human_labels_preserved_pending_methodology_audit"
+    }
+  ]
+}

@@ -10,7 +10,7 @@ SCR-15 = corners ofensivos que generan al menos un tiro valido en 15 segundos
 
 La unidad de observacion es un corner ofensivo. El resultado `shot_within_15s` es booleano y cada corner contribuye una sola vez al numerador, aunque su secuencia contenga mas de un tiro valido.
 
-Implementacion actual `scr15-v0.2-team-inclusive`: si el reloj hace indeterminada una secuencia, target/xG son nulos, no falsos. SCR-15 y xG por corner se publican sobre corners evaluables, mostrando tambien totales y excluidos. En el dataset auditado son seis secuencias; la geometria invalida no excluye del KPI temporal, solo del mapa/clustering. Ver data-audit.md.
+Implementacion cientifica validada localmente `scr15-research-v1.2-first-limit`: si el reloj hace indeterminada una secuencia antes de su cierre, target/xG son nulos, no falsos. SCR-15 y xG por corner se publican sobre corners evaluables, mostrando tambien totales y excluidos. En el dataset auditado hay 3,841 corners, 3,835 evaluables y seis secuencias excluidas. La geometria invalida no excluye del KPI temporal, solo de analisis espaciales. La demo conserva por separado su implementacion productiva hasta probar equivalencia.
 
 ## Inicio
 
@@ -40,6 +40,7 @@ La observacion termina en el primer limite aplicable:
 1. Han transcurrido mas de 15 segundos desde el corner.
 2. `possession_team` deja de ser el equipo ejecutor.
 3. Finaliza el periodo.
+4. Comienza otro corner, para impedir que un mismo tiro se atribuya a dos ejecuciones consecutivas.
 
 Un tiro a exactamente 15.000 segundos se incluye si ocurre antes de que `possession_team` deje de ser el equipo ejecutor o finalice el periodo.
 
@@ -108,7 +109,22 @@ El xG posterior nunca sera una variable predictora prepartido.
 - Cuantificar reanudaciones dentro de 15 segundos.
 - Probar corners cercanos al final de cada periodo.
 - Verificar que ningun tiro atribuido pertenece a una posesion posterior.
+- Verificar que ningun tiro se atribuya a mas de un corner.
+
+## Resultado de la auditoria local
+
+La ejecucion ordenada local de los notebooks `01` a `03` produjo el contrato `03-scr15-v2` con estos resultados:
+
+- 380 partidos, 1,295,354 eventos y 3,841 corners.
+- 3,835 secuencias evaluables y seis desconocidas por regresion del reloj dentro de la ventana activa.
+- 1,245 corners evaluables con al menos un tiro valido.
+- Cero tiros compartidos entre corners.
+- 29 cierres por comienzo de un nuevo corner y 105 reanudaciones conservadas para auditoria.
+- Las once exclusiones de la investigacion anterior se conciliaron por `event_id`: seis regresiones dentro de ventana permanecen excluidas y cinco eran falsos positivos causados por inspeccionar regresiones ocurridas despues del primer cierre.
+- Once pruebas sinteticas de limites pasaron, incluido un tiro exactamente a 15 segundos, perdida de posesion sin reapertura, cambio de ID con el mismo equipo, cambio de periodo, nuevo corner y regresiones antes o despues del cierre.
+
+Los contratos y Parquet de esta ejecucion permanecen ignorados en `data/interim/01_ingestion`, `02_clean` y `03_scr15`. La copia ejecutada de cada notebook se conserva bajo `data/processed/executed_notebooks`. Falta repetir la ejecucion en un runtime limpio de Colab antes de declarar reproducibilidad remota.
 
 ## Estado
 
-Contrato metodologico provisional `scr15-v0.1`. No debe presentarse como regla definitiva hasta ejecutar las auditorias anteriores sobre los datos restaurados.
+Contrato metodologico de investigacion `scr15-research-v1.2-first-limit`, validado localmente sobre los datos restaurados. Permanece provisional hasta la ejecucion limpia en Colab, la revision academica y la comprobacion de equivalencia con el modulo productivo.

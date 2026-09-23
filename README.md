@@ -38,7 +38,7 @@ Desde la raiz: `uv run --all-extras pytest`.
 
 Desde frontend: `npm run build`, `npm run typecheck`, `npx playwright install chromium`, `npm run e2e`. E2E inicia ambos servidores locales y los detiene al finalizar; requiere puertos 8000 y 4200 libres y datos procesados reales.
 
-Notebooks: `uv run --all-extras python scripts/notebooks.py --execute --through 5`. Salidas ejecutadas en data/processed/executed_notebooks (ignoradas); notebooks versionados sin salidas raw. Guia remota: docs/colab.md.
+Notebooks: `uv run --all-extras python scripts/notebooks.py --through 5` valida estructura y hashes sin modificar celdas. `uv run --all-extras python scripts/notebooks.py --execute --through 3` ejecuta la fase B corregida y guarda copias bajo la capa procesada ignorada. `01` a `03` ya pasaron localmente; la ejecucion integral `01` a `05` en Colab sigue pendiente. Guia remota: docs/colab.md.
 
 Contratos: `uv run --extra api python scripts/export_openapi.py`, `npm --prefix tools/codegen ci`, `npm --prefix tools/codegen run generate`. Codegen usa TS5 aislado; Angular usa TS6. Los lockfiles evitan forzar peers incompatibles.
 
@@ -49,7 +49,7 @@ Contratos: `uv run --extra api python scripts/export_openapi.py`, `npm --prefix 
 - Baseline, regresion logistica y Random Forest entrenados y evaluados en bloques temporales. LR/RF no mejoraron consistentemente la validacion: se sirve baseline liguero anterior al corte.
 - K-Means usa snapshots mensuales anteriores al corte; describe destinos de pase, no jugadas ensayadas.
 - Gemini probado con mocks tipados, no con una clave real. Validacion semantica humana sigue siendo necesaria.
-- Colab remoto, Docker y proveedores externos pendientes de comprobacion manual. Docker no esta instalado localmente. Algunos avisos de Jupyter/TestClient proceden de dependencias; no se afirma una ejecucion remota sin warnings.
+- La ejecucion local ordenada de `01` a `03` concilio las once exclusiones historicas en seis secuencias desconocidas y cinco falsos positivos posteriores al cierre; no hubo tiros compartidos. La ejecucion integral en Colab, Docker y proveedores externos permanece pendiente. Docker no esta instalado localmente.
 
 ## Objetivo inicial
 
@@ -100,7 +100,7 @@ Antes de escribir procesamiento analitico se requieren:
 - `competitions.csv`, `matches_laliga_2015_16.csv`, `metadata_ingesta.json` y `registro_ingesta.csv`.
 - Un manifiesto con checksums y conteos, sin rutas privadas ni credenciales.
 
-El notebook actual `Third_Man_Analytics_Ingesta_de_Datos.ipynb` permanece fuera del repositorio hasta confirmar su incorporacion y futuro cambio de nombre a `01_ingesta_statsbomb.ipynb`.
+Los notebooks cientificos aportados por el usuario ya son las versiones canonicas `01` a `05`. Sus originales permanecen localmente en `notebooks/prueba/` y sus hashes estan en `notebooks/source-manifest.json`. Los artefactos de investigacion no sustituyen automaticamente los de la demo.
 
 Los formatos y campos esperados estan definidos en `contracts/raw-input.md`.
 
@@ -131,7 +131,8 @@ FastAPI + DuckDB -> Angular
 - `docs/model-card.md`: modelos, criterio de seleccion y limitaciones.
 - `docs/deployment.md`: configuracion Vercel/backend sin desplegar.
 - `docs/data-restoration.md`: archivos de Colab y restauracion desde Drive.
-- `docs/scr15-methodology.md`: regla provisional y auditorias pendientes.
+- `docs/scr15-methodology.md`: regla SCR-15, auditoria local y pendientes remotos.
+- `notebooks/source-manifest.json`: procedencia y hashes de los notebooks cientificos y evidencia local.
 - `contracts/raw-input.md`: contrato de los archivos de entrada.
 - `contracts/processed-entities.md`: entidades logicas previstas.
 - `data/manifests/README.md`: contrato de manifiestos.

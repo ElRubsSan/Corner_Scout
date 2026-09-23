@@ -1,22 +1,51 @@
 [
   {
     "notebook": "01_ingesta_statsbomb.ipynb",
-    "status": "executed"
+    "status": "executed",
+    "source_sha256": "e27f9ce0fadbb54993d310f295f8c655e382891378d8225db23fabff6e48d767",
+    "executed_copy": "processed/executed_notebooks/01_ingesta_statsbomb.ipynb",
+    "executed_sha256": "851c7c9b806ae7a3a747d4b15f171cac207294b01bb51d39af367396b1c62fb9"
   },
   {
     "notebook": "02_limpieza_eda.ipynb",
-    "status": "executed"
+    "status": "executed",
+    "source_sha256": "7d80f4be73b47018c0c1ef5a4ce78908d83c33de63fdbe83e4d42e0a1cbe0d97",
+    "executed_copy": "processed/executed_notebooks/02_limpieza_eda.ipynb",
+    "executed_sha256": "afff931e18153bf0261e63d8ae304a9047a11da589bfa1c770b2335812ecfbc2"
   },
   {
     "notebook": "03_secuencias_scr15.ipynb",
-    "status": "executed"
+    "status": "executed",
+    "source_sha256": "4658f82ca0c1bfd8215ef0f819f44a4b82d511885ee7b111970ba80585e0e8ee",
+    "executed_copy": "processed/executed_notebooks/03_secuencias_scr15.ipynb",
+    "executed_sha256": "aeda7a3c3f6dcfeecc83fb673fa0722c4255c4c6d7ca8b4de0e1ac02d93dbad6"
   },
   {
     "notebook": "04_ingenieria_variables.ipynb",
-    "status": "executed"
+    "status": "executed",
+    "source_sha256": "3f5e7a3a7129816edeab636c88480980343c11d92e3e78005957d34cb73c8872",
+    "executed_copy": "processed/executed_notebooks/04_ingenieria_variables.ipynb",
+    "executed_sha256": "c8b3af8aa79481b17a076c1ed576333ac0560ccf2a2e29c291c3bc6185b15a2c"
   },
   {
     "notebook": "05_modelos_evaluacion.ipynb",
-    "status": "executed"
+    "status": "executed",
+    "source_sha256": "a7da9b74cf7412d1d3bf68da10817831d24f924a82f71c04b7af263d3fba462f",
+    "executed_copy": "processed/executed_notebooks/05_modelos_evaluacion.ipynb",
+    "executed_sha256": "36924639a0673ec8bc8ff1aa80079cd90568e3d83d57694e43580270c66005d9"
+  },
+  {
+    "notebook": "06_reporte_tactico_llm.ipynb",
+    "status": "executed",
+    "source_sha256": "700b6d5e47b74501f8cea2bbb1a9a8b0a51045f74c4202f507ee26b865937f0b",
+    "executed_copy": "processed/executed_notebooks/06_reporte_tactico_llm.ipynb",
+    "executed_sha256": "abb61118e4f08dadfee89fdf4a5c1b3b537ff9253545586b0b9497ebd4e59962"
+  },
+  {
+    "notebook": "07_herramientas_agente.ipynb",
+    "status": "executed",
+    "source_sha256": "b234aa8c318a842b86fec7b1ee0bb48dd553f4632ffc0d08db115cdac79051be",
+    "executed_copy": "processed/executed_notebooks/07_herramientas_agente.ipynb",
+    "executed_sha256": "d9d47a9c400a8618a3ffae863b607823b7ab9a3b0bcf8fbb67743545ee01ca08"
   }
 ]

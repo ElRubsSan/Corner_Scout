@@ -20,7 +20,7 @@ La fase 1 documental esta aprobada. El usuario autoriza ejecucion integral, prue
 - Modelos supervisados o no supervisados.
 - Integracion Gemini exclusivamente desde FastAPI, Structured Outputs/Pydantic y fallback determinista.
 
-Angular standalone, FastAPI/OpenAPI, frontend en Vercel y LLM son obligatorios. No usar interfaces alternativas. Modelos: baseline, regresion logistica, Random Forest y K-Means; modelado solo despues de validar datos. El notebook original aportado por el usuario se conserva intacto y no se incluye en commits hasta sanitizarlo; los notebooks nuevos son independientes.
+Angular standalone, FastAPI/OpenAPI, frontend en Vercel y LLM son obligatorios. No usar interfaces alternativas. Modelos: baseline, regresion logistica, Random Forest y K-Means; modelado solo despues de validar datos. Desde 2026-09-19 se adopta un enfoque notebook-first: las copias canonicas `01` a `05` proceden de los notebooks del usuario en Colab/Drive, conservan su evidencia guardada y se validan antes de extraer logica a modulos. Los originales locales permanecen en `notebooks/prueba/`; la demo no se altera ni recibe artefactos automaticamente.
 
 ## Prioridades del MVP
 
@@ -87,13 +87,13 @@ La especificacion completa se mantiene en `docs/scr15-methodology.md`.
 
 Usar uv de preferencia: `uv sync --extra dev`, `uv run cornerscout ingest`, `uv run cornerscout build`, `uv run --extra dev pytest`, `uv run --extra dev python scripts/notebooks.py --execute --through 3`.
 
-Cobertura real: 380 partidos, 20 equipos, 1,295,354 eventos, 3,841 corners. Seis secuencias no evaluables por reloj regresivo y un corner excluido de visualizacion espacial. Ver docs/data-audit.md. Seis pruebas de limites SCR-15 pasan. Tres notebooks nuevos ejecutados localmente; validacion remota en Google Colab pendiente. Jupyter local emite avisos de transporte TCP/Windows, no se afirma ejecucion sin warnings en Colab. No entrenar sin quality.passed=true.
+Cobertura real de la demo: 380 partidos, 20 equipos, 1,295,354 eventos, 3,841 corners. Seis secuencias no evaluables por reloj regresivo y un corner excluido de visualizacion espacial. Ver docs/data-audit.md. Seis pruebas de limites SCR-15 pasan. Las ejecuciones locales de los notebooks simplificados son evidencia historica anterior a la sustitucion notebook-first; no validan los canonicos actuales. No entrenar sin quality.passed=true.
 
 ### Fase 3
 
 `uv sync --extra dev --extra ml`; `uv run --extra ml cornerscout train`. Entrenados baseline, LR, RF y K-Means mensual. Baseline seleccionado: LR/RF no mejoran consistentemente validacion. Metricas reales: docs/model-evaluation.json, docs/model-card.md. Ocho partidos previos estrictos; no promocionar un modelo con entrenamiento/evaluacion posterior al corte.
 
-Validacion fase 3: ocho pruebas pasan y cinco notebooks nuevos ejecutados localmente con nbclient. No se ha ejecutado Google Colab remoto. Artefactos y Parquet ignorados por Git.
+Validacion historica de fase 3: ocho pruebas pasan para los modulos de la demo. Los cinco notebooks simplificados que se ejecutaron con nbclient ya no son los canonicos; los actuales requieren una ejecucion limpia en Colab. Artefactos y Parquet permanecen ignorados por Git.
 
 Verificaciones Git no destructivas:
 
@@ -113,7 +113,7 @@ OpenAPI generado en contracts/openapi.json y frontend/src/app/core/api.generated
 
 ### Fase 7 — cierre local
 
-Documentados README de instalacion uv/npm, guia Colab, demo de cinco minutos, guion de video, estructura academica y fuentes oficiales. Rubrica concreta no recibida: la matriz academica es provisional. Build produccion Angular, typecheck y dos E2E pasan; suite Python completa: 18 pruebas pasan, dos warnings de dependencias TestClient. Cinco notebooks ejecutados localmente; no afirmar prueba remota en Colab ni ausencia de warnings de Jupyter.
+Documentados README de instalacion uv/npm, guia Colab, demo de cinco minutos, guion de video, estructura academica y fuentes oficiales. Rubrica concreta no recibida: la matriz academica es provisional. Build produccion Angular, typecheck y dos E2E pasan; suite Python completa: 18 pruebas pasan, dos warnings de dependencias TestClient. La ejecucion local anterior corresponde a notebooks simplificados sustituidos; no afirmar que los canonicos actuales se ejecutaron limpiamente en Colab.
 
 Pendientes manuales: validar en Colab, instalar Docker y probar contenedor, configurar clave Gemini en backend y hacer prueba real, elegir backend HTTPS/volumen y configurar apiBaseUrl antes de Vercel; incorporar logo oficial StatsBomb para publicacion. No se desplego externamente. Estado detallado y siguiente accion en RESUMEN_DE_CONTINUIDAD.md.
 

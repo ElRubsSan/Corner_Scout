@@ -1112,7 +1112,7 @@
     }
   ],
   "source_manifest_sha256": "245c9b3a151e59b6b3abe966f4b69d71c1bcdba8dadc63f6abbf5df71fbb0530",
-  "processed_at": "2026-09-12T05:56:31.142019+00:00",
+  "processed_at": "2026-09-19T17:52:29.978181+00:00",
   "artifact_version": "v0.3",
   "selection_rule": "Brier lower and AP higher in BOTH validation blocks; final holdout Brier must also improve. Otherwise serve historical baseline.",
   "limitations": [
