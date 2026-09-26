@@ -163,7 +163,12 @@ def build_evidence(
     The cutoff is exclusive and the selected match IDs are provider IDs.  The
     league references use only rows strictly before the same cutoff.
     """
-    cutoff = date.fromisoformat(fecha_corte) if isinstance(fecha_corte, str) else fecha_corte
+    if isinstance(fecha_corte, str):
+        cutoff = datetime.fromisoformat(
+            fecha_corte.replace("Z", "+00:00")
+        ).date()
+    else:
+        cutoff = fecha_corte
     if not isinstance(cutoff, date):
         raise TypeError("fecha_corte_must_be_date")
     _require_columns(matches, {"match_id", "match_date", "home_team", "away_team"}, "matches")
