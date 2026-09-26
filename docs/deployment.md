@@ -1,32 +1,45 @@
-# Configuracion de despliegue (sin despliegue externo)
+# Configuracion de despliegue
 
-## Frontend obligatorio: Vercel
+No se ha desplegado CornerScout ni validado Docker con un motor real. Esta guia describe la topologia requerida, no una validacion completada.
 
-Proyecto Angular standalone 22.1.6; CLI/build 22.1.8; TypeScript 6.0.3; Node 24.19.0 verificados localmente. Configurar Root Directory `frontend`, instalar con `npm ci`, compilar con `npm run build`. `frontend/vercel.json` publica `dist/cornerscout/browser` y enruta la SPA. El build no necesita acceso a raw ni claves.
+## Frontend Vercel
 
-Antes de publicar, configurar `frontend/public/config.json` con `apiBaseUrl` igual al origen HTTPS real de FastAPI (sin /api/v1 al final). Es configuracion publica, nunca un secreto. Con valor vacio se usa mismo origen; en desarrollo Angular proxy reenvia /api al backend local. No existe aun URL de backend de produccion. La regla de Vercel excluye /api para evitar devolver index.html como si fuera JSON de API.
+Configurar Root Directory `frontend`, instalar con `npm ci` y compilar con `npm run build`. `frontend/vercel.json` publica `dist/cornerscout/browser` y enruta la SPA.
 
-En el backend configurar CORNERSCOUT_ORIGINS con los origenes exactos de Vercel autorizados. Nunca agregar GEMINI_API_KEY al frontend ni a las variables publicas de Vercel.
+Definir `frontend/public/config.json` con `apiBaseUrl` igual al origen HTTPS de FastAPI, sin `/api/v1`. Es configuracion publica, no un secreto. En backend, `CORNERSCOUT_ORIGINS` debe contener solo los origenes Vercel autorizados.
 
-## Backend compatible
+Nunca configurar `OPENAI_API_KEY`, `OPENAI_MODEL` ni prompts como variables del frontend. OpenAI se invoca exclusivamente desde FastAPI.
 
-Dockerfile proporciona FastAPI con uv.lock y Python 3.13. Es apto para un servicio de contenedores con volumen persistente y HTTPS, por ejemplo un servicio Docker en Render. Seleccion y aprovisionamiento del proveedor quedan manuales; no se ha creado ningun recurso externo.
+## Backend Docker
 
-Montar en `/data/processed` los archivos `matches.parquet`, `corners.parquet`, `clusters.parquet`, `quality.json` y `model-evaluation.json`. Permitir escritura en `processed/runs` para persistencia de analisis. El servidor no necesita raw, features.parquet ni modelos joblib; sirve el baseline aprobado y asignaciones de clusters precomputadas. No generar datos durante cada solicitud ni descargar al arrancar la API.
+La imagen ejecuta FastAPI con `CORNERSCOUT_DATA_DIR=/data`. El servicio debe montar exactamente las capas canonicas que consume la API:
 
-Prueba de contenedor local (requiere Docker instalado): `docker compose config --quiet`, `docker compose build`, `docker compose up`. Angular se inicia por separado con `npm start` dentro de frontend. El contenedor no incluye datasets ni secretos en la imagen.
+| Host | Contenedor | Acceso |
+|---|---|---|
+| `data/interim/02_clean` | `/data/interim/02_clean` | solo lectura |
+| `data/interim/03_scr15` | `/data/interim/03_scr15` | solo lectura |
+| `data/processed/04_features` | `/data/processed/04_features` | solo lectura |
+| `data/processed/05_modeling` | `/data/processed/05_modeling` | solo lectura |
+| `data/processed/runs` | `/data/processed/runs` | lectura/escritura |
 
-## Reproducibilidad de frontend
+No montar `data/raw`, artefactos demo antiguos ni un directorio `processed` ambiguo. FastAPI necesita los contratos y todos los artefactos declarados con sus hashes; no genera datos ni entrena al arrancar.
 
-`tools/codegen` aisla openapi-typescript 7 (peer TypeScript 5) de Angular 22 (TypeScript 6). Regenerar desde la raiz con `uv run --extra api python scripts/export_openapi.py`; despues `npm --prefix tools/codegen ci` y `npm --prefix tools/codegen run generate`. Se versiona la salida api.generated.ts, por lo que Vercel no necesita Python ni codegen.
+Ejemplo de opciones de volumen para adaptar al proveedor:
 
-## Fuentes oficiales consultadas
+```text
+--mount type=bind,src=<repo>/data/interim/02_clean,dst=/data/interim/02_clean,readonly
+--mount type=bind,src=<repo>/data/interim/03_scr15,dst=/data/interim/03_scr15,readonly
+--mount type=bind,src=<repo>/data/processed/04_features,dst=/data/processed/04_features,readonly
+--mount type=bind,src=<repo>/data/processed/05_modeling,dst=/data/processed/05_modeling,readonly
+--mount type=bind,src=<repo>/data/processed/runs,dst=/data/processed/runs
+```
 
-- https://angular.dev/reference/versions
-- https://vercel.com/docs/project-configuration
-- https://openapi-ts.dev/introduction
-- https://openapi-ts.dev/openapi-fetch/
-- https://tailwindcss.com/docs/installation/framework-guides/angular
-- https://docs.astral.sh/uv/guides/integration/docker/
+Configurar en el backend `OPENAI_API_KEY` y `OPENAI_MODEL` solo si se hara una prueba real. Sin clave, reporte y agente conservan el fallback determinista. No registrar secretos en imagenes, logs o archivos versionados.
 
-La verificacion local de Angular y navegador no equivale a una validacion del contenedor ni de Vercel. Registrar estos resultados por separado.
+## Validacion pendiente
+
+Cuando exista motor Docker, comprobar configuracion, build, health, lectura de contratos `02`-`05`, creacion de un run y escritura exclusiva en `runs`. Despues validar CORS y HTTPS contra el dominio Vercel. No afirmar que Docker, OpenAI real o Vercel funcionan hasta registrar esas pruebas.
+
+## Reproducibilidad del cliente
+
+Regenerar OpenAPI desde la raiz con `uv run --extra api python scripts/export_openapi.py`, `npm --prefix tools/codegen ci` y `npm --prefix tools/codegen run generate`. La salida tipada se versiona; Vercel no necesita Python ni codegen.

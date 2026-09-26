@@ -22,6 +22,7 @@ export class Api {
  async model(id:string){return this.unwrap(await (await this.client).GET('/api/v1/scouting-runs/{run_id}/model',{params:{path:{run_id:id}}}));}
  async plan(id:string){return this.unwrap(await (await this.client).GET('/api/v1/scouting-runs/{run_id}/report-plan',{params:{path:{run_id:id}}}));}
  async report(id:string){return this.unwrap(await (await this.client).POST('/api/v1/scouting-runs/{run_id}/report',{params:{path:{run_id:id}}}));}
+ async agent(id:string,question:string){return this.unwrap(await (await this.client).POST('/api/v1/scouting-runs/{run_id}/agent',{params:{path:{run_id:id}},body:{question}}));}
  private unwrap<T>(result:{data?:T;error?:unknown;response:Response}):T {
   if(result.data===undefined){const err=result.error as {detail?:unknown}|undefined; throw new Error(typeof err?.detail==='string'?err.detail:`Error ${result.response.status}: revise el backend y los datos procesados`);}
   return result.data;

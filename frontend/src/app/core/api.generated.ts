@@ -208,10 +208,102 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/scouting-runs/{run_id}/agent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Ask Agent */
+        post: operations["askAgent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AgentRequest */
+        AgentRequest: {
+            /** Question */
+            question: string;
+        };
+        /** AgentResponse */
+        AgentResponse: {
+            /**
+             * Mode
+             * @enum {string}
+             */
+            mode: "deterministic" | "openai";
+            /** Fallback Reason */
+            fallback_reason?: string | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "answered" | "out_of_scope" | "error";
+            /** Answer */
+            answer: string;
+            /** Evidence Ids */
+            evidence_ids: string[];
+            /** Tool Calls */
+            tool_calls: number;
+            /**
+             * Input Tokens
+             * @default 0
+             */
+            input_tokens: number;
+            /**
+             * Output Tokens
+             * @default 0
+             */
+            output_tokens: number;
+            /**
+             * Total Tokens
+             * @default 0
+             */
+            total_tokens: number;
+            /** Traces */
+            traces?: components["schemas"]["AgentTrace"][];
+        };
+        /** AgentTrace */
+        AgentTrace: {
+            /**
+             * Kind
+             * @default tool
+             * @constant
+             */
+            kind: "tool";
+            /** Tool */
+            tool: string;
+            /** Arguments */
+            arguments: {
+                [key: string]: unknown;
+            };
+            /** Arguments Validated */
+            arguments_validated: boolean;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "ok" | "error";
+            /** Result Summary */
+            result_summary?: {
+                [key: string]: unknown;
+            } | null;
+            /** Error Type */
+            error_type?: string | null;
+            /** Error Code */
+            error_code?: string | null;
+            /** Latency Ms */
+            latency_ms: number;
+        };
         /** Claim */
         Claim: {
             /** Text */
@@ -262,6 +354,13 @@ export interface components {
             /** Cluster */
             cluster?: number | null;
         };
+        /** ErrorResponse */
+        ErrorResponse: {
+            /** Detail */
+            detail: string | {
+                [key: string]: unknown;
+            }[];
+        };
         /** Evidence */
         Evidence: {
             /** Id */
@@ -298,6 +397,13 @@ export interface components {
             /** Away Team */
             away_team: string;
         };
+        /** ModelEvaluation */
+        ModelEvaluation: {
+            /** Objective Winners */
+            objective_winners: components["schemas"]["ObjectiveWinner"][];
+            /** Temporal Metrics */
+            temporal_metrics: components["schemas"]["TemporalMetric"][];
+        };
         /** ModelResult */
         ModelResult: {
             /** Served */
@@ -306,10 +412,7 @@ export interface components {
             probability: number | null;
             /** Evaluation Scope */
             evaluation_scope: string;
-            /** Evaluations */
-            evaluations: {
-                [key: string]: unknown;
-            };
+            evaluations: components["schemas"]["ModelEvaluation"];
         };
         /** Narrative */
         Narrative: {
@@ -317,6 +420,17 @@ export interface components {
             observations: components["schemas"]["Claim"][];
             /** Recommendations */
             recommendations: components["schemas"]["Claim"][];
+        };
+        /** ObjectiveWinner */
+        ObjectiveWinner: {
+            /** Objective */
+            objective: string;
+            /** Winner */
+            winner: string;
+            /** Modeled */
+            modeled: boolean;
+            /** Justification */
+            justification: string;
         };
         /** Pattern */
         Pattern: {
@@ -384,7 +498,7 @@ export interface components {
              * Mode
              * @enum {string}
              */
-            mode: "deterministic" | "gemini";
+            mode: "deterministic" | "openai";
             /** Fallback Reason */
             fallback_reason: string | null;
             /** Plan */
@@ -424,6 +538,10 @@ export interface components {
             matches: components["schemas"]["Match"][];
             /** Dataset Version */
             dataset_version: string;
+            /** Canonical Runs */
+            canonical_runs?: {
+                [key: string]: string;
+            };
         };
         /** RunRequest */
         RunRequest: {
@@ -475,6 +593,37 @@ export interface components {
         Team: {
             /** Name */
             name: string;
+        };
+        /** TemporalMetric */
+        TemporalMetric: {
+            /** Objective */
+            objective: string;
+            /** Window */
+            window: string;
+            /** Role */
+            role: string;
+            /** Model */
+            model: string;
+            /** N */
+            n: number;
+            /** Positive */
+            positive?: number | null;
+            /** Prevalence */
+            prevalence?: number | null;
+            /** Average Precision */
+            average_precision?: number | null;
+            /** Brier */
+            brier?: number | null;
+            /** Log Loss */
+            log_loss?: number | null;
+            /** Calibration Gap */
+            calibration_gap?: number | null;
+            /** Roc Auc */
+            roc_auc?: number | null;
+            /** Mae */
+            mae?: number | null;
+            /** Poisson Deviance */
+            poisson_deviance?: number | null;
         };
         /** ValidationError */
         ValidationError: {
@@ -538,6 +687,15 @@ export interface operations {
                     "application/json": components["schemas"]["Team"][];
                 };
             };
+            /** @description Artefactos canonicos no disponibles */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     getMatches: {
@@ -562,13 +720,31 @@ export interface operations {
                     "application/json": components["schemas"]["Match"][];
                 };
             };
-            /** @description Validation Error */
+            /** @description Recurso no encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Solicitud no procesable */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Artefactos canonicos no disponibles */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -595,13 +771,40 @@ export interface operations {
                     "application/json": components["schemas"]["Run"];
                 };
             };
-            /** @description Validation Error */
+            /** @description Recurso no encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicto con la version o ventana canonica */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Solicitud no procesable */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Artefactos canonicos no disponibles */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -626,6 +829,24 @@ export interface operations {
                     "application/json": components["schemas"]["Run"];
                 };
             };
+            /** @description Recurso no encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicto con la version o ventana canonica */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -633,6 +854,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Artefactos canonicos no disponibles */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -657,6 +887,24 @@ export interface operations {
                     "application/json": components["schemas"]["Summary"];
                 };
             };
+            /** @description Recurso no encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicto con la version o ventana canonica */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -664,6 +912,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Artefactos canonicos no disponibles */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -695,13 +952,40 @@ export interface operations {
                     "application/json": components["schemas"]["Corner"][];
                 };
             };
-            /** @description Validation Error */
+            /** @description Recurso no encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicto con la version o ventana canonica */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Solicitud no procesable */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Artefactos canonicos no disponibles */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -726,6 +1010,24 @@ export interface operations {
                     "application/json": components["schemas"]["Pattern"][];
                 };
             };
+            /** @description Recurso no encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicto con la version o ventana canonica */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -733,6 +1035,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Artefactos canonicos no disponibles */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -757,6 +1068,24 @@ export interface operations {
                     "application/json": components["schemas"]["Quality"];
                 };
             };
+            /** @description Recurso no encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicto con la version o ventana canonica */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -764,6 +1093,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Artefactos canonicos no disponibles */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -788,6 +1126,24 @@ export interface operations {
                     "application/json": components["schemas"]["ModelResult"];
                 };
             };
+            /** @description Recurso no encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicto con la version o ventana canonica */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -795,6 +1151,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Artefactos canonicos no disponibles */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -819,6 +1184,24 @@ export interface operations {
                     "application/json": string[];
                 };
             };
+            /** @description Recurso no encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicto con la version o ventana canonica */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -826,6 +1209,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Artefactos canonicos no disponibles */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -850,6 +1242,24 @@ export interface operations {
                     "application/json": components["schemas"]["Report"];
                 };
             };
+            /** @description Recurso no encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicto con la version o ventana canonica */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -857,6 +1267,77 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Artefactos canonicos no disponibles */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    askAgent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AgentRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentResponse"];
+                };
+            };
+            /** @description Recurso no encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicto con la version o ventana canonica */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Solicitud no procesable */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Artefactos canonicos no disponibles */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };

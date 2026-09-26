@@ -7,6 +7,10 @@ class Contract(BaseModel):
     model_config = ConfigDict(extra="forbid", allow_inf_nan=False)
 
 
+class ErrorResponse(Contract):
+    detail: str | list[dict[str, object]]
+
+
 class Team(Contract):
     name: str
 
@@ -40,6 +44,7 @@ class Run(Contract):
     cutoff_date: str
     matches: list[Match]
     dataset_version: str
+    canonical_runs: dict[str, str] = Field(default_factory=dict)
 
 
 class Corner(Contract):
@@ -115,11 +120,40 @@ class Quality(Contract):
     limitations: list[str]
 
 
+class ObjectiveWinner(Contract):
+    objective: str
+    winner: str
+    modeled: bool
+    justification: str
+
+
+class TemporalMetric(Contract):
+    objective: str
+    window: str
+    role: str
+    model: str
+    n: int
+    positive: float | None = None
+    prevalence: float | None = None
+    average_precision: float | None = None
+    brier: float | None = None
+    log_loss: float | None = None
+    calibration_gap: float | None = None
+    roc_auc: float | None = None
+    mae: float | None = None
+    poisson_deviance: float | None = None
+
+
+class ModelEvaluation(Contract):
+    objective_winners: list[ObjectiveWinner]
+    temporal_metrics: list[TemporalMetric]
+
+
 class ModelResult(Contract):
     served: str
     probability: float | None
     evaluation_scope: str
-    evaluations: dict
+    evaluations: ModelEvaluation
 
 
 class Evidence(Contract):
@@ -150,9 +184,38 @@ class Narrative(Contract):
 
 
 class Report(Contract):
-    mode: Literal["deterministic", "gemini"]
+    mode: Literal["deterministic", "openai"]
     fallback_reason: str | None
     plan: list[str]
     input: ReportInput
     narrative: Narrative
     sources: list[str]
+
+
+class AgentRequest(Contract):
+    question: str = Field(min_length=1, max_length=1000)
+
+
+class AgentTrace(Contract):
+    kind: Literal["tool"] = "tool"
+    tool: str
+    arguments: dict[str, object]
+    arguments_validated: bool
+    status: Literal["ok", "error"]
+    result_summary: dict[str, object] | None = None
+    error_type: str | None = None
+    error_code: str | None = None
+    latency_ms: float = Field(ge=0)
+
+
+class AgentResponse(Contract):
+    mode: Literal["deterministic", "openai"]
+    fallback_reason: str | None = None
+    status: Literal["answered", "out_of_scope", "error"]
+    answer: str
+    evidence_ids: list[str]
+    tool_calls: int = Field(ge=0, le=4)
+    input_tokens: int = Field(default=0, ge=0)
+    output_tokens: int = Field(default=0, ge=0)
+    total_tokens: int = Field(default=0, ge=0)
+    traces: list[AgentTrace] = Field(default_factory=list)

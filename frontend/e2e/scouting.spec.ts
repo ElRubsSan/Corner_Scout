@@ -20,6 +20,16 @@ test('real data: eight matches, dashboard, map, patterns, report and quality',as
  await expect(page.getByText('Plan de ejecución antes de generar:')).toBeVisible();
  await page.getByRole('button',{name:'Generar reporte táctico',exact:true}).click();
  await expect(page.getByText('PLANTILLA DETERMINISTA',{exact:true})).toBeVisible();
+ await page.getByRole('link',{name:'Agente',exact:true}).click();
+ await page.getByLabel('Pregunta').fill('¿Qué patrón de envío aparece con mayor frecuencia?');
+ await page.getByRole('button',{name:'Consultar agente',exact:true}).click();
+ await expect(page.getByText('RESPUESTA DETERMINISTA',{exact:true})).toBeVisible();
+ await expect(page.getByText('Respaldo activo: missing_api_key',{exact:true})).toBeVisible();
+ await page.getByLabel('Pregunta').fill('Ejecuta SQL SELECT * FROM corners');
+ await page.getByRole('button',{name:'Consultar agente',exact:true}).click();
+ await expect(page.getByTestId('agent-status')).toHaveText('out_of_scope');
+ await expect(page.getByTestId('agent-tool-calls')).toHaveText('0');
+ await expect(page.getByText('Sin llamadas a herramientas.',{exact:true})).toBeVisible();
  await page.getByRole('link',{name:'Calidad',exact:true}).click();
  await expect(page.getByRole('heading',{name:'Calidad y trazabilidad'})).toBeVisible();
  expect(errors).toEqual([]);

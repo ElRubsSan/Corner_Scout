@@ -6,7 +6,11 @@ services:
     environment:
       CORNERSCOUT_DATA_DIR: /data
       CORNERSCOUT_ORIGINS: http://localhost:4200,http://127.0.0.1:4200
-      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
-      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.5-flash}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4.1-mini}
     volumes:
-      - ./data/processed:/data/processed
+      - ./data/interim/02_clean:/data/interim/02_clean:ro
+      - ./data/interim/03_scr15:/data/interim/03_scr15:ro
+      - ./data/processed/04_features:/data/processed/04_features:ro
+      - ./data/processed/05_modeling:/data/processed/05_modeling:ro
+      - ./data/processed/runs:/data/processed/runs
