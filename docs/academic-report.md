@@ -1,30 +1,32 @@
 # Estructura del documento academico final
 
-La rubrica especifica no se ha proporcionado. Esta estructura cubre criterios habituales; el alineamiento exacto y ponderaciones deben completarse con la rubrica real, sin afirmar cumplimiento no comprobado.
+La rubrica especifica no se ha proporcionado. Esta estructura cubre evidencia disponible sin afirmar cumplimiento no comprobado.
 
-1. **Resumen y problema:** preparacion prepartido ante corners ofensivos del rival; usuario analista/entrenador; alcance historico.
-2. **Objetivos y preguntas:** ocho partidos previos, SCR-15, destinos y amenaza descriptiva; separacion entre observacion y prediccion.
-3. **Datos y atribucion:** StatsBomb, competicion 11/temporada 27, revision, 380 partidos/20 equipos, exportacion Colab y raw inmutable.
-4. **Auditoria:** calidad de IDs, cobertura, tiempos, coordenadas; 126 regresiones, seis secuencias no evaluables y un corner espacialmente invalido. Referir docs/data-audit.md y manifiestos.
-5. **Metodologia SCR-15:** inicio, cierres, frontera inclusiva, reanudaciones y posesiones auditadas, denominador evaluable; ejemplos reales y pruebas de limites.
-6. **EDA y variables:** cobradores, envios, zonas, historia previa; dependencia de corners de un mismo partido; limite espacial de eventos.
-7. **Modelos:** baseline, LR, RF, K-Means, Gemini. Variables prohibidas y prevencion de fuga; funciones de cada familia.
-8. **Evaluacion:** dos bloques temporales de validacion y holdout; AP, ROC-AUC, Brier, precision/recall/F1, calibracion, tamanos de muestra. Incluir model-evaluation.json y calibration.png. Justificar conservar baseline.
-9. **Arquitectura full-stack:** Python/Parquet/DuckDB, FastAPI/Pydantic/OpenAPI, Angular standalone, Vercel preparado; Gemini exclusivamente backend.
-10. **Producto y trazabilidad:** capturas de seleccion, dashboard, mapa, patrones, reporte y calidad; describir demo y estados de fallo.
-11. **Pruebas y reproducibilidad:** comandos uv/npm, lockfiles, fixtures solo para pruebas de reglas, E2E con datos reales, hashes de artefactos.
-12. **Limitaciones:** temporada unica, muestra pequena, ausencia de video/tracking, no inferir movimientos, semantica LLM no completamente verificable, Colab remoto y Docker pendientes.
-13. **Conclusiones:** utilidad descriptiva comprobable sin exagerar prediccion. El fracaso de promocion de LR/RF es un resultado cientifico, no se oculta.
-14. **Trabajo futuro:** validacion con otras temporadas autorizadas, revision de reglas de reanudacion, calibracion y explicabilidad, evaluacion con analistas, exportacion PDF.
-15. **Referencias y anexos:** StatsBomb, documentacion oficial, notebooks, OpenAPI, model card, decisiones y evidencia de pruebas.
+1. **Resumen y problema:** preparacion prepartido ante corners ofensivos; usuario analista/entrenador; caso historico LaLiga 2015/16.
+2. **Objetivos:** ocho partidos estrictamente anteriores, SCR-15, destinos, amenaza descriptiva y separacion entre observacion y prediccion.
+3. **Datos:** StatsBomb competicion 11/temporada 27, revision fijada, raw inmutable y contratos de hashes.
+4. **Resultados de datos:** 380 partidos, 1,295,354 eventos, 3,841 corners, 3,835 evaluables, 6 excluidos y 1,245 con tiro.
+5. **SCR-15:** inicio en corner y primer cierre entre limite de 15 segundos, cambio de `possession_team`, fin de periodo y nuevo corner; frontera inclusiva, auditoria de reanudaciones y desconocidos.
+6. **Pipeline reproducible:** etapas `01_ingestion` a `07_herramientas_agente`; notebooks como evidencia y logica extraida a modulos Python.
+7. **Variables y EDA:** ocho partidos previos, cortes exclusivos, contexto preevento, geometria y dependencia intrapartido.
+8. **K-Means:** ajuste fijo con datos predesarrollo, uso descriptivo de destinos y exclusion total de predictores.
+9. **Evaluacion temporal:** ventanas de desarrollo y confirmacion; bootstrap por partido; metricas probabilisticas y de conteo sin fuga temporal.
+10. **Decisiones `05`:** `scr15=league_reference`, `short_direct=candidate`, `delivery_zone=not_modelled`, `corner_count=candidate`.
+11. **Arquitectura:** contratos/Parquet/DuckDB, FastAPI/Pydantic/OpenAPI y Angular standalone; API solo sobre artefactos canonicos `02`-`05`.
+12. **OpenAI:** llamada solo desde FastAPI, Structured Outputs, evidencia validada y fallback determinista; `OPENAI_API_KEY`/`OPENAI_MODEL` backend-only.
+13. **Agente:** `obtener_historial`, `obtener_perfil_corners` y `consultar_evidencia`, todas read-only, tipadas y limitadas a la sesion.
+14. **Pruebas:** Python `77 passed, 1 skipped`, Angular typecheck/build y 2 E2E como validacion registrada.
+15. **Limitaciones:** temporada unica, muestra de ocho partidos, sin video/tracking/360, etiqueta corto/directo proxy, sin llamada real OpenAI, Docker o despliegue comprobados.
+16. **Conclusiones:** utilidad descriptiva trazable sin exagerar prediccion ni actualidad.
 
-## Matriz para completar con la rubrica
+## Matriz de evidencia
 
-| Criterio probable | Evidencia disponible | Pendiente |
+| Area | Evidencia | Pendiente |
 |---|---|---|
-| Ciencia de datos | analytics/, notebooks/, model-card.md | Sesion Colab documentada |
-| Evaluacion de modelos | model-evaluation.json, calibration.png | Interpretacion academica final por autor |
-| Full-stack | backend/, frontend/, contracts/openapi.json | Capturas finales elegidas |
-| Generativa | backend/gemini.py, tests/test_gemini.py | Prueba real con clave propia |
-| Despliegue | frontend/vercel.json, Dockerfile | Validacion Docker y recursos externos |
-| Comunicacion | demo.md, presentation.md | Grabar video y adaptar a rubrica |
+| Datos y SCR-15 | notebooks `01`-`03`, contratos, `docs/data-audit.md` | Interpretacion academica final |
+| Variables/modelos | notebooks `04`-`05`, contrato `05`, model card | Discusion de validez externa |
+| Reporte | notebook `06`, `analytics/tactical_report.py`, `backend/openai.py` | Llamada real OpenAI, si se autoriza |
+| Agente | notebook `07`, `analytics/agent_tools.py`, `backend/agent.py` | Evaluacion humana de respuestas |
+| Full-stack | FastAPI, OpenAPI, Angular, E2E | Capturas finales |
+| Despliegue | Dockerfile, configuracion Vercel, `docs/deployment.md` | Docker y recursos externos reales |
+| Comunicacion | `docs/demo.md`, `docs/presentation.md` | Video, rubrica y logo StatsBomb |

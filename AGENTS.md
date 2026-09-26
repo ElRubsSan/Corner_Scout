@@ -1,136 +1,96 @@
 # CornerScout - Guia de trabajo
 
-## Producto
+## Producto y estado
 
-- El nombre visible del producto es **CornerScout**.
-- Se conservan temporalmente la carpeta local `Corner_Scope` y el remoto `Corner_Scout`.
-- Es un MVP academico de analisis prepartido de corners ofensivos.
-- El caso de estudio es LaLiga 2015/16 de StatsBomb Open Data (`competition_id=11`, `season_id=27`).
-- Los resultados historicos nunca deben presentarse como informacion actual.
+- El producto visible es **CornerScout**; se conservan temporalmente la carpeta `Corner_Scope` y el remoto `Corner_Scout`.
+- Es un MVP academico prepartido sobre StatsBomb Open Data, LaLiga 2015/16 (`competition_id=11`, `season_id=27`). Nunca presentar resultados historicos como actuales.
+- Estan implementados el pipeline modular canonico `01`-`07`, FastAPI/OpenAPI, Angular standalone, evaluacion temporal y OpenAI exclusivamente desde FastAPI con fallback determinista.
+- No se ha realizado despliegue externo, prueba de Docker con motor real ni llamada real a OpenAI.
+- La interfaz final es Angular standalone. No usar Streamlit, Gradio, Tableau ni Power BI.
 
-## Fase actual
+## Pipeline canonico
 
-La fase 1 documental esta aprobada. El usuario autoriza ejecucion integral, pruebas, commits por fases y push a origin/main de fases validadas. No desplegar externamente hasta validar localmente y preparar configuraciones. Implementaciones autorizadas:
+1. `01_ingestion`: ingesta inmutable y contrato de hashes.
+2. `02_clean`: normalizacion y contexto previo al evento.
+3. `03_scr15`: secuencias y auditoria SCR-15.
+4. `04_features`: variables prepartido y K-Means descriptivo predesarrollo.
+5. `05_modeling`: evaluacion temporal y seleccion por objetivo.
+6. `06_reporte_tactico_llm`: evidencia, reporte tipado, OpenAI y fallback.
+7. `07_herramientas_agente`: tres tools de solo lectura y agente acotado.
 
-- Pipelines analiticos ejecutables.
-- FastAPI o bases de datos.
-- Angular standalone.
-- La interfaz final es exclusivamente Angular standalone; nunca Streamlit, Gradio, Tableau o Power BI.
-- Docker o despliegues.
-- Modelos supervisados o no supervisados.
-- Integracion Gemini exclusivamente desde FastAPI, Structured Outputs/Pydantic y fallback determinista.
+Los notebooks `01`-`07` son la evidencia cientifica canonica y la logica ejecutable ya esta extraida a modulos Python probados. Los originales se conservan en `notebooks/prueba/`; no modificar notebooks o contratos sin una solicitud explicita.
 
-Angular standalone, FastAPI/OpenAPI, frontend en Vercel y LLM son obligatorios. No usar interfaces alternativas. Modelos: baseline, regresion logistica, Random Forest y K-Means; modelado solo despues de validar datos. Desde 2026-09-19 se adopta un enfoque notebook-first: las copias canonicas `01` a `05` proceden de los notebooks del usuario en Colab/Drive, conservan su evidencia guardada y se validan antes de extraer logica a modulos. Los originales locales permanecen en `notebooks/prueba/`; la demo no se altera ni recibe artefactos automaticamente.
+## Datos
 
-## Prioridades del MVP
+- `data/raw` es inmutable y no se versiona. La copia de Drive esta en `/content/drive/MyDrive/Corner_Scout/data/raw`.
+- Los nombres raw son `competitions.csv`, `matches_laliga_2015_16.csv`, `metadata_ingesta.json`, `registro_ingesta.csv` y `events/<match_id>.jsonl.gz`.
+- Raw, interim, processed, Parquet, JSONL comprimido y modelos entrenados permanecen fuera de Git.
+- Cada etapa publica un contrato con version, run, hashes, conteos y linaje. FastAPI rechaza contratos, hashes o linajes canonicos invalidos.
+- Resultados canonicos: 380 partidos, 1,295,354 eventos, 3,841 corners, 3,835 evaluables, 6 excluidos y 1,245 con tiro.
+- No sustituir datos ausentes por datos sinteticos salvo fixtures de prueba claramente identificados.
 
-1. Restaurar y auditar los datos generados en Colab.
-2. Validar la seleccion de los ocho partidos inmediatamente anteriores del rival.
-3. Implementar y auditar SCR-15.
-4. Construir el reporte prepartido descriptivo y trazable.
-5. Incorporar patrones descriptivos.
-6. Evaluar modelos supervisados solo despues de validar SCR-15.
+## SCR-15
 
-## Reglas de datos
+- Inicia en un evento `Pass` con `pass_type=Corner`.
+- Termina en el primero de cuatro cierres: limite de 15 segundos, cambio de `possession_team`, fin de periodo o nuevo corner.
+- Un tiro exactamente a los 15 segundos se incluye si no ocurrio antes otro cierre.
+- Un cambio de ID de `possession` con el mismo equipo no cierra; se audita.
+- Saques de banda, meta, libres y otras reanudaciones distintas de un nuevo corner se auditan, pero no cierran automaticamente.
+- Nunca atribuir un tiro de una posesion posterior. Las seis secuencias con reloj ambiguo son desconocidas y se excluyen del denominador evaluable.
+- La especificacion completa esta en `docs/scr15-methodology.md`.
 
-- La capa `data/raw` es inmutable.
-- Los archivos raw, interim, processed y los artefactos pesados no se versionan en Git.
-- Google Drive conserva la copia canonica actual en `/content/drive/MyDrive/Corner_Scout/data/raw`.
-- Los nombres raw actuales son `competitions.csv`, `matches_laliga_2015_16.csv`, `metadata_ingesta.json`, `registro_ingesta.csv` y `events/<match_id>.jsonl.gz`; no se renombran sin una migracion explicita.
-- El repositorio solo versiona codigo, notebooks sanitizados, documentacion, contratos y manifiestos sin datos sensibles.
-- Nunca incluir credenciales, tokens, URLs privadas de Drive, rutas personales ni archivos `.env`.
-- Cada transformacion futura debe conservar proveedor, competicion, temporada, `match_id`, `event_id` cuando aplique, fecha de procesamiento, version del pipeline y trazabilidad al archivo fuente.
-- No sustituir datos ausentes con datos sinteticos sin una etiqueta visible de demo.
+## Modelado
 
-## Regla provisional SCR-15
+- Las ventanas usan los ocho partidos estrictamente anteriores y cortes exclusivos.
+- Decisiones `05`: `scr15=league_reference`, `short_direct=candidate`, `delivery_zone=not_modelled`, `corner_count=candidate`.
+- K-Means esta fijado con datos predesarrollo, solo describe destinos y nunca entra como predictor.
+- No presentar clusters como jugadas ensayadas ni modelos candidatos como garantia causal.
+- FastAPI sirve decisiones y artefactos canonicos; no entrena por solicitud.
 
-- La secuencia comienza en un evento `Pass` cuyo `pass_type` es `Corner`.
-- La secuencia termina por el primer limite aplicable: 15 segundos, cuando `possession_team` deja de ser el equipo ejecutor o al finalizar el periodo.
-- Un cambio de `possession` con el mismo `possession_team` se registra para auditoria, pero no cierra automaticamente la secuencia.
-- Un tiro exactamente a los 15 segundos se considera dentro de la ventana, sujeto a que no haya ocurrido antes otro criterio de cierre.
-- No cerrar automaticamente por saque de banda, saque de meta, tiro libre u otra reanudacion en esta fase.
-- Esas reanudaciones deben registrarse para auditoria antes de decidir si forman parte de la regla definitiva.
-- Nunca atribuir un tiro de una posesion posterior al corner.
-- En la regla actual, posesion posterior significa que el equipo en posesion cambio; un nuevo ID con el mismo equipo es solo auditoria. Seis secuencias temporalmente ambiguas se excluyen del denominador evaluable y se muestran como desconocidas.
+## Backend y OpenAI
 
-La especificacion completa se mantiene en `docs/scr15-methodology.md`.
+- FastAPI consume contratos y artefactos verificados de `data/interim/02_clean`, `data/interim/03_scr15`, `data/processed/04_features` y `data/processed/05_modeling`.
+- DuckDB solo ejecuta consultas controladas y parametrizadas. Un LLM nunca genera SQL libre.
+- OpenAI se invoca solo desde FastAPI mediante Structured Outputs/Pydantic. `OPENAI_API_KEY` y `OPENAI_MODEL` son backend-only.
+- Falta de clave, proveedor no disponible o salida invalida activa fallback determinista visible. No afirmar una llamada real hasta ejecutarla y registrarla.
+- El agente solo registra `obtener_historial`, `obtener_perfil_corners` y `consultar_evidencia`; son tools tipadas de solo lectura y bloqueadas a la sesion.
+- Una respuesta final invalida puede repararse una sola vez, sin nuevas tools ni cambios de evidencia; un segundo fallo activa el fallback determinista.
+- Los calculos, ventanas, clusters, probabilidades y evidencia se producen en Python, nunca en el LLM.
 
-## Arquitectura y limites
+## Frontend y despliegue
 
-- Los notebooks son exploratorios; la futura logica productiva debe vivir en modulos Python probados.
-- El procesamiento pesado sera offline sobre raw e interim.
-- El backend futuro consultara artefactos procesados; no descargara StatsBomb ni entrenara modelos por solicitud.
-- DuckDB solo ejecutara consultas controladas y parametrizadas. Un LLM nunca generara SQL libre.
-- Angular consumira un contrato OpenAPI generado por FastAPI cuando ambas capas existan.
-- Los calculos, selecciones, clusters y probabilidades se producen en Python, nunca en un LLM.
+- Angular consume el contrato OpenAPI generado por FastAPI. Las claves y prompts nunca llegan al navegador.
+- Vercel esta configurado, pero no desplegado.
+- El backend Docker debe montar, conservando esas rutas bajo `/data`: `interim/02_clean`, `interim/03_scr15`, `processed/04_features`, `processed/05_modeling` y `processed/runs` con escritura solo para `runs`.
+- No montar ni servir los artefactos demo antiguos. No afirmar que Docker esta probado.
 
-## Convenciones futuras
-
-- Python y TypeScript deben tener tipado explicito en limites publicos.
-- Los contratos externos se validan antes de procesarse.
-- Las fechas se expresan en ISO 8601.
-- Los identificadores de StatsBomb se conservan sin reasignarlos.
-- Las tablas se nombran en `snake_case`; los componentes Angular seguiran la convencion oficial vigente cuando se cree el frontend.
-- Toda regla no obvia debe estar documentada y cubierta por una prueba.
-- No fijar versiones de herramientas sin consultar primero su documentacion oficial vigente.
-
-## Git y seguridad
-
-- No hacer commits, pushes, despliegues ni cambios irreversibles sin autorizacion explicita.
-- No borrar ni sobrescribir datos raw.
-- No versionar `.env`, credenciales, bases locales, Parquet, JSONL comprimido ni modelos entrenados.
-- Mantener los cambios de cada fase pequenos y verificables.
-
-## Comandos disponibles
-
-### Fase 2 validada localmente
-
-Usar uv de preferencia: `uv sync --extra dev`, `uv run cornerscout ingest`, `uv run cornerscout build`, `uv run --extra dev pytest`, `uv run --extra dev python scripts/notebooks.py --execute --through 3`.
-
-Cobertura real de la demo: 380 partidos, 20 equipos, 1,295,354 eventos, 3,841 corners. Seis secuencias no evaluables por reloj regresivo y un corner excluido de visualizacion espacial. Ver docs/data-audit.md. Seis pruebas de limites SCR-15 pasan. Las ejecuciones locales de los notebooks simplificados son evidencia historica anterior a la sustitucion notebook-first; no validan los canonicos actuales. No entrenar sin quality.passed=true.
-
-### Fase 3
-
-`uv sync --extra dev --extra ml`; `uv run --extra ml cornerscout train`. Entrenados baseline, LR, RF y K-Means mensual. Baseline seleccionado: LR/RF no mejoran consistentemente validacion. Metricas reales: docs/model-evaluation.json, docs/model-card.md. Ocho partidos previos estrictos; no promocionar un modelo con entrenamiento/evaluacion posterior al corte.
-
-Validacion historica de fase 3: ocho pruebas pasan para los modulos de la demo. Los cinco notebooks simplificados que se ejecutaron con nbclient ya no son los canonicos; los actuales requieren una ejecucion limpia en Colab. Artefactos y Parquet permanecen ignorados por Git.
-
-Verificaciones Git no destructivas:
-
-### Fase 4 validada
-
-FastAPI implementado. `uv run --extra api uvicorn backend.main:app --host 127.0.0.1 --port 8000`. OpenAPI: `uv run --extra api python scripts/export_openapi.py`. API usa nombre exacto del rival como clave de seleccion y match_id del proveedor; no inventa IDs de equipo. Corte por fecha exclusivo (partido objetivo usa su fecha). Diez pruebas locales pasan, incluyendo flujo real de ocho partidos, errores y reproducibilidad. DuckDB hace SELECT de Parquet con conexiones por consulta. Runs persistidos en processed/runs. Reporte determinista y endpoint de plan previo. Advertencias de dependencias TestClient registradas; Colab remoto pendiente.
-
-### Fase 5 validada con mocks
-
-Gemini SDK oficial google-genai 2.23.0, Structured Outputs/Pydantic, timeout HTTP y fallback por clave ausente, cuota, fallo o salida invalida. Diez pruebas de API/Gemini pasan. Sin llamada real al proveedor: requiere GEMINI_API_KEY en backend; ver docs/gemini.md. `uv sync --all-extras` y `uv run --all-extras pytest`. Validar IDs/cifras no garantiza toda la semantica del texto; limitacion documentada.
-
-### Fase 6 validada localmente
-
-Angular standalone 22.1.6 y CLI/build 22.1.8, Node 24.19.0, TS 6.0.3. `npm ci` completo corrigio @angular/common y common/http sin external. `npm run build` pasa (247 kB iniciales); `npm run typecheck` pasa; `npm run e2e` pasa 2 recorridos Chromium con FastAPI y datos reales (dashboard, mapa, patrones, reporte fallback, calidad, corte por fecha y partido). Ejecutar npm dentro de frontend. Playwright inicia y detiene ambos servidores; no usa claves reales.
-
-OpenAPI generado en contracts/openapi.json y frontend/src/app/core/api.generated.ts. Codegen aislado en tools/codegen por peer TS5. Vercel configurado, backend Docker preparado, despliegues externos no realizados. Docker requiere validacion con motor disponible. Ver docs/deployment.md.
-
-### Fase 7 — cierre local
-
-Documentados README de instalacion uv/npm, guia Colab, demo de cinco minutos, guion de video, estructura academica y fuentes oficiales. Rubrica concreta no recibida: la matriz academica es provisional. Build produccion Angular, typecheck y dos E2E pasan; suite Python completa: 18 pruebas pasan, dos warnings de dependencias TestClient. La ejecucion local anterior corresponde a notebooks simplificados sustituidos; no afirmar que los canonicos actuales se ejecutaron limpiamente en Colab.
-
-Pendientes manuales: validar en Colab, instalar Docker y probar contenedor, configurar clave Gemini en backend y hacer prueba real, elegir backend HTTPS/volumen y configurar apiBaseUrl antes de Vercel; incorporar logo oficial StatsBomb para publicacion. No se desplego externamente. Estado detallado y siguiente accion en RESUMEN_DE_CONTINUIDAD.md.
+## Comandos
 
 ```powershell
-git status --short
-git diff --check
-git ls-files
+uv sync --locked --all-extras
+uv run cornerscout ingest
+uv run cornerscout clean
+uv run cornerscout scr15
+uv run cornerscout features
+uv run cornerscout build
+uv run --extra ml cornerscout train
+uv run --extra api --extra llm uvicorn backend.main:app --host 127.0.0.1 --port 8000
+uv run --all-extras pytest
+uv run --all-extras python scripts/notebooks.py --through 7
+npm --prefix frontend run typecheck
+npm --prefix frontend run build
+npm --prefix frontend run e2e
 ```
 
-Los comandos de instalacion, pruebas, procesamiento y ejecucion se agregaran cuando existan sus respectivas capas.
+Verificacion registrada: Python `77 passed, 1 skipped`; Angular typecheck/build; 2 E2E. Solo repetir estas afirmaciones como historicas hasta ejecutar una nueva validacion.
+
+## Seguridad y Git
+
+- Nunca versionar `.env`, claves, tokens, URLs privadas, rutas personales o credenciales.
+- No borrar ni sobrescribir raw ni revertir cambios ajenos.
+- No hacer commits, push, despliegues ni cambios irreversibles sin autorizacion explicita.
+- Mantener cambios pequenos y verificables; usar tipado explicito en limites publicos e ISO 8601 para fechas.
 
 ## Cierre de fase
 
-Al terminar cada fase se debe informar:
-
-- Archivos modificados.
-- Decisiones tomadas.
-- Validaciones realizadas.
-- Riesgos y datos pendientes.
-- Siguiente fase recomendada.
+Informar archivos modificados, decisiones, validaciones, riesgos/datos pendientes y siguiente fase recomendada.
