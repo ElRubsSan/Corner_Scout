@@ -12,6 +12,7 @@ from fastapi import HTTPException
 from analytics.io import data_dir, write_json
 from analytics.tactical_report import ModelEvidence, build_evidence
 from backend.repository import ArtifactError, repository
+from backend.reporting import destination_label
 from backend.schemas import *
 
 LIMITATIONS = [
@@ -188,7 +189,8 @@ def summary(run: Run) -> Summary:
                    xg_per_corner=sum(xg_values) / len(valid) if valid and len(xg_values) == len(valid) else None,
                    probability=probability, probability_method="ganador_canonico_05_con_referencia_historica",
                    players=groups(corners, "player"), sides=groups(corners, "side"),
-                   deliveries=groups(corners, "delivery"), zones=groups(corners, "zone"))
+                   deliveries=groups(corners, "delivery"),
+                   zones=groups([corner for corner in corners if corner.zone != "no_disponible"], "zone"))
 
 
 def patterns(run: Run) -> list[Pattern]:
@@ -238,7 +240,9 @@ def report_input(run: Run) -> ReportInput:
     evidence = [Evidence(id="scr15", description="SCR-15 observado", value=f"{result.scr15:.3f}" if result.scr15 is not None else "No evaluable"),
                 Evidence(id="corners", description="Corners totales", value=str(result.corners)),
                 Evidence(id="xg", description="xG por corner evaluable", value=f"{result.xg_per_corner:.4f}" if result.xg_per_corner is not None else "No evaluable")]
-    evidence.extend(Evidence(id=f"cluster-{item.cluster}", description=f"Patron {item.cluster}, zona {item.dominant_zone}", value=str(item.count), event_ids=item.example_event_ids) for item in pattern_rows)
+    evidence.extend(Evidence(id=f"cluster-{item.cluster}",
+                             description=f"Envíos con destino {destination_label(item.dominant_zone)}; cobrador más frecuente: {item.main_taker}",
+                             value=str(item.count), event_ids=item.example_event_ids) for item in pattern_rows)
     return ReportInput(rival=run.rival, cutoff_date=run.cutoff_date, matches=run.matches, summary=result,
                        patterns=pattern_rows, evidence=evidence, limitations=LIMITATIONS)
 

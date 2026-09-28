@@ -108,6 +108,30 @@ def test_mock_provider_uses_pydantic_tool_arguments(monkeypatch):
     assert result.traces[0].arguments_validated is True
 
 
+def test_openai_zone_answer_is_readable_and_grounded(monkeypatch):
+    zone = Indicator(evidence_id="E_ZONE",
+                     nombre="proporcion_zona_directa_dominante:franja_central",
+                     numerador=22, denominador=46, valor=22 / 46,
+                     referencia_liga_previa=0.37467411545623835, cobertura=46 / 52)
+    evidence = _evidence().model_copy(update={"indicadores": (*_evidence().indicadores, zone)})
+    monkeypatch.setattr("backend.service.agent_evidence", lambda _: evidence)
+    _fake_openai(monkeypatch, [
+        _tool_response(),
+        _answer_response("resp-zone", AgentDraft(
+            status="answered", qualitative_answer="La zona central del área aparece con mayor frecuencia.",
+            evidence_ids=("E_ZONE",), tool_calls=1,
+        )),
+    ])
+
+    result = answer(_run(), "¿Qué zona de envío aparece con mayor frecuencia?")
+
+    assert result.mode == "openai"
+    assert result.status == "answered"
+    assert result.evidence_ids == ["E_ZONE"]
+    assert "22 de 46 envíos directos (47,8 %)" in result.answer
+    assert "referencia_liga_previa=" not in result.answer
+
+
 def test_missing_key_uses_deterministic_fallback(monkeypatch):
     monkeypatch.setattr("backend.service.agent_evidence", lambda _: _evidence())
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
@@ -168,7 +192,7 @@ def test_openai_provider_uses_required_then_auto_and_previous_response(monkeypat
     result = openai_provider("Analiza los corners", create_session(_evidence()), state, Budget())
 
     assert result.status == "answered"
-    assert "valor=5.0" in result.answer
+    assert "40 córners en 8 partidos (5,0 por partido)" in result.answer
     assert len(requests) == 2
     assert requests[0]["tool_choice"] == "required"
     assert requests[0]["previous_response_id"] is None
@@ -218,7 +242,7 @@ def test_draft_numbers_get_exactly_one_repair_without_more_tools(monkeypatch):
     assert "tool_calls debe ser exactamente 1" in correction
     assert 'evidence_ids permitidos: ["E_CORNERS", "L_SAMPLE"]' in correction
     assert "no puede contener ningun digito" in correction
-    assert "valor=5.0" in result.answer
+    assert "40 córners en 8 partidos (5,0 por partido)" in result.answer
 
 
 def test_second_invalid_answer_uses_deterministic_fallback(monkeypatch, caplog):
@@ -344,8 +368,8 @@ def test_multi_tool_query_renders_history_and_profile(monkeypatch):
     assert [request["tool_choice"] for request in requests] == ["required", "auto", "auto"]
     assert requests[1]["previous_response_id"] == "resp-history"
     assert requests[2]["previous_response_id"] == "resp-profile"
-    assert "history_match_ids=[1, 2, 3, 4, 5, 6, 7, 8]" in result.answer
-    assert "corners_por_partido [E_CORNERS]" in result.answer
+    assert "8 partidos anteriores al corte 2016-03-01" in result.answer
+    assert "40 córners en 8 partidos (5,0 por partido)" in result.answer
     assert result.evidence_ids == ("L_SAMPLE", "E_CORNERS")
     assert result.tool_calls == 2
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 import re
 import time
 from datetime import date
@@ -298,26 +299,63 @@ def validate_agent_draft(
     return parsed
 
 
-def _literal(value: Any) -> str:
-    if isinstance(value, str):
-        return value
-    return json.dumps(value, ensure_ascii=False)
+_ZONE_LABELS = {
+    "franja_cercana": "zona cercana al punto de cobro",
+    "franja_central": "zona central del área",
+    "franja_lejana": "zona alejada del punto de cobro",
+    "fuera_area": "fuera del área",
+}
+
+
+def _count(value: int | float) -> str:
+    return str(int(value)) if float(value).is_integer() else f"{value:g}"
+
+
+def _percentage(numerator: int | float, denominator: int | float) -> str:
+    return f"{100 * numerator / denominator:.1f}".replace(".", ",") + " %"
 
 
 def _render_evidence_item(item: dict[str, Any]) -> str:
-    evidence_id = item["evidence_id"]
-    if "nombre" in item:
-        fields = ("numerador", "denominador", "valor", "referencia_liga_previa", "cobertura")
-        values = "; ".join(f"{field}={_literal(item.get(field))}" for field in fields)
-        return f"{item['nombre']} [{evidence_id}]: {values}."
-    if "texto" in item:
-        suffix_fields = ("objetivo", "modelo_seleccionado", "supero_referencia")
-        suffix = "; ".join(f"{field}={_literal(item[field])}" for field in suffix_fields if field in item)
-        return f"{item['texto']} [{evidence_id}]" + (f": {suffix}." if suffix else "")
-    fields = "; ".join(
-        f"{key}={_literal(value)}" for key, value in item.items() if key != "evidence_id"
-    )
-    return f"[{evidence_id}]: {fields}."
+    if "nombre" not in item:
+        return str(item.get("texto") or "Evidencia consultada.")
+
+    name = str(item["nombre"])
+    numerator, denominator = item.get("numerador"), item.get("denominador")
+    if (not isinstance(numerator, (int, float)) or isinstance(numerator, bool)
+            or not isinstance(denominator, (int, float)) or isinstance(denominator, bool)
+            or not math.isfinite(numerator) or not math.isfinite(denominator) or denominator <= 0):
+        return "No hay datos suficientes para cuantificar este indicador."
+
+    count, total = _count(numerator), _count(denominator)
+    if name.startswith("proporcion_zona_directa_dominante:"):
+        zone = name.partition(":")[2]
+        destination = _ZONE_LABELS.get(zone, zone.replace("_", " "))
+        detail = f"Destino más frecuente: {destination}, {count} de {total} envíos directos ({_percentage(numerator, denominator)})."
+        reference = item.get("referencia_liga_previa")
+        if isinstance(reference, (int, float)) and not isinstance(reference, bool) and math.isfinite(reference) and 0 <= reference <= 1:
+            detail += f" Proporción liguera de envíos directos hacia esta zona: {_percentage(reference, 1)}."
+        coverage = item.get("cobertura")
+        if isinstance(coverage, (int, float)) and not isinstance(coverage, bool) and math.isfinite(coverage) and 0 <= coverage <= 1:
+            detail += f" Cobertura: {_percentage(coverage, 1)} de los córners de la ventana."
+        return detail
+    if name == "corners_por_partido":
+        average = f"{numerator / denominator:.1f}".replace(".", ",")
+        return f"Se registraron {count} córners en {total} partidos ({average} por partido)."
+    if name == "tasa_historica_scr15":
+        return f"Hubo tiro en la secuencia SCR-15 de {count} de {total} córners evaluables ({_percentage(numerator, denominator)})."
+    if name == "proporcion_proxy_corto":
+        return f"Se ejecutaron en corto {count} de {total} córners ({_percentage(numerator, denominator)})."
+    if name == "proporcion_pase_alto":
+        return f"Se registraron {count} envíos altos de {total} córners ({_percentage(numerator, denominator)})."
+    if name == "xg_descriptivo_por_corner_evaluable_completo":
+        average = f"{numerator / denominator:.4f}".replace(".", ",")
+        return f"El xG descriptivo fue {average} por córner con dato completo ({total} córners)."
+    return f"Indicador consultado: {count} de {total}."
+
+
+def _render_history(result: dict[str, Any]) -> str:
+    return (f"Se consultaron {result['n_partidos']} partidos anteriores "
+            f"al corte {result['fecha_corte']}.")
 
 
 def render_grounded_answer(draft: AgentDraft, tool_results: list[dict[str, Any]], question: str) -> str:
@@ -334,13 +372,7 @@ def render_grounded_answer(draft: AgentDraft, tool_results: list[dict[str, Any]]
     history_rendered = False
     for result in tool_results:
         if "history_match_ids" in result and "L_SAMPLE" in selected and not history_rendered:
-            sections.append(
-                "Historial [L_SAMPLE]: "
-                f"rival={_literal(result.get('rival'))}; "
-                f"fecha_corte={_literal(result.get('fecha_corte'))}; "
-                f"history_match_ids={_literal(result['history_match_ids'])}; "
-                f"n_partidos={_literal(result.get('n_partidos'))}."
-            )
+            sections.append(_render_history(result))
             history_rendered = True
         for key in ("evidencia", "indicadores", "limitaciones", "modelos_promovidos"):
             for item in result.get(key, []):
@@ -350,12 +382,20 @@ def render_grounded_answer(draft: AgentDraft, tool_results: list[dict[str, Any]]
                     rendered_items.add(evidence_id)
 
     rendered = " ".join(section for section in sections if section)
-    source = json.dumps(tool_results, ensure_ascii=False)
-    source_tokens = set(re.findall(r"(?<![A-Za-z0-9_])[-+]?\d+(?:[.,]\d+)?", source))
-    rendered_tokens = set(re.findall(r"(?<![A-Za-z0-9_])[-+]?\d+(?:[.,]\d+)?", rendered))
-    if not rendered_tokens <= source_tokens:
+    if not set(numeric_tokens(rendered)) <= _grounded_numbers(tool_results):
         raise ValueError("grounded_renderer_introduced_number")
     return rendered
+
+
+def _grounded_numbers(tool_results: list[dict[str, Any]]) -> set[float]:
+    """Allow only source numbers and values formatted by the trusted Python renderer."""
+    allowed = set(numeric_tokens(json.dumps(tool_results, ensure_ascii=False)))
+    for result in tool_results:
+        for key in ("evidencia", "indicadores", "limitaciones", "modelos_promovidos"):
+            for item in result.get(key, []):
+                if isinstance(item, dict):
+                    allowed.update(numeric_tokens(_render_evidence_item(item)))
+    return allowed
 
 
 def validate_agent_answer(
@@ -380,23 +420,11 @@ def validate_agent_answer(
             raise ValueError("answered_requires_tool_and_evidence")
         if not set(parsed.evidence_ids) <= result_evidence_ids(tool_results):
             raise ValueError("evidence_not_returned_by_tool")
-        allowed = {number for result in tool_results for number in _all_numbers(result)}
+        allowed = _grounded_numbers(tool_results)
         unsupported = set(numeric_tokens(parsed.answer)) - allowed
         if unsupported:
             raise ValueError("unsupported_numbers:" + ",".join(format(value, "g") for value in sorted(unsupported)))
     return parsed
-
-
-def _all_numbers(value: Any) -> set[float]:
-    if isinstance(value, bool) or value is None:
-        return set()
-    if isinstance(value, (int, float)):
-        return {float(value)}
-    if isinstance(value, dict):
-        return set().union(*(_all_numbers(item) for item in value.values()), set())
-    if isinstance(value, (list, tuple)):
-        return set().union(*(_all_numbers(item) for item in value), set())
-    return set()
 
 
 OUT_OF_SCOPE = (
@@ -420,12 +448,7 @@ def contains_scope_term(question: str, terms: tuple[str, ...] = OUT_OF_SCOPE) ->
 
 
 def _format_evidence(item: EvidenceItem) -> str:
-    if isinstance(item, Indicator):
-        return (
-            f"{item.nombre}: {item.numerador}/{item.denominador}, valor={item.valor}, "
-            f"referencia={item.referencia_liga_previa}, cobertura={item.cobertura} [{item.evidence_id}]"
-        )
-    return f"{item.texto} [{item.evidence_id}]"
+    return _render_evidence_item(item.model_dump(mode="json"))
 
 
 def deterministic_fallback(
@@ -470,7 +493,7 @@ def deterministic_fallback(
             results.append(result)
             answer = AgentAnswer(
                 status="answered",
-                answer="history_match_ids=" + json.dumps(result["history_match_ids"]),
+                answer=_render_history(result),
                 evidence_ids=("L_SAMPLE",),
                 tool_calls=state.calls_used,
             )
@@ -484,7 +507,9 @@ def deterministic_fallback(
             )
             results.append(result)
             known = evidence_index(session.evidence)
-            if any(term in lowered for term in ("alto", "alta", "altura", "aereo", "aéreo")):
+            if any(term in lowered for term in ("zona", "destino", "área", "area")):
+                candidates = ("E_ZONE",)
+            elif any(term in lowered for term in ("alto", "alta", "altura", "aereo", "aéreo")):
                 candidates = ("E_HIGH", "E_SHORT")
             elif any(term in lowered for term in ("corto", "corta", "short")):
                 candidates = ("E_SHORT", "E_HIGH")

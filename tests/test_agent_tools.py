@@ -199,7 +199,7 @@ def test_qualitative_draft_accepts_no_numbers_and_rejects_generated_numbers():
         validate_agent_draft(invalid, state, results, require_tool=True)
 
 
-def test_grounded_renderer_copies_exact_indicator_without_percentage():
+def test_grounded_renderer_formats_indicator_without_exposing_internal_fields():
     draft = AgentDraft(
         status="answered",
         qualitative_answer="La evidencia sugiere una tendencia que debe interpretarse con cautela.",
@@ -221,14 +221,13 @@ def test_grounded_renderer_copies_exact_indicator_without_percentage():
 
     rendered = render_grounded_answer(draft, results, "Describe SCR")
 
-    assert "numerador=1" in rendered
-    assert "denominador=3" in rendered
-    assert "valor=0.333" in rendered
-    assert "referencia_liga_previa=0.32" in rendered
-    assert "33.3%" not in rendered
+    assert "1 de 3 córners evaluables (33,3 %)" in rendered
+    assert "numerador=" not in rendered
+    assert "valor=" not in rendered
+    assert "0.333" not in rendered
 
 
-def test_grounded_renderer_history_ids_come_from_tool_result():
+def test_grounded_renderer_history_is_readable_without_raw_ids():
     match_ids = [265839, 267273, 266815, 266254, 266160, 267576, 265894, 266149]
     draft = AgentDraft(
         status="answered",
@@ -246,8 +245,61 @@ def test_grounded_renderer_history_ids_come_from_tool_result():
 
     rendered = render_grounded_answer(draft, results, "Muestra el historial")
 
-    assert f"history_match_ids={match_ids}" in rendered
-    assert "fecha_corte=2016-03-01" in rendered
+    assert "8 partidos anteriores al corte 2016-03-01" in rendered
+    assert "history_match_ids=" not in rendered
+    assert str(match_ids[0]) not in rendered
+
+
+def test_zone_indicator_renders_counts_percent_reference_and_coverage():
+    draft = AgentDraft(status="answered", qualitative_answer="La zona central es la más frecuente.",
+                       evidence_ids=("E_ZONE",), tool_calls=1)
+    item = Indicator(evidence_id="E_ZONE",
+                     nombre="proporcion_zona_directa_dominante:franja_central",
+                     numerador=22, denominador=46, valor=22 / 46,
+                     referencia_liga_previa=0.37467411545623835,
+                     cobertura=46 / 52)
+    results = [{"indicadores": [item.model_dump(mode="json")], "evidence_ids": ["E_ZONE"]}]
+
+    rendered = render_grounded_answer(draft, results, "¿Qué zona predomina?")
+
+    assert "zona central del área, 22 de 46 envíos directos (47,8 %)" in rendered
+    assert "Proporción liguera de envíos directos hacia esta zona: 37,5 %" in rendered
+    assert "Cobertura: 88,5 % de los córners de la ventana" in rendered
+    assert "0.478260869" not in rendered
+    assert "E_ZONE" not in rendered
+    assert "numerador=" not in rendered
+    answer = AgentAnswer(status="answered", answer=rendered,
+                         evidence_ids=("E_ZONE",), tool_calls=1)
+    validate_agent_answer(answer, create_session(EvidenceContract(
+        rival="A", fecha_corte="2016-03-01", history_match_ids=(1,),
+        indicadores=(item,), limitaciones=(EvidenceLimitation(evidence_id="L_SAMPLE", texto="Histórico."),)
+    )), AgentState(calls_used=1), results, require_tool=True)
+
+
+def test_zone_without_denominator_does_not_invent_percentages():
+    draft = AgentDraft(status="answered", qualitative_answer="No hay suficiente información.",
+                       evidence_ids=("E_ZONE",), tool_calls=1)
+    results = [{"indicadores": [{"evidence_id": "E_ZONE", "nombre": "proporcion_zona_directa_dominante:franja_central",
+                                 "numerador": None, "denominador": None, "valor": None,
+                                 "referencia_liga_previa": None, "cobertura": 0.0}], "evidence_ids": ["E_ZONE"]}]
+    rendered = render_grounded_answer(draft, results, "¿Qué zona predomina?")
+    assert "No hay datos suficientes para cuantificar este indicador." in rendered
+    assert "%" not in rendered
+
+
+def test_fallback_zone_question_selects_zone_not_short_or_high(session):
+    zone = Indicator(evidence_id="E_ZONE", nombre="proporcion_zona_directa_dominante:franja_central",
+                     numerador=22, denominador=46, valor=22 / 46,
+                     referencia_liga_previa=0.37, cobertura=46 / 52)
+    evidence = session.evidence.model_copy(update={"indicadores": (*session.evidence.indicadores, zone)})
+    answer, _ = deterministic_fallback("¿Qué zona de envío aparece con mayor frecuencia?", create_session(evidence))
+    assert answer.status == "answered"
+    assert answer.evidence_ids == ("E_ZONE",)
+    assert "22 de 46 envíos directos (47,8 %)" in answer.answer
+
+    without_zone, _ = deterministic_fallback("¿Qué zona de envío aparece con mayor frecuencia?", session)
+    assert without_zone.status == "error"
+    assert without_zone.evidence_ids == ()
 
 
 def test_unregistered_tool_is_blocked_and_traced(session):

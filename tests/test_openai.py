@@ -2,8 +2,8 @@ import json
 
 import pytest
 
-from backend.openai import generate
-from backend.schemas import Evidence, Match, ReportInput, Summary
+from backend.openai import generate, validate_evidence
+from backend.schemas import Claim, Evidence, Match, Narrative, ReportInput, Summary
 
 
 @pytest.fixture()
@@ -38,3 +38,21 @@ def test_provider_failure_is_sanitized(payload):
     def failing(_):
         raise RuntimeError("secret provider detail")
     assert generate(payload, failing).fallback_reason == "provider_unavailable"
+
+
+def test_pattern_numbers_are_internal_even_when_cited_evidence_contains_the_number(payload):
+    source = payload.model_copy(update={"evidence": [Evidence(
+        id="cluster-0", description="Envíos hacia la zona central del área; ref. 0", value="12"
+    )]})
+    narrative = Narrative(observations=[Claim(
+        text="El patrón 0 registró 12 envíos.", evidence_ids=["cluster-0"]
+    )], recommendations=[])
+
+    with pytest.raises(ValueError, match="internal_pattern_number_in_narrative"):
+        validate_evidence(narrative, source)
+    assert generate(source, lambda _: narrative).fallback_reason == "invalid_output"
+
+    descriptive = Narrative(observations=[Claim(
+        text="Los envíos hacia la zona central del área fueron 12.", evidence_ids=["cluster-0"]
+    )], recommendations=[])
+    assert generate(source, lambda _: descriptive).mode == "openai"
