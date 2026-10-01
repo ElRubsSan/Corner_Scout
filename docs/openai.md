@@ -8,6 +8,42 @@ Compose carga `.env` automáticamente. El navegador solo llama a nuestra API.
 cifras y usa fallback ante clave ausente, salida inválida o proveedor caído.
 El modelo configurado debe aceptar Responses API y salida estructurada.
 
+## Comportamiento del reporte
+
+```mermaid
+sequenceDiagram
+    actor U as Usuario
+    participant F as Angular
+    participant B as FastAPI
+    participant P as Evidencia Python
+    participant O as OpenAI
+    U->>F: Solicita reporte
+    F->>B: POST /report + sesión firmada
+    B->>P: Calcula indicadores y citas permitidas
+    P-->>B: ReportInput tipado
+    B->>O: Structured Output
+    O-->>B: Reporte estructurado
+    B->>B: Verifica cifras, evidencia y lenguaje
+    B-->>F: Reporte OpenAI o fallback identificado
+```
+
+OpenAI redacta; no calcula ventanas, porcentajes, clusters o probabilidades. El
+reporte solo acepta evidencias incluidas en `ReportInput`. Números no respaldados,
+citas desconocidas o afirmaciones prohibidas invalidan la salida y activan el
+respaldo determinista.
+
+## Comportamiento del agente
+
+| Herramienta | Alcance |
+|---|---|
+| `obtener_historial` | IDs y cantidad de los ocho partidos estrictamente anteriores. |
+| `obtener_perfil_corners` | Indicadores y referencias calculados por Python. |
+| `consultar_evidencia` | Detalle de uno a doce IDs existentes. |
+
+El modelo propone llamadas; FastAPI valida nombre, argumentos, presupuesto y
+coincidencia con rival y corte antes de ejecutar. Las tools son de solo lectura
+y no tienen acceso a web, SQL libre, archivos arbitrarios ni otras sesiones.
+
 ## Configurar y comprobar
 
 Desde la raíz, instala `uv sync --locked --all-extras`. Crea `.env` con:
@@ -45,11 +81,10 @@ El reporte limita la salida a 2.500 tokens y usa timeout de 20 segundos por
 solicitud al proveedor. El SDK admite un reintento: ese timeout no equivale a
 un límite absoluto de duración de todo el endpoint.
 
-Las llamadas reales locales y su consumo están registrados en
-`docs/deployment.md`. La entrega Colab con Terra también registró aprobación,
-pero es un entorno distinto: no prueba el despliegue público. Los costes
-facturados se consultan en el panel del proveedor. Un fallback válido no se
-cuenta como aprobación de OpenAI. Repetir llamadas reales puede generar cargos.
+La aplicación pública se ha comprobado con OpenAI. Los costes facturados se
+consultan en el panel del proveedor; repetir llamadas reales puede generar
+cargos. El modo visible en cada respuesta permite distinguir proveedor y
+fallback sin inferirlo a partir del texto.
 
 ## Pruebas reproducibles sin cargos
 
@@ -68,5 +103,5 @@ uv run --extra api python scripts/smoke_deployment.py --base-url http://127.0.0.
 ```
 
 `--assistant-mode openai` hace llamadas reales y exige ese modo. No se ejecuta
-automáticamente como parte de la validación de limpieza. El modo por defecto
+automáticamente como parte de la validación ordinaria. El modo por defecto
 `skip` del smoke no llama al reporte ni al agente.

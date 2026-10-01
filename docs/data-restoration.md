@@ -39,8 +39,8 @@ data/raw/
     <match_id>.jsonl.gz          380 archivos
 ```
 
-La ubicación académica habitual es `/content/drive/MyDrive/Corner_Scout/data/raw`.
-No se necesita un enlace privado para instalar desde StatsBomb. No existe un
+La raíz raw puede restaurarse desde cualquier ubicación local mediante
+`CORNERSCOUT_DATA_DIR`. No se necesita un enlace privado para instalar desde StatsBomb. No existe un
 archivo de entrada llamado `matches.jsonl.gz`.
 
 Ejecuta los tres comandos de la ruta A: `ingest` valida la copia existente y
@@ -113,7 +113,7 @@ ventana de ocho partidos son menores y no deben confundirse con ellos.
 
 ## Qué se conserva fuera de Git
 
-Raw, interim, processed, modelos, bases locales, runs y ZIP académicos. Las
+Raw, interim, processed, modelos, bases locales y runs. Las
 40 etiquetas de `data/manual_labels/short_corner_review.csv` sí se preservan
 como fuente exploratoria versionada; no se regeneran desde el proxy.
 Los contratos efectivos están junto a sus etapas, no en plantillas antiguas.

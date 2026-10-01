@@ -25,7 +25,7 @@ secuencia; un retroceso después del cierre no cambia su resultado.
 ## Reconstrucción del contexto
 
 La limpieza concilia los 380 marcadores y conserva auditorías de autogoles,
-sustituciones y expulsiones. La corrida académica registró 29 autogoles,
+sustituciones y expulsiones. El procesamiento canónico registró 29 autogoles,
 2.190 sustituciones y 109 registros de expulsión: 106 en campo y tres fuera.
 Una roja a un suplente no reduce los jugadores en campo. El contexto se
 calcula antes de cada evento; no incorpora el gol o tarjeta del propio evento

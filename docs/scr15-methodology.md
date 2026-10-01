@@ -90,8 +90,8 @@ hashes se declaran en `data/interim/03_scr15/contract.json`.
 La tasa del corpus es aproximadamente **32,46 %**. Las cinco exclusiones
 adicionales de una versión anterior se debían a retrocesos posteriores al
 cierre: dejaron de ser falsos desconocidos al aplicar el primer límite.
-La copia ejecutada de Colab se entrega por separado; el producto usa módulos
-Python y no requiere notebooks.
+La regla se implementa en módulos Python y se verifica con pruebas unitarias y
+contratos de etapa.
 
 ## Reproducir y verificar
 

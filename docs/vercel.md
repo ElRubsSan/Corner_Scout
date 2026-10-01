@@ -1,122 +1,118 @@
-# Vercel gratuito: Angular y FastAPI en el mismo dominio
+# Despliegue en Vercel
 
-Configuración preparada en `vercel.json` de la raíz, siguiendo Services del
-proyecto del profesor. **No hay un despliegue público aprobado**. El primer build
-falló por tamaño: 470,03 MB frente a un límite aplicado de 225 MB. Services
-está en beta; comprobar que está disponible en la cuenta Hobby antes de importar.
+CornerScout está publicado en
+[cornerscout-ten.vercel.app](https://cornerscout-ten.vercel.app/) mediante
+Vercel Services. Angular y FastAPI se construyen como servicios independientes,
+pero comparten dominio y configuración en el `vercel.json` de la raíz.
 
-## 1. Preparar los datos fuera de Git
+## Enrutamiento
 
-Desde la raíz con las cuatro etapas canónicas locales:
+```mermaid
+flowchart TD
+    R[Petición al dominio] --> Q{¿La ruta comienza con /api?}
+    Q -->|Sí| B[Servicio backend: FastAPI]
+    Q -->|No| F[Servicio frontend: Angular]
+    B --> D[ZIP canónico extraído en /tmp]
+    B --> O[OpenAI, solo desde backend]
+```
+
+Las reglas se evalúan en orden:
+
+```json
+{
+  "rewrites": [
+    { "source": "/api(/.*)?", "destination": { "service": "backend" } },
+    { "source": "/(.*)", "destination": { "service": "frontend" } }
+  ]
+}
+```
+
+Angular usa `/api/v1` del mismo origen. No requiere una URL pública del backend
+ni CORS para el tráfico normal de producción. Las rutas directas de la SPA
+terminan en el servicio Angular.
+
+## Datos durante el build y runtime
+
+Los artefactos pesados no se guardan en Git. Para publicar una versión de datos:
 
 ```powershell
 uv run --extra api python scripts/vercel_data.py package
 ```
 
-Produce `artifacts/vercel-canonical-data.zip` ignorado por Git, con todos los
-artefactos declarados y contratos `02`–`05`. No incluye raw ni runs. El comando
-verifica los hashes y linaje y muestra SHA-256 para la configuración de build.
+El comando valida contratos, hashes y linaje de las etapas `02`–`05`, crea
+`artifacts/vercel-canonical-data.zip` y muestra su SHA-256. El ZIP se publica
+como asset inmutable de una release de GitHub, nunca como código o raw.
 
-Para almacenamiento gratuito, crear una release de datos en GitHub y adjuntar
-este ZIP como **asset de release**, no como archivo de código Git. Es una
-publicación separada que debes efectuar desde GitHub; los artefactos serán
-descargables públicamente. Usar un tag de datos fijo y no sustituir el asset
-de una versión ya publicada. No subir el ZIP académico, `.env` ni raw.
+Durante el build, `scripts/vercel_data.py restore --bundle`:
 
-Copiar la URL de descarga HTTPS del asset (`/releases/download/<tag>/...zip`).
-Durante build, `scripts/vercel_data.py restore` descarga el ZIP, verifica su
-SHA-256, restringe las rutas y vuelve a validar los contratos completos.
-El build usa `restore --bundle`: verifica los contratos en un directorio temporal
-y conserva el ZIP original completo en `backend/canonical-data.zip`, ignorado por
-Git. El paquete de función excluye `data/**` para evitar duplicar datos.
-En el primer acceso de cada instancia, runtime verifica el SHA-256 del ZIP y lo
-extrae en `/tmp`; el repositorio verifica contratos, hashes y linaje completos.
-No hay descargas de datos ni entrenamiento en runtime. La extracción se reutiliza
-en la instancia caliente y añade trabajo al arranque en frío.
+1. Descarga el asset por HTTPS.
+2. Comprueba el SHA-256 configurado.
+3. Rechaza rutas fuera de las cuatro etapas permitidas.
+4. Extrae en un directorio temporal y verifica contratos, archivos y linaje.
+5. Conserva el ZIP verificado como `backend/canonical-data.zip` dentro de la función.
 
-## 2. Secreto de sesiones
+En cada instancia, FastAPI comprueba nuevamente el SHA-256 y extrae el ZIP una
+vez en `/tmp`. DuckDB consulta esa copia; ninguna petición descarga StatsBomb,
+entrena modelos o modifica artefactos científicos.
 
-Genera un secreto nuevo localmente:
+## Sesiones sin disco persistente
 
-```powershell
-uv run python -c "import secrets; print(secrets.token_urlsafe(48))"
-```
+`CORNERSCOUT_STATELESS_RUNS=1` activa sesiones firmadas. Al crear un análisis,
+FastAPI devuelve `X-CornerScout-Run` con rival, corte, run ID, versión y
+fingerprint. Angular lo guarda en `sessionStorage` y lo envía en las solicitudes
+del análisis.
 
-Copia el resultado exclusivamente al dashboard. El backend firma el contexto
-de cada análisis, y Angular lo guarda en `sessionStorage` y lo envía mediante
-`X-CornerScout-Run`. Cada instancia reconstruye y verifica la ventana, ID y
-fingerprint. No hay escritura de runs en modo serverless.
+Cada instancia reconstruye los ocho partidos y verifica firma, ventana y datos.
+La sesión dura la pestaña; abrir otro navegador requiere crear un análisis nuevo.
+Cambiar el secreto invalida las sesiones existentes. El encabezado no contiene
+la clave de OpenAI ni permite modificar el alcance.
 
-La sesión dura la pestaña del navegador. Abrir el enlace en otro navegador sin
-ese contexto requiere crear otro análisis. Cambiar el secreto invalida las
-sesiones anteriores; cambiar los artefactos incompatibles exige un análisis
-nuevo. Los usuarios no aportan claves ni configuran servicios.
+## Configuración del proyecto
 
-## 3. Importar desde Vercel
+Al importar el repositorio:
 
-Primero guardar estos cambios en GitHub mediante revisión/commit/push.
-En Vercel, Import Project → repositorio CornerScout → rama `main`:
+- Plan Hobby y rama `main`.
+- Root Directory `./`.
+- Preset Services definido por `vercel.json`.
+- Sin overrides globales de install, build u output.
 
-- Plan **Hobby**, uso académico personal.
-- **Root Directory: raíz (`./`)**, no `frontend`.
-- Mantener overrides globales de build/install/output desactivados; cada
-  servicio declara sus propios comandos.
-- El backend usa raíz `.` para incluir el paquete `analytics`; su entrypoint
-  es `backend.main:app`. El frontend usa raíz `frontend`.
+Variables de Production y, si se usan, Preview:
 
-Variables para el entorno Production (y Preview si deseas probarlo):
-
-| Variable | Valor |
+| Variable | Comportamiento |
 |---|---|
-| `CORNERSCOUT_SAME_ORIGIN` | `1` |
-| `CORNERSCOUT_STATELESS_RUNS` | `1` |
-| `CORNERSCOUT_SESSION_SECRET` | Secreto generado, al menos 32 caracteres. |
-| `CORNERSCOUT_DATA_ARCHIVE_URL` | URL HTTPS del asset de release. |
-| `CORNERSCOUT_DATA_ARCHIVE_SHA256` | SHA-256 mostrado por el script. |
-| `OPENAI_API_KEY` | Tu clave, configurada como sensitive y nunca en Git. |
-| `OPENAI_MODEL` | Modelo disponible, por ejemplo `gpt-4.1-mini`. |
+| `CORNERSCOUT_SAME_ORIGIN=1` | Angular usa `/api/v1` en el dominio compartido. |
+| `CORNERSCOUT_STATELESS_RUNS=1` | Evita depender de escritura persistente. |
+| `CORNERSCOUT_SESSION_SECRET` | Secreto aleatorio de al menos 32 caracteres para firmar sesiones. |
+| `CORNERSCOUT_DATA_ARCHIVE_URL` | URL HTTPS del asset de datos. |
+| `CORNERSCOUT_DATA_ARCHIVE_SHA256` | SHA-256 exacto del ZIP publicado. |
+| `OPENAI_API_KEY` | Secreto backend para reporte y agente. |
+| `OPENAI_MODEL` | Modelo disponible con Responses API y salida estructurada. |
 
-Dejar `CORNERSCOUT_API_BASE_URL` y `CORNERSCOUT_DATA_DIR` sin definir en esta
-ruta. Angular usa `/api/v1` del mismo dominio, enrutado al backend; los datos
-se extraen del ZIP empaquetado a `/tmp`. No necesita CORS externo para esas llamadas.
-El código frontend no utiliza las variables OpenAI ni las inserta en config.
+No definir `CORNERSCOUT_API_BASE_URL` ni `CORNERSCOUT_DATA_DIR` en esta ruta.
+Nunca colocar claves o prompts en variables del frontend.
 
-El plan de alojamiento es gratuito dentro de cuotas; **OpenAI se factura en tu
-cuenta**. La clave permite usar el proveedor sin pedir nada al profesor. Si falta
-o falla, la interfaz identifica el respaldo determinista.
-
-## 4. Validación pública pendiente
-
-Después del deploy abrir `/api/v1/health`, `/api/v1/ready` y la aplicación.
-Crear Barcelona con corte `2016-03-01`, recargar la pestaña y recorrer las seis
-secciones. Solicitar reporte/agente y comprobar el modo real; no basta con que
-el chat muestre una respuesta. Las llamadas reales consumen tokens.
-
-Smoke desde la raíz:
+## Verificación después de desplegar
 
 ```powershell
-uv run --extra api python scripts/smoke_deployment.py --base-url https://<proyecto>.vercel.app
+uv run --extra api python scripts/smoke_deployment.py --base-url https://cornerscout-ten.vercel.app
 ```
 
-Agregar `--assistant-mode openai` solo al decidir probar el proveedor real.
-El smoke admite el contexto firmado entre solicitudes. Verificar también una
-URL directa Angular y los archivos de imágenes.
+El smoke comprueba `/health`, `/ready`, crea un análisis histórico y recorre las
+seis secciones. `--assistant-mode deterministic` exige fallback sin proveedor;
+`--assistant-mode openai` realiza llamadas reales y consume tokens.
 
-## Límites a comprobar en el build real
+En navegador conviene comprobar un análisis con Barcelona y corte `2016-03-01`,
+recargar la pestaña, abrir una ruta interna directamente y recorrer Resumen,
+Mapa, Patrones, Reporte, Calidad y Asistente. El caso siempre debe identificarse
+como histórico, LaLiga 2015/16.
 
-Medición local Linux del runtime ligero: dependencias instaladas ~75,74 MiB;
-ZIP canónico completo ~101,97 MiB. Suma de referencia ~177,71 MiB, antes del código
-y del empaquetado específico de Vercel. Los datos extraídos ocupan ~146,63 MiB
-en `/tmp`, no se duplican dentro del bundle. No hay pandas, numpy ni pyarrow en
-el runtime; el pipeline local los conserva mediante el extra `pipeline`.
-**No es una medición de bundle Vercel**: el siguiente build debe confirmar el
-tamaño final, instalación automática y espacio/tiempo de extracción en frío.
-Aunque la documentación del proveedor indica 500 MB para Python estándar, el
-build recibido aplicó 225 MB; se usa ese límite observado como objetivo.
-Se excluyen pruebas, documentación, frontend y raw; no se eliminan artefactos
-científicos. No contratar ni activar opciones de pago para superar el límite.
+## Actualizaciones
 
-La configuración actual permite 120 segundos por función. Las llamadas del
-proveedor siguen sus presupuestos; las cuotas Hobby y OpenAI son independientes.
-No hay garantía de disponibilidad permanente ni de reproducibilidad del build
-hasta comprobar el despliegue real.
+- Cambio de frontend o backend: desplegar el commit y repetir health, ready y recorrido.
+- Cambio compatible de datos: publicar un asset con tag nuevo y actualizar URL y SHA-256.
+- Cambio incompatible de contratos: actualizar consumidores y crear análisis nuevos.
+- Rotación del secreto: actualizar la variable; las sesiones anteriores dejarán de ser válidas.
+- Cambio de modelo o clave: actualizar solo variables backend y comprobar ambos modos.
+
+OpenAI se factura de manera independiente de Vercel. Sin clave o ante una salida
+inválida, la aplicación permanece operativa mediante el respaldo determinista.

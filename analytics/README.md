@@ -1,6 +1,6 @@
 # Analytics · pipeline offline
 
-La lógica científica se ejecuta en módulos Python, sin notebooks. Las etapas
+La lógica científica se ejecuta en módulos Python. Las etapas
 publican contratos Pydantic, SHA-256, conteos y linaje antes de que la siguiente
 pueda consumir sus archivos. Raw no se sobrescribe.
 

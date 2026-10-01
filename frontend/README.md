@@ -24,7 +24,8 @@ Detén Angular con Ctrl+C.
 ## Configuración pública
 
 `public/config.json` contiene únicamente `apiBaseUrl`. Vacío significa usar
-rutas relativas: en desarrollo las resuelve el proxy de Angular.
+rutas relativas: en desarrollo las resuelve el proxy y en Vercel las rewrites
+del dominio compartido.
 `npm run build` genera ese archivo mediante `scripts/build-config.mjs`.
 Para un backend remoto, desde la raíz:
 
@@ -35,8 +36,8 @@ npm --prefix frontend run build
 
 Sustituye el dominio de ejemplo por el origen real, sin `/api/v1`, credenciales,
 query ni fragmentos. Las URLs remotas requieren HTTPS. El backend debe permitir
-el origen del frontend en `CORNERSCOUT_ORIGINS`. La build Vercel rechaza una URL
-ausente. Publicar una build local sin URL ni proxy requiere un servidor que
+el origen del frontend en `CORNERSCOUT_ORIGINS`. Esta configuración corresponde
+a un frontend separado. Publicar una build local sin URL ni proxy requiere un servidor que
 resuelva `/api` hacia FastAPI.
 
 `OPENAI_API_KEY`, `OPENAI_MODEL` y prompts no pertenecen al navegador. Los
@@ -109,6 +110,7 @@ y raíz del proyecto `./`. `CORNERSCOUT_SAME_ORIGIN=1` permite rutas relativas
 en build. La sesión firmada se conserva en la pestaña sin exponer secretos;
 los demás navegadores necesitan crear su propio análisis.
 
-Configurado, **sin despliegue público validado**. Para frontend separado se usa
-Root Directory `frontend`; los pasos y dependencias de backend están en
-[la guía de despliegue](../docs/deployment.md).
+La aplicación está publicada en
+[cornerscout-ten.vercel.app](https://cornerscout-ten.vercel.app/). Para frontend
+separado se usa Root Directory `frontend`; la configuración recomendada y la
+ruta Docker están en [la guía de despliegue](../docs/deployment.md).

@@ -13,13 +13,11 @@ Empieza por [instalación y primer análisis](../README.md).
 | Configurar reporte y agente | [OpenAI](openai.md) |
 | Consultar créditos visuales | [Imágenes](visual-assets.md) |
 | Revisar comandos probados | [Validación](validation.md) |
-| Revisar limpieza y siguientes pasos | [Cierre previo al despliegue](predeploy.md) |
-| Preparar Docker y publicación futura | [Despliegue](deployment.md) |
-| Publicar ambos servicios en Vercel Hobby | [Vercel paso a paso](vercel.md) |
-| Presentar el proyecto | [Demo](demo.md), [guion](presentation.md) |
-| Leer la entrega separada | [Entrega académica](academic-report.md), [Colab](colab.md) |
+| Operar Docker y el servicio público | [Despliegue](deployment.md) |
+| Comprender o reproducir Vercel Services | [Vercel paso a paso](vercel.md) |
 | Consultar documentación de proveedores | [Fuentes oficiales](official-sources.md) |
 
-El caso es histórico (LaLiga 2015/16). La publicación externa sigue pendiente.
-Las versiones instalables están en los lockfiles; los resultados científicos
+El caso es histórico (LaLiga 2015/16). La aplicación pública está en
+[cornerscout-ten.vercel.app](https://cornerscout-ten.vercel.app/). Las versiones
+instalables están en los lockfiles; los resultados científicos
 vigentes se publican con sus contratos locales, no en evaluaciones antiguas.

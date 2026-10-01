@@ -24,7 +24,7 @@ y lado del córner concedido; no se presenta como predicción estrictamente
 prepartido. El target corto es el proxy geométrico versionado, no una etiqueta
 humana independiente. Zona no superó el gate de persistencia y no se predice.
 
-### Ventanas registradas en la entrega ejecutada
+### Ventanas canónicas
 
 Los límites son exclusivos por la derecha:
 
@@ -38,7 +38,7 @@ Los límites son exclusivos por la derecha:
 SCR-15 pasó cero de tres ventanas y conserva la referencia liguera.
 Corto/directo pasó dos. El candidato de conteo fue seleccionado con familia
 Poisson. Las ventanas y métricas de una publicación concreta se leen de sus
-artefactos, no de una evaluación antigua `v0.3`.
+artefactos canónicos.
 
 Se comparan referencia liguera e histórico suavizado. Para binarios se examinan
 Brier, log loss, AP y calibración; para volumen MAE y deviance Poisson. Se

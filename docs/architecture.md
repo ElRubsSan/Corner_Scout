@@ -22,10 +22,10 @@ StatsBomb Open Data / Google Drive
   -> FastAPI + DuckDB controlado
        -> 06_reporte_tactico_llm: evidencia/OpenAI/fallback
        -> 07_herramientas_agente: tres tools read-only
-  -> OpenAPI -> Angular standalone -> Vercel (pendiente)
+  -> OpenAPI -> Angular standalone -> Vercel Services
 ```
 
-La entrega académica explica el proceso por separado; `analytics` y `backend` son la implementación ejecutable canónica.
+`analytics` y `backend` contienen la implementación ejecutable canónica.
 
 ## Limites de etapas
 
@@ -37,13 +37,15 @@ Decisiones de `05`: SCR-15 usa `league_reference`; `short_direct` y `corner_coun
 
 FastAPI abre exclusivamente contratos y artefactos canonicos de `02_clean`, `03_scr15`, `04_features` y `05_modeling`. Antes de consultar, verifica versiones, run IDs, hashes y linaje. DuckDB abre Parquet por consulta mediante tablas conocidas y parametros validados; no hay SQL del LLM. La API no descarga StatsBomb ni entrena.
 
-Cada scouting run fija rival, fecha de corte, ocho `match_id`, fingerprint y runs canonicos. Se persiste bajo `data/processed/runs`; un cambio de version invalida runs anteriores.
+Cada scouting run fija rival, fecha de corte, ocho `match_id`, fingerprint y runs
+canónicos. Localmente se persiste bajo `data/processed/runs`; un cambio de versión
+invalida runs anteriores.
 
 En modo opcional `CORNERSCOUT_STATELESS_RUNS=1`, el backend firma el contexto
 en `X-CornerScout-Run` y el navegador lo conserva en `sessionStorage`. Cada
 petición reconstruye la ventana desde los artefactos y comprueba ID y versión;
-no escribe runs en disco. El secreto es backend-only. Este modo está preparado
-para Vercel; su publicación pública sigue pendiente. Ver [guía](vercel.md).
+no escribe runs en disco. El secreto es backend-only. Es el modo utilizado en
+Vercel. Ver [guía](vercel.md).
 
 Las tablas consultables incluyen `matches_clean`, `corners_engineered`,
 `cluster_assignments`, `cluster_centers`, `objective_winners` y
@@ -63,7 +65,7 @@ sequenceDiagram
     D-->>B: Ventana histórica
     B-->>F: Partidos para confirmar
     F->>B: Crear scouting run
-    B-->>F: Run persistido
+    B-->>F: Run + contexto firmado
     F->>B: Solicitar reporte o pregunta
     B->>D: Calcular y consultar evidencia de la sesión
     alt Proveedor configurado y salida válida
@@ -91,7 +93,12 @@ Los escudos y retratos se distribuyen en `public/media`, sin descargas en build.
 
 ## Despliegue
 
-Docker se probó localmente con un motor real. La publicación externa y Vercel están pendientes. El contenedor recibe `02_clean`, `03_scr15`, `04_features`, `05_modeling` en lectura y `runs` con escritura; no usa artefactos demo antiguos. Ver `docs/deployment.md`.
+Angular y FastAPI se publican bajo
+[cornerscout-ten.vercel.app](https://cornerscout-ten.vercel.app/) mediante
+Services. Los datos completos viajan como ZIP verificado y se extraen en `/tmp`
+por instancia. Docker conserva la ruta local: recibe `02_clean`, `03_scr15`,
+`04_features`, `05_modeling` en lectura y `runs` con escritura. Ver
+[operación](deployment.md) y [Vercel](vercel.md).
 
 ## Puntos de entrada y mantenimiento
 
@@ -105,4 +112,4 @@ Docker se probó localmente con un motor real. La publicación externa y Vercel 
 
 Instalación: [README](../README.md). Entradas y entidades:
 [contratos](../contracts/README.md). Estado probado:
-[validación](validation.md). Cierre de limpieza: [predeploy](predeploy.md).
+[validación](validation.md) y [despliegue](vercel.md).

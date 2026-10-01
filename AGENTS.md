@@ -3,9 +3,9 @@
 ## Producto y estado
 
 - El producto visible es **CornerScout**; se conservan temporalmente la carpeta `Corner_Scope` y el remoto `Corner_Scout`.
-- Es un MVP academico prepartido sobre StatsBomb Open Data, LaLiga 2015/16 (`competition_id=11`, `season_id=27`). Nunca presentar resultados historicos como actuales.
+- Es un producto prepartido sobre StatsBomb Open Data, LaLiga 2015/16 (`competition_id=11`, `season_id=27`). Nunca presentar resultados historicos como actuales.
 - Estan implementados el pipeline modular canonico `01`-`07`, FastAPI/OpenAPI, Angular standalone, evaluacion temporal y OpenAI exclusivamente desde FastAPI con fallback determinista.
-- No se ha realizado despliegue externo. Docker y las llamadas reales de reporte/agente a OpenAI se validaron localmente; detalles en `docs/deployment.md`.
+- Angular y FastAPI estan publicados mediante Vercel Services en `https://cornerscout-ten.vercel.app/`; health, ready, recorrido y OpenAI estan comprobados. Detalles en `docs/vercel.md`.
 - La interfaz final es Angular standalone. No usar Streamlit, Gradio, Tableau ni Power BI.
 
 ## Pipeline canonico
@@ -18,7 +18,7 @@
 6. `06_reporte_tactico_llm`: evidencia, reporte tipado, OpenAI y fallback.
 7. `07_herramientas_agente`: tres tools de solo lectura y agente acotado.
 
-La evidencia académica se entrega separada y se preserva localmente en `artifacts/entrega-academica.zip`. Los notebooks y sus scripts académicos se retiraron del producto después de verificar esa copia. El ejecutado final conserva 104 celdas de código intactas y 14 comentarios Markdown nuevos. La lógica ejecutable vive en módulos Python probados. No modificar contratos científicos sin solicitud explícita.
+La lógica ejecutable vive en módulos Python probados. No modificar contratos científicos sin solicitud explícita.
 
 ## Datos
 
@@ -52,7 +52,7 @@ La evidencia académica se entrega separada y se preserva localmente en `artifac
 - FastAPI consume contratos y artefactos verificados de `data/interim/02_clean`, `data/interim/03_scr15`, `data/processed/04_features` y `data/processed/05_modeling`.
 - DuckDB solo ejecuta consultas controladas y parametrizadas. Un LLM nunca genera SQL libre.
 - OpenAI se invoca solo desde FastAPI mediante Structured Outputs/Pydantic. `OPENAI_API_KEY` y `OPENAI_MODEL` son backend-only.
-- Falta de clave, proveedor no disponible o salida invalida activa fallback determinista visible. Las llamadas reales locales registradas en `docs/deployment.md` no prueban un despliegue externo.
+- Falta de clave, proveedor no disponible o salida invalida activa fallback determinista visible. El modo de cada respuesta debe identificarse explicitamente.
 - El agente solo registra `obtener_historial`, `obtener_perfil_corners` y `consultar_evidencia`; son tools tipadas de solo lectura y bloqueadas a la sesion.
 - Una respuesta final invalida puede repararse una sola vez, sin nuevas tools ni cambios de evidencia; un segundo fallo activa el fallback determinista.
 - Los calculos, ventanas, clusters, probabilidades y evidencia se producen en Python, nunca en el LLM.
@@ -61,9 +61,9 @@ La evidencia académica se entrega separada y se preserva localmente en `artifac
 
 - Angular consume el contrato OpenAPI generado por FastAPI. Las claves y prompts nunca llegan al navegador.
 - Las imágenes de la interfaz son 20 escudos y 202 retratos de cobradores en `frontend/public/media/`; no se descargan durante el build. El inventario de 539 jugadores sigue siendo solo de identidades.
-- Vercel esta configurado, pero no desplegado.
+- Vercel Services publica Angular en `/` y FastAPI bajo `/api` en el mismo dominio; usa sesiones firmadas y ZIP canonico verificado.
 - El backend Docker debe montar, conservando esas rutas bajo `/data`: `interim/02_clean`, `interim/03_scr15`, `processed/04_features`, `processed/05_modeling` y `processed/runs` con escritura solo para `runs`.
-- No montar ni servir los artefactos demo antiguos. Docker se validó localmente con el motor real; Vercel continúa sin desplegar.
+- No montar ni servir los artefactos demo antiguos. Docker es la ruta local; Vercel extrae el ZIP completo en `/tmp` por instancia.
 
 ## Comandos
 
@@ -83,7 +83,7 @@ npm --prefix frontend run e2e
 uv run python scripts/check_documentation.py
 ```
 
-El registro de verificaciones locales, fechas y motivos de omisión está en `docs/validation.md`. No presentar una cifra histórica como prueba de una nueva corrida. La fase pública y Vercel siguen pendientes.
+El estado público y los comandos reproducibles están en `docs/validation.md`. No presentar una cifra histórica como prueba de una nueva corrida.
 
 ## Seguridad y Git
 

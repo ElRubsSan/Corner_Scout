@@ -11,9 +11,6 @@ Los contratos efectivos se publican bajo `interim/01_ingestion`, `02_clean`,
 verifican esos contratos y sus archivos, no las plantillas de la fase inicial.
 Las plantillas sin consumidores se retiraron del repositorio.
 
-Los registros de ejecución de notebooks se conservan en la entrega académica
-separada. No son una dependencia del producto.
-
 Un inventario versionado no debe contener eventos completos, secretos, enlaces
 privados ni rutas personales. Los hashes se calculan desde los archivos:
 no se modifican para ocultar diferencias. Ver

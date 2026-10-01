@@ -1,16 +1,19 @@
-# Archivos locales, fuera de Git
+# Datos para Vercel
 
-`entrega-academica.zip` preserva los notebooks para la entrega separada al
-profesor. No es necesario para instalar ni ejecutar la aplicación.
-Los modelos vigentes se publican bajo `data/processed/05_modeling`, no aquí.
+Esta carpeta aloja `vercel-canonical-data.zip`, el paquete de datos canónicos
+utilizado para desplegar CornerScout. El ZIP permanece fuera de Git.
 
-El ZIP contiene el ejecutado con 14 comentarios Markdown nuevos, fuentes y
-scripts académicos, instrucciones y `verification.json`. Se comprobó igualdad
-de las 104 celdas de código completas antes de retirar los notebooks del
-producto. Ver [entrega](../docs/academic-report.md).
+## Generar el paquete
 
-`v0.3/` puede existir en una instalación previa como histórico local ignorado.
-No se monta en Docker ni se consume desde FastAPI. El antiguo `analytics.zip`
-y la gráfica de calibración se retiraron del directorio de producto después de
-preservar su copia en la sección histórica de la entrega. No sustituyen los
-contratos canónicos.
+Desde la raíz, con las etapas `02`–`05` disponibles:
+
+```powershell
+uv run --extra api python scripts/vercel_data.py package
+```
+
+El comando verifica contratos, hashes y linaje, genera el ZIP y muestra su
+SHA-256. El archivo se publica como asset inmutable de una release y se configura
+en Vercel mediante `CORNERSCOUT_DATA_ARCHIVE_URL` y
+`CORNERSCOUT_DATA_ARCHIVE_SHA256`.
+
+Consulta [Despliegue en Vercel](../docs/vercel.md).

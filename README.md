@@ -1,15 +1,18 @@
 # CornerScout ⚽
 
-**Del córner observado a una preparación táctica con evidencia.** MVP académico
+**Del córner observado a una preparación táctica con evidencia.** Aplicación
 del Diplomado en Ciencia de Datos: analiza los ocho partidos anteriores de un
 rival, muestra sus ejecuciones y destinos, y permite consultar un asistente.
 
 > Caso histórico: **LaLiga 2015/16**, StatsBomb Open Data. No son datos actuales
-> ni una garantía de resultados deportivos. Publicación externa pendiente.
+> ni una garantía de resultados deportivos.
+
+**Aplicación publicada:** [cornerscout-ten.vercel.app](https://cornerscout-ten.vercel.app/)
 
 [Instalar y ejecutar](#1-instalar-las-herramientas) ·
 [Datos](docs/data-restoration.md) · [Arquitectura](docs/architecture.md) ·
-[Validación](docs/validation.md) · [Despliegue pendiente](docs/deployment.md)
+[API y herramientas](backend/README.md) · [Validación](docs/validation.md) ·
+[Despliegue](docs/vercel.md)
 
 ## Una mirada a la aplicación
 
@@ -29,15 +32,26 @@ del pase; las cifras pertenecen a la ventana seleccionada de 2015/16.
 - 20 escudos y 202 retratos de cobradores incluidos, sin descargarlos al compilar.
 - OpenAI exclusivamente en el backend, con respuesta determinista de respaldo.
 
+| Sección | Qué permite hacer |
+|---|---|
+| Resumen | Revisar volumen, ejecución, cobradores y tiro tras córner en la ventana. |
+| Mapa de córners | Filtrar pases observados y explorar sus destinos y mapa de calor. |
+| Patrones | Describir grupos de destinos de pases directos; no son jugadas ensayadas. |
+| Reporte táctico | Generar una lectura estructurada y validada contra evidencia. |
+| Calidad | Consultar cobertura, exclusiones y decisiones de modelado. |
+| Asistente | Preguntar sobre el historial y la evidencia del análisis activo. |
+
 ## Arquitectura
 
 ```mermaid
 flowchart LR
+    U[Usuario] --> F[Angular en Vercel]
     S[StatsBomb Open Data] --> P[Pipeline Python offline 01–05]
     P --> D[Contratos y Parquet verificados]
-    D --> B[FastAPI y DuckDB]
+    D --> B[FastAPI y DuckDB en Vercel]
     B --> O[OpenAI: reporte y agente]
-    B --> F[Angular: seis secciones]
+    F -->|/api/v1| B
+    B --> F
     O --> B
 ```
 
@@ -149,9 +163,8 @@ También puedes copiarlo desde PowerShell **si todavía no existe `.env`**:
 Copy-Item .env.example .env
 ```
 
-No publiques `.env`. El modelo debe estar disponible para tu cuenta. El notebook
-académico ejecutado utilizó Terra con éxito; eso no demuestra que cualquier
-cuenta tenga acceso al mismo identificador. La app usa su configuración backend.
+No publiques `.env`. El modelo debe estar disponible para tu cuenta; un
+identificador válido para otra cuenta puede no estar habilitado en la tuya. La app usa su configuración backend.
 Sin clave, reporte y agente funcionan con respaldo determinista visible.
 
 El comando de arranque de abajo carga `.env` explícitamente. Si no deseas OpenAI,
@@ -179,7 +192,7 @@ npm --prefix frontend start
 - Datos preparados: http://127.0.0.1:8000/api/v1/ready
 
 El frontend local utiliza el proxy hacia el backend. Detén cada servicio con
-Ctrl+C en su terminal. No hace falta abrir ni ejecutar notebooks para usarlo.
+Ctrl+C en su terminal.
 
 ## 6. Primer análisis
 
@@ -233,7 +246,7 @@ canónicas se montan en lectura. [Detalles y pruebas reales](docs/deployment.md)
 | Aparece respuesta determinista | Clave ausente, proveedor no disponible o respuesta rechazada; no implica datos inventados. |
 | Error al cargar `.env` | Instalar `uv sync --locked --all-extras` y comprobar que el archivo existe. |
 | Error de hash o linaje | No editar artefactos; restaurar el conjunto coherente o reconstruir las etapas. |
-| Build Vercel rechaza URL ausente | Configurar `CORNERSCOUT_API_BASE_URL` al desplegar; ver guía. |
+| Una sesión pública deja de ser válida | Crear un análisis nuevo; pudo cambiar el secreto o fingerprint canónico. |
 
 ## Estructura y documentación
 
@@ -253,26 +266,20 @@ data/          datos locales fuera de Git
 [Datos](docs/data-restoration.md) · [Imágenes](docs/visual-assets.md) ·
 [Índice completo de guías](docs/README.md)
 
-La entrega científica se conserva aparte en `artifacts/entrega-academica.zip`
-local, fuera de Git; contiene el notebook ejecutado comentado y las fuentes.
-Los notebooks se retiraron del repositorio de producto después de verificar
-esa copia. No son una dependencia de instalación ni ejecución. Ver
-[entrega académica](docs/academic-report.md).
+## Despliegue en Vercel
 
-## Despliegue: pendiente
+La aplicación se publica con **Vercel Services**: Angular y FastAPI comparten
+`https://cornerscout-ten.vercel.app/`. Las rutas `/api/*` llegan al backend y
+las demás al frontend. El build descarga el ZIP canónico, comprueba su SHA-256,
+contratos y linaje, y lo incorpora comprimido; cada instancia lo extrae una vez
+en `/tmp` antes de consultarlo con DuckDB.
 
-La ruta preparada para alojamiento gratuito es **Vercel Services con Angular
-y FastAPI en el mismo dominio**. Seguir [Vercel paso a paso](docs/vercel.md):
-incluye ZIP canónico fuera de Git, build verificado y sesiones firmadas sin
-disco persistente. La publicación y el tamaño final del bundle aún requieren
-verificación en Vercel. OpenAI usa la clave del propietario y tiene consumo
-facturado independiente del alojamiento.
-
-El backend Docker y OpenAI se probaron localmente. **No hay despliegue público
-validado**. La ruta Services empaqueta los artefactos y usa contexto firmado
-para evitar depender de escritura persistente. La alternativa de frontend
-separado requiere backend público, URL y CORS. Vercel y las pruebas HTTPS
-públicas quedan pendientes. [Guía de despliegue](docs/deployment.md).
+Los análisis usan contexto firmado en `X-CornerScout-Run`, conservado por
+Angular en `sessionStorage`, por lo que Vercel no necesita escritura persistente.
+OpenAI usa únicamente variables del backend y puede recurrir al respaldo
+determinista si el proveedor no está disponible. Consulta la
+[guía de Vercel](docs/vercel.md), la [operación](docs/deployment.md) y el
+[comportamiento de API y tools](backend/README.md).
 
 Fuente: [StatsBomb Open Data](https://github.com/statsbomb/open-data), revisión
 `4b73468fc5b0f1950f9f66fada70ad3a4f9327cb`.
