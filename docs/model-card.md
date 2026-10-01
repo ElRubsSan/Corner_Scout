@@ -45,9 +45,15 @@ Brier, log loss, AP y calibración; para volumen MAE y deviance Poisson. Se
 remuestrean partidos completos para comparar incertidumbre. Las métricas y
 ventanas exactas están en `data/processed/05_modeling/` con hashes y contrato.
 
-La promoción binaria exige mejoras en Brier, log loss y AP sin degradar
-calibración en al menos dos ventanas de desarrollo. La evaluación no necesita
-un umbral clasificatorio de 0,5. Los artefactos retrospectivos se ajustan antes
+La promoción binaria compara el candidato con la referencia de menor log loss
+en cada ventana. Exige menor Brier y log loss, mayor AP y un calibration gap
+no superior al de esa referencia más 0,01, en al menos dos de las tres ventanas
+de desarrollo. La tolerancia de 0,01 es operacional: no exige mejor calibración
+en todas las ventanas. El calibration gap mide la diferencia absoluta entre
+probabilidad media y prevalencia; no resume toda la calibración. Si el candidato
+no se promociona, se elige la referencia de menor log loss medio de desarrollo.
+La evaluación no necesita un umbral clasificatorio de 0,5.
+Los artefactos retrospectivos se ajustan antes
 del periodo final; los `refit_full` usan la temporada completa y no se presentan
 como reevaluados fuera de muestra.
 
@@ -58,9 +64,13 @@ clasificación, no independiente. Registró 28 TP, 10 TN, 0 FP y 2 FN. No se
 extrapola el 95 % de acuerdo a toda la temporada.
 
 El ajuste descriptivo de K-Means usa destinos anteriores a `2016-01-01`, con
-cuatro grupos fijados por la decisión exploratoria documentada. No se escoge
-otra cantidad por cada consulta ni se promociona una probabilidad de tiro a
-partir del cluster.
+cuatro grupos fijados como decisión de diseño orientada al uso: organizar
+perfiles espaciales en una representación manejable para comunicar diferencias
+y preparar revisión de vídeo. No se selecciona automáticamente la cantidad de
+grupos maximizando silueta. Silueta, inercia y estabilidad entre semillas son
+diagnósticos geométricos, no medidas directas de utilidad táctica. Esta motivación
+no equivale a validación con usuarios reales. No se escoge otra cantidad por
+cada consulta ni se promociona una probabilidad de tiro a partir del cluster.
 
 Reproducir: `uv run --all-extras cornerscout train`, después de `ingest` y
 `build`. FastAPI sirve artefactos verificados y no entrena por solicitud.

@@ -1,4 +1,4 @@
-"""Canonical notebook-free orchestration for offline stages 02 through 05."""
+"""Canonical orchestration for offline stages 02 through 05."""
 
 from __future__ import annotations
 
@@ -745,7 +745,7 @@ def train(
         f"- Run: `{run_id}`\n"
         f"- Source: `{source.contract_version}` / `{source.run_id}`\n"
         "- Validation: three expanding-origin development windows; final confirmation excluded from decisions.\n"
-        "- Predictors: regularized logistic regression and Poisson; Random Forest and K-Means are excluded.\n"
+        "- Candidates: regularized logistic regression and Poisson; K-Means is descriptive only.\n"
         "- Bootstrap unit: complete match.\n\n"
         "## Winners\n\n"
         + "```text\n"
@@ -798,7 +798,7 @@ def train(
         limitations=[
             "Single historical season; no external-season validation.",
             "Final confirmation metrics do not influence model decisions.",
-            "K-Means and Random Forest are not predictors.",
+            "K-Means is descriptive only and is not a predictor.",
         ],
     )
     try:

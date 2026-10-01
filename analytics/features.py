@@ -1,4 +1,4 @@
-"""Canonical, reusable feature extraction from notebooks 04 and 05."""
+"""Canonical, reusable feature extraction for stages 04 and 05."""
 
 from __future__ import annotations
 
@@ -52,7 +52,7 @@ def _ratio(numerator: float, denominator: float) -> float:
 def engineer_corner_geometry(
     corners: pd.DataFrame, *, short_threshold: float = SHORT_THRESHOLD
 ) -> pd.DataFrame:
-    """Add notebook-04 geometry, short-proxy and delivery-zone columns.
+    """Add stage-04 geometry, short-proxy and delivery-zone columns.
 
     The input is not mutated. A valid origin must be at a StatsBomb corner and
     every coordinate must be on the 120 x 80 pitch.

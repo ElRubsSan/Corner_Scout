@@ -1,4 +1,4 @@
-"""Pre-event match context reconstruction extracted from notebook 02."""
+"""Canonical stage-02 reconstruction of pre-event match context."""
 
 from __future__ import annotations
 

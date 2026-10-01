@@ -44,6 +44,28 @@ El modelo propone llamadas; FastAPI valida nombre, argumentos, presupuesto y
 coincidencia con rival y corte antes de ejecutar. Las tools son de solo lectura
 y no tienen acceso a web, SQL libre, archivos arbitrarios ni otras sesiones.
 
+### De borrador cualitativo a respuesta con cifras
+
+1. OpenAI devuelve un `AgentDraft`: `qualitative_answer`, `evidence_ids`,
+   `tool_calls` y `status`. El texto es cualitativo; las cifras, fechas y
+   porcentajes no se delegan al proveedor.
+2. `validate_agent_draft` comprueba que el borrador no contenga números,
+   que las citas hayan sido devueltas por las tools y que el conteo de llamadas
+   corresponda a las ejecutadas. Una respuesta contestada requiere herramienta
+   y evidencia.
+3. `render_grounded_answer` incorpora en Python la evidencia seleccionada y
+   formatea sus cantidades y porcentajes. Comprueba que la composición no
+   introduzca números ajenos a los resultados o al formateador determinista.
+4. El backend construye `AgentAnswer` y presenta el resultado mediante
+   `AgentResponse`, con modo, evidencia, uso de tokens y trazas de herramientas.
+
+Ante un borrador inválido se solicita una única reparación con los mismos
+resultados de tools y los IDs permitidos. La reparación consume los presupuestos
+vigentes; no reinicia tiempo, tokens ni turnos. Si el proveedor solicita nuevas
+herramientas en esa fase, el backend las rechaza antes de ejecutarlas. Un segundo
+fallo activa fallback. Esta validación limita salidas no sustentadas; no convierte
+la generación del proveedor en determinista ni garantiza aprobación futura.
+
 ## Configurar y comprobar
 
 Desde la raíz, instala `uv sync --locked --all-extras`. Crea `.env` con:

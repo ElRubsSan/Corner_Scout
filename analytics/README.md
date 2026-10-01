@@ -42,8 +42,8 @@ el CLI no carga `.env` automáticamente. Ver [datos](../docs/data-restoration.md
 
 La versión de modelado es `05-modeling-v3-objectives`. Compara referencias
 ligueras e históricas con regresión logística regularizada o Poisson según
-objetivo. No hay Random Forest vigente. K-Means solo describe destinos y nunca
-es predictor. Las tres ventanas de desarrollo deciden; el periodo final confirma.
+objetivo. K-Means solo describe destinos y nunca es predictor. Las tres ventanas
+de desarrollo deciden; el periodo final confirma.
 Ver [model card](../docs/model-card.md).
 
 Para evaluar 05 sin sustituir una publicación existente, la función
@@ -58,5 +58,5 @@ uv run --all-extras pytest
 
 Las pruebas pequeñas usan fixtures identificadas; las regresiones completas
 usan datos locales cuando están disponibles. No se rellenan datos productivos
-ausentes con fixtures. Los resultados recientes están en
+ausentes con fixtures. Los comandos y el alcance de las comprobaciones están en
 [validación](../docs/validation.md).

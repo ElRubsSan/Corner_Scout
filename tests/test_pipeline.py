@@ -104,4 +104,4 @@ def test_train_rejects_tampered_04_before_modeling(tmp_path):
 
 def test_unknown_stage_is_explicit():
     with pytest.raises(ValueError, match="Unknown stage"):
-        pipeline.run_stage("notebook")
+        pipeline.run_stage("unknown_stage")

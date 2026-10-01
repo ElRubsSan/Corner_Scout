@@ -1,4 +1,4 @@
-"""Verified, read-only access to canonical notebook artifacts."""
+"""Verified, read-only access to canonical pipeline artifacts."""
 from __future__ import annotations
 
 import hashlib
