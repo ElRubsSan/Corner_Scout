@@ -12,12 +12,11 @@
       "root": ".",
       "framework": "fastapi",
       "entrypoint": "backend.main:app",
-      "installCommand": "uv sync --locked --no-dev --extra api --extra llm",
-      "buildCommand": "uv run --no-sync python scripts/vercel_data.py restore",
+      "buildCommand": "python scripts/vercel_data.py restore --bundle",
       "functions": {
         "backend/main.py": {
           "maxDuration": 120,
-          "excludeFiles": "{frontend/**,tests/**,docs/**,artifacts/**,tools/**,notebooks/**,data/raw/**,data/manual_labels/**,data/manifests/**,data/processed/runs/**,**/__pycache__/**}"
+          "excludeFiles": "{frontend/**,tests/**,docs/**,artifacts/**,tools/**,notebooks/**,data/**,**/__pycache__/**}"
         }
       }
     }

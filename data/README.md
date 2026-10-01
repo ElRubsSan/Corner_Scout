@@ -20,7 +20,7 @@ necesita las cuatro etapas `02`–`05` completas y permiso de escritura para
 Desde la raíz del repositorio, después de instalar dependencias:
 
 ```powershell
-uv run cornerscout ingest
+uv run --extra pipeline cornerscout ingest
 uv run --all-extras cornerscout build
 uv run --all-extras cornerscout train
 ```

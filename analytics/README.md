@@ -10,7 +10,7 @@ Desde la raíz, después de instalar Python y uv:
 
 ```powershell
 uv sync --locked --all-extras
-uv run cornerscout ingest
+uv run --extra pipeline cornerscout ingest
 uv run --all-extras cornerscout build
 uv run --all-extras cornerscout train
 ```

@@ -1,6 +1,9 @@
 # Configuracion de despliegue
 
-Docker se validó localmente con un motor real y artefactos canónicos verificados. No se ha publicado todavía un backend ni un frontend en Vercel.
+Docker se validó localmente con un motor real y artefactos canónicos verificados.
+El primer build de Vercel falló por tamaño (470,03 MB, límite aplicado 225 MB).
+El runtime ligero y ZIP canónico empaquetado ya se comprobaron localmente;
+queda pendiente aprobar el nuevo build y la validación pública.
 
 ## Frontend Vercel
 

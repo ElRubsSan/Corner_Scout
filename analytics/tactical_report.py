@@ -9,9 +9,10 @@ from __future__ import annotations
 import math
 import re
 from datetime import date, datetime
-from typing import Annotated, Iterable, Literal
+from typing import TYPE_CHECKING, Annotated, Iterable, Literal
 
-import pandas as pd
+if TYPE_CHECKING:
+    import pandas as pd
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
@@ -113,7 +114,7 @@ def _ratio(numerator: Number, denominator: Number) -> float | None:
 
 
 def _number(value: object) -> float | None:
-    if value is None or pd.isna(value):
+    if value is None or (isinstance(value, float) and math.isnan(value)):
         return None
     result = float(value)
     if not math.isfinite(result):
@@ -143,6 +144,8 @@ def _indicator(
 
 
 def _team_matches(matches: pd.DataFrame, team: str, cutoff: date) -> pd.DataFrame:
+    import pandas as pd
+
     dates = pd.to_datetime(matches["match_date"], errors="raise").dt.date
     mask = ((matches["home_team"] == team) | (matches["away_team"] == team)) & (dates < cutoff)
     ordered = matches.loc[mask].assign(_date=dates[mask])
@@ -163,6 +166,8 @@ def build_evidence(
     The cutoff is exclusive and the selected match IDs are provider IDs.  The
     league references use only rows strictly before the same cutoff.
     """
+    import pandas as pd
+
     if isinstance(fecha_corte, str):
         cutoff = datetime.fromisoformat(
             fecha_corte.replace("Z", "+00:00")

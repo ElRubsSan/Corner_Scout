@@ -69,7 +69,7 @@ La evidencia académica se entrega separada y se preserva localmente en `artifac
 
 ```powershell
 uv sync --locked --all-extras
-uv run cornerscout ingest
+uv run --extra pipeline cornerscout ingest
 uv run --all-extras cornerscout clean
 uv run --all-extras cornerscout scr15
 uv run --all-extras cornerscout features

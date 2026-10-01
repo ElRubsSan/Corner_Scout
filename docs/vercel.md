@@ -1,7 +1,8 @@
 # Vercel gratuito: Angular y FastAPI en el mismo dominio
 
 Configuración preparada en `vercel.json` de la raíz, siguiendo Services del
-proyecto del profesor. **No se ha realizado un despliegue público**. Services
+proyecto del profesor. **No hay un despliegue público aprobado**. El primer build
+falló por tamaño: 470,03 MB frente a un límite aplicado de 225 MB. Services
 está en beta; comprobar que está disponible en la cuenta Hobby antes de importar.
 
 ## 1. Preparar los datos fuera de Git
@@ -25,7 +26,13 @@ de una versión ya publicada. No subir el ZIP académico, `.env` ni raw.
 Copiar la URL de descarga HTTPS del asset (`/releases/download/<tag>/...zip`).
 Durante build, `scripts/vercel_data.py restore` descarga el ZIP, verifica su
 SHA-256, restringe las rutas y vuelve a validar los contratos completos.
-Runtime consulta la copia empaquetada: no descarga datos ni entrena por petición.
+El build usa `restore --bundle`: verifica los contratos en un directorio temporal
+y conserva el ZIP original completo en `backend/canonical-data.zip`, ignorado por
+Git. El paquete de función excluye `data/**` para evitar duplicar datos.
+En el primer acceso de cada instancia, runtime verifica el SHA-256 del ZIP y lo
+extrae en `/tmp`; el repositorio verifica contratos, hashes y linaje completos.
+No hay descargas de datos ni entrenamiento en runtime. La extracción se reutiliza
+en la instancia caliente y añade trabajo al arranque en frío.
 
 ## 2. Secreto de sesiones
 
@@ -71,7 +78,7 @@ Variables para el entorno Production (y Preview si deseas probarlo):
 
 Dejar `CORNERSCOUT_API_BASE_URL` y `CORNERSCOUT_DATA_DIR` sin definir en esta
 ruta. Angular usa `/api/v1` del mismo dominio, enrutado al backend; los datos
-están en `data` dentro del paquete. No necesita CORS externo para esas llamadas.
+se extraen del ZIP empaquetado a `/tmp`. No necesita CORS externo para esas llamadas.
 El código frontend no utiliza las variables OpenAI ni las inserta en config.
 
 El plan de alojamiento es gratuito dentro de cuotas; **OpenAI se factura en tu
@@ -97,13 +104,17 @@ URL directa Angular y los archivos de imágenes.
 
 ## Límites a comprobar en el build real
 
-Medición local Linux de la imagen de servicio: dependencias instaladas ~317,72
-MiB; datos completos ~146,63 MiB. La suma ~464,35 MiB es cercana al límite
-estándar documentado de 500 MB para Python, antes de diferencias de empaquetado.
-**No es una medición de bundle Vercel**: el build debe confirmar el tamaño final.
-Se excluyen pruebas, documentación, frontend y raw del paquete Python; no se
-eliminan archivos científicos para forzar el tamaño. Si se excede, detener y
-revisar empaquetado/dependencias antes de contratar o activar opciones de pago.
+Medición local Linux del runtime ligero: dependencias instaladas ~75,74 MiB;
+ZIP canónico completo ~101,97 MiB. Suma de referencia ~177,71 MiB, antes del código
+y del empaquetado específico de Vercel. Los datos extraídos ocupan ~146,63 MiB
+en `/tmp`, no se duplican dentro del bundle. No hay pandas, numpy ni pyarrow en
+el runtime; el pipeline local los conserva mediante el extra `pipeline`.
+**No es una medición de bundle Vercel**: el siguiente build debe confirmar el
+tamaño final, instalación automática y espacio/tiempo de extracción en frío.
+Aunque la documentación del proveedor indica 500 MB para Python estándar, el
+build recibido aplicó 225 MB; se usa ese límite observado como objetivo.
+Se excluyen pruebas, documentación, frontend y raw; no se eliminan artefactos
+científicos. No contratar ni activar opciones de pago para superar el límite.
 
 La configuración actual permite 120 segundos por función. Las llamadas del
 proveedor siguen sus presupuestos; las cuotas Hobby y OpenAI son independientes.

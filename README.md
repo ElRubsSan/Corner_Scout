@@ -111,7 +111,7 @@ descargarlos o restaurarlos; copiar solo el código no basta para arrancar la AP
 ### Opción A: construir desde StatsBomb
 
 ```powershell
-uv run cornerscout ingest
+uv run --extra pipeline cornerscout ingest
 uv run --all-extras cornerscout build
 uv run --all-extras cornerscout train
 ```

@@ -10,7 +10,7 @@ después de `uv sync --locked --all-extras`.
 ## Ruta A: construir desde la fuente pública
 
 ```powershell
-uv run cornerscout ingest
+uv run --extra pipeline cornerscout ingest
 uv run --all-extras cornerscout build
 uv run --all-extras cornerscout train
 ```

@@ -10,7 +10,8 @@ from typing import Any
 from fastapi import HTTPException
 
 from analytics.io import data_dir, write_json
-from analytics.tactical_report import ModelEvidence, build_evidence
+from analytics.tactical_report import ModelEvidence
+from analytics.record_evidence import build_record_evidence
 from backend.repository import ArtifactError, repository
 from backend.reporting import destination_label
 from backend.schemas import *
@@ -379,16 +380,15 @@ def report_input(run: Run) -> ReportInput:
 
 
 def agent_evidence(run: Run):
-    matches = repo().frame("matches_clean")
-    corners = repo().frame("corners_engineered").copy()
-    if "delivery" not in corners:
-        corners["delivery"] = corners["execution_type"].map(
-            {"short": "corto", "direct": "envio", "unknown": "desconocido"}
-        )
-    if "xg" not in corners and "xg_sequence" in corners:
-        corners["xg"] = corners["xg_sequence"]
-    if "zone" not in corners and "delivery_zone" in corners:
-        corners["zone"] = corners["delivery_zone"]
+    matches = query("matches_clean")
+    corners = query("corners_engineered")
+    for row in corners:
+        if "delivery" not in row:
+            row["delivery"] = {"short": "corto", "direct": "envio", "unknown": "desconocido"}.get(row["execution_type"])
+        if "xg" not in row and "xg_sequence" in row:
+            row["xg"] = row["xg_sequence"]
+        if "zone" not in row and "delivery_zone" in row:
+            row["zone"] = row["delivery_zone"]
     promoted = []
     for row in query("objective_winners"):
         objective = str(row["objective"])
@@ -396,4 +396,4 @@ def agent_evidence(run: Run):
         promoted.append(ModelEvidence(evidence_id="M_" + objective.upper(), objetivo=objective,
                                       modelo_seleccionado=winner, supero_referencia=winner == "candidate",
                                       texto=str(row.get("justification") or f"Ganador canonico: {winner}.")))
-    return build_evidence(matches, corners, rival=run.rival, fecha_corte=run.cutoff_date, promoted_models=promoted)
+    return build_record_evidence(matches, corners, rival=run.rival, fecha_corte=run.cutoff_date, promoted_models=promoted)

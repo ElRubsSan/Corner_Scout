@@ -154,13 +154,6 @@ class CanonicalRepository:
             columns = [item[0] for item in result.description]
             return [dict(zip(columns, row)) for row in result.fetchall()]
 
-    def frame(self, table: str):
-        artifact = self.artifact(table)
-        self._verify(artifact)
-        with duckdb.connect(":memory:") as connection:
-            return connection.execute("SELECT * FROM read_parquet(?)", [str(artifact.path)]).fetch_df()
-
-
 @lru_cache(maxsize=4)
 def _repository(root: str) -> CanonicalRepository:
     return CanonicalRepository(Path(root))

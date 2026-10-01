@@ -51,7 +51,7 @@ representación anterior y no tenía consumidores vigentes.
 Desde la raíz, con dependencias instaladas como indica el README:
 
 ```powershell
-uv run cornerscout ingest
+uv run --extra pipeline cornerscout ingest
 uv run --all-extras cornerscout build
 uv run --all-extras cornerscout train
 ```

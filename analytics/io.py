@@ -10,7 +10,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import httpx
-import pandas as pd
 
 from analytics.contracts import Artifact, StageContract, contract_payload
 from analytics.ingestion import create_bytes, inspect_event_file, sha256_file
@@ -21,7 +20,12 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def data_dir() -> Path:
-    return Path(os.environ.get("CORNERSCOUT_DATA_DIR", ROOT / "data"))
+    archive = ROOT / "backend" / "canonical-data.zip"
+    if not os.environ.get("CORNERSCOUT_DATA_DIR") and archive.is_file():
+        from analytics.bundled_data import bundled_data_dir
+
+        return bundled_data_dir(archive)
+    return Path(os.environ.get("CORNERSCOUT_DATA_DIR") or ROOT / "data")
 
 
 def now() -> str:
@@ -115,6 +119,8 @@ def fetch(relative: str) -> object:
 
 def ingest() -> dict:
     """Download only missing files; never rewrite raw, even on reruns."""
+    import pandas as pd
+
     raw = data_dir() / "raw"
     events_dir = raw / "events"
     events_dir.mkdir(parents=True, exist_ok=True)

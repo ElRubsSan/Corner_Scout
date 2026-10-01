@@ -4,6 +4,8 @@ from __future__ import annotations
 import argparse
 import hashlib
 import os
+import shutil
+import tempfile
 from pathlib import Path
 from urllib.request import urlopen
 from urllib.parse import urlsplit
@@ -18,6 +20,7 @@ STAGES = ("interim/02_clean", "interim/03_scr15", "processed/04_features", "proc
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("command", choices=("package", "restore"))
+    parser.add_argument("--bundle", action="store_true", help="Keep the verified ZIP for serverless cold-start extraction")
     args = parser.parse_args()
     if args.command == "package":
         repo = CanonicalRepository()
@@ -45,14 +48,17 @@ def main() -> None:
         with archive.open("rb") as stream:
             if hashlib.file_digest(stream, "sha256").hexdigest() != checksum:
                 raise ValueError("Data archive SHA256 mismatch")
-        destination = ROOT / "data"
-        with ZipFile(archive) as source:
-            for item in source.infolist():
-                path = (destination / item.filename).resolve()
-                if not path.is_relative_to(destination.resolve()) or not any(item.filename.startswith(stage + "/") for stage in STAGES):
-                    raise ValueError("Archive contains unexpected paths")
-            source.extractall(destination)
-        CanonicalRepository(destination)
+        with tempfile.TemporaryDirectory(prefix="cornerscout-build-") as temporary:
+            destination = Path(temporary) if args.bundle else ROOT / "data"
+            with ZipFile(archive) as source:
+                for item in source.infolist():
+                    path = (destination / item.filename).resolve()
+                    if not path.is_relative_to(destination.resolve()) or not any(item.filename.startswith(stage + "/") for stage in STAGES):
+                        raise ValueError("Archive contains unexpected paths")
+                source.extractall(destination)
+            CanonicalRepository(destination)
+            if args.bundle:
+                shutil.copyfile(archive, ROOT / "backend" / "canonical-data.zip")
         print("OK: restored and verified canonical data for Vercel")
     finally:
         archive.unlink(missing_ok=True)

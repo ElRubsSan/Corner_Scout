@@ -163,3 +163,23 @@ selección por partido, móvil/tema oscuro y recursos visuales. Pasaron tras
 conservar también `target_match_id` en el contexto firmado, evitando diferencias
 de identidad entre selección por fecha y partido. El recorrido completo de
 cuatro E2E anterior usó modo local con archivos. No confundir ambos registros.
+# Runtime ligero Vercel — 2026-09-30
+
+- Primer build público recibido del usuario: commit `6a5ceec`, restauración y
+  verificación canónica aprobadas; bundle 470,03 MB rechazado por límite 225 MB.
+- Dependencias científicas trasladadas al extra `pipeline`; runtime Linux sin
+  pandas, numpy ni pyarrow, import de FastAPI aprobado. Dependencias 75,74 MiB,
+  frente a la medición histórica 317,72 MiB.
+- ZIP completo 101,97 MiB; extracción 146,63 MiB. Referencia dependencias + ZIP
+  177,71 MiB, no es un bundle final Vercel.
+- Suite completa tras refactor de evidencia: 134 aprobadas, 2 omitidas por las
+  condiciones existentes de regresión completa/modelado. Después se aprobaron
+  16 pruebas dirigidas de ZIP, evidencia y sesiones, y 16 de evidencia incluyendo
+  equivalencia canónica para Barcelona, Real Madrid y Atlético Madrid con cortes
+  2016-03-01 y 2016-05-14.
+- `npm --prefix frontend run typecheck` y `npm --prefix frontend run build`: OK.
+- Imagen Linux ligera reconstruida; smoke en puerto 8003 con ZIP montado,
+  extracción a `/tmp`, sesiones firmadas y sin clave: readiness, seis secciones,
+  reporte/agente deterministas aprobados, `missing_api_key`, cero tokens.
+- No se hicieron llamadas reales OpenAI ni nuevo despliegue Vercel. Pendiente
+  tamaño final, instalación automática y arranque en frío en el proveedor.

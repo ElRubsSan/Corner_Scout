@@ -81,3 +81,4 @@ temp/
 *.onnx
 *.parquet
 *.feather
+backend/canonical-data.zip
