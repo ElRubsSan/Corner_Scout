@@ -33,7 +33,7 @@ CASES = [
 
 
 @pytest.mark.parametrize("description,events,expected,valid,reason", CASES, ids=[case[0] for case in CASES])
-def test_notebook_synthetic_cases(description, events, expected, valid, reason):
+def test_scr15_synthetic_cases(description, events, expected, valid, reason):
     found = extract_corners(events, -1)[0]
     if expected is None:
         assert math.isnan(found["shot_within_15s"]), description

@@ -1,4 +1,4 @@
-"""Canonical ingestion primitives extracted from notebook 01."""
+"""Canonical stage-01 ingestion primitives for immutable provider data."""
 
 from __future__ import annotations
 
