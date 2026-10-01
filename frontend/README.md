@@ -104,6 +104,11 @@ la zona observada en lugar de una pregunta genérica de preparación.
 
 ## Vercel
 
-Configurado, **sin despliegue público validado**. Se usará Root Directory
-`frontend`; los pasos y dependencias de backend están en
+Para frontend y backend juntos, usar [la guía Services](../docs/vercel.md)
+y raíz del proyecto `./`. `CORNERSCOUT_SAME_ORIGIN=1` permite rutas relativas
+en build. La sesión firmada se conserva en la pestaña sin exponer secretos;
+los demás navegadores necesitan crear su propio análisis.
+
+Configurado, **sin despliegue público validado**. Para frontend separado se usa
+Root Directory `frontend`; los pasos y dependencias de backend están en
 [la guía de despliegue](../docs/deployment.md).

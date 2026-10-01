@@ -9,7 +9,23 @@ export class Api {
   const response = await fetch('/config.json');
   if (!response.ok) throw new Error('No se pudo leer la configuración del backend');
   const config: {apiBaseUrl:string} = await response.json();
-  return createClient<paths>({baseUrl:config.apiBaseUrl});
+  const client=createClient<paths>({baseUrl:config.apiBaseUrl});
+  client.use({
+   onRequest({request}){
+    const id=/\/scouting-runs\/([a-f0-9]{64})(?:\/|$)/.exec(new URL(request.url).pathname)?.[1];
+    if(id){const token=sessionStorage.getItem(`cornerscout-run-${id}`);if(token)request.headers.set('X-CornerScout-Run',token);}
+    return request;
+   },
+   async onResponse({request,response}){
+    const token=response.headers.get('X-CornerScout-Run');
+    if(token&&request.method==='POST'&&new URL(request.url).pathname.endsWith('/scouting-runs')&&response.ok){
+     const run=await response.clone().json() as {run_id:string};
+     sessionStorage.setItem(`cornerscout-run-${run.run_id}`,token);
+    }
+    return response;
+   }
+  });
+  return client;
  }
  async teams(){return this.unwrap(await (await this.client).GET('/api/v1/teams'));}
  async matches(rival:string,before?:string,limit=380){return this.unwrap(await (await this.client).GET('/api/v1/matches',{params:{query:{rival,before,limit}}}));}

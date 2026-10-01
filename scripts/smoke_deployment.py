@@ -13,13 +13,21 @@ from urllib.error import URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
+RUN_CONTEXT: str | None = None
+
 
 def request(base: str, path: str, payload: dict[str, object] | None = None) -> object:
+    global RUN_CONTEXT
     data = json.dumps(payload).encode("utf-8") if payload is not None else None
     headers = {"Content-Type": "application/json"} if data is not None else {}
+    if RUN_CONTEXT and "/scouting-runs/" in path:
+        headers["X-CornerScout-Run"] = RUN_CONTEXT
     with urlopen(Request(base + path, data=data, headers=headers), timeout=120) as response:
         if response.status not in (200, 201):
             raise RuntimeError(f"Unexpected HTTP status: {response.status}")
+        token = response.headers.get("X-CornerScout-Run")
+        if token:
+            RUN_CONTEXT = token
         return json.load(response)
 
 

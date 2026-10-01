@@ -1,6 +1,6 @@
 import os
 from datetime import date
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from backend import service
 from backend.schemas import *
@@ -12,8 +12,19 @@ app.add_middleware(
     allow_origins=[origin.strip() for origin in os.environ.get(
         "CORNERSCOUT_ORIGINS", "http://localhost:4200,http://127.0.0.1:4200"
     ).split(",") if origin.strip()],
-    allow_methods=["GET", "POST"], allow_headers=["Content-Type"],
+    allow_methods=["GET", "POST"], allow_headers=["Content-Type", "X-CornerScout-Run"],
+    expose_headers=["X-CornerScout-Run"],
 )
+
+
+@app.middleware("http")
+async def session_context(request: Request, call_next):
+    from backend.run_context import run_context
+    context = run_context.set(request.headers.get("X-CornerScout-Run"))
+    try:
+        return await call_next(request)
+    finally:
+        run_context.reset(context)
 PREFIX = "/api/v1"
 NOT_FOUND = {404: {"model": ErrorResponse, "description": "Recurso no encontrado"}}
 CONFLICT = {409: {"model": ErrorResponse, "description": "Conflicto con la version o ventana canonica"}}
@@ -50,8 +61,16 @@ def matches(rival: str | None = None, before: date | None = None, limit: int = Q
     operation_id="createRun",
     responses={**NOT_FOUND, **CONFLICT, **INVALID, **UNAVAILABLE},
 )
-def create_run(request: RunRequest) -> Run:
-    return service.create_run(request)
+def create_run(request: RunRequest, response: Response) -> Run:
+    from backend.run_context import enabled, sign
+    run = service.create_run(request)
+    if enabled():
+        response.headers["X-CornerScout-Run"] = sign({
+            "run_id": run.run_id, "rival": run.rival, "cutoff": run.cutoff_date,
+            "analyst": run.analyst, "dataset_version": run.dataset_version,
+            "target_match_id": request.target_match_id,
+        })
+    return run
 
 
 @app.get(PREFIX + "/scouting-runs/{run_id}", operation_id="getRun", responses={**NOT_FOUND, **CONFLICT, **UNAVAILABLE})

@@ -4,6 +4,11 @@ Docker se validó localmente con un motor real y artefactos canónicos verificad
 
 ## Frontend Vercel
 
+**Ruta preferida gratuita:** frontend y backend juntos mediante el
+`vercel.json` de la raíz. Seguir [Vercel Services](vercel.md), con raíz `./`,
+sesiones firmadas y `CORNERSCOUT_SAME_ORIGIN=1`. Los pasos siguientes de raíz
+`frontend` y URL externa corresponden a la alternativa de frontend separado.
+
 Configurar Root Directory `frontend`, instalar con `npm ci` y compilar con `npm run build`. `frontend/vercel.json` publica `dist/cornerscout/browser` y enruta la SPA.
 
 Definir en las variables de entorno de **build de Vercel** `CORNERSCOUT_API_BASE_URL=https://<origen-publico-del-backend>` (sin `/api/v1`). `npm run build` genera `public/config.json` con ese origen; rechaza una build de Vercel sin esta variable. La URL es pública y no contiene claves. En local, sin la variable, `apiBaseUrl` queda vacío y se usa el proxy de desarrollo. En backend, `CORNERSCOUT_ORIGINS` debe contener los orígenes Vercel autorizados, separados por comas; añadir tanto el dominio final como los dominios de preview que vayan a probarse. No añadir barras ni rutas a los orígenes.

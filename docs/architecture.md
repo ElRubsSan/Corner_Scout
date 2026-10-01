@@ -39,6 +39,12 @@ FastAPI abre exclusivamente contratos y artefactos canonicos de `02_clean`, `03_
 
 Cada scouting run fija rival, fecha de corte, ocho `match_id`, fingerprint y runs canonicos. Se persiste bajo `data/processed/runs`; un cambio de version invalida runs anteriores.
 
+En modo opcional `CORNERSCOUT_STATELESS_RUNS=1`, el backend firma el contexto
+en `X-CornerScout-Run` y el navegador lo conserva en `sessionStorage`. Cada
+petición reconstruye la ventana desde los artefactos y comprueba ID y versión;
+no escribe runs en disco. El secreto es backend-only. Este modo está preparado
+para Vercel; su publicación pública sigue pendiente. Ver [guía](vercel.md).
+
 Las tablas consultables incluyen `matches_clean`, `corners_engineered`,
 `cluster_assignments`, `cluster_centers`, `objective_winners` y
 `temporal_metrics`. El repositorio verifica también `03_scr15` y sus secuencias,

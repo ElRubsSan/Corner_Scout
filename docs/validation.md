@@ -137,3 +137,29 @@ cierre y exclusión de desconocidos. Se adapta a móvil y ambos temas.
 Typecheck y build aprobados; **4 E2E aprobados**, incluyendo apertura/cierre
 con Enter y comprobación móvil en tema oscuro sin desbordamiento horizontal.
 No hay cambios de cálculo ni de backend.
+
+## Preparación Vercel Services · 2026-10-01 UTC
+
+Configuración de dos servicios con mismo dominio, ZIP de datos verificado en
+build y modo opcional de contexto firmado para runs sin escritura. Pruebas
+locales: 128 passed, 2 skipped antes de añadir la integración adicional de
+sesión real; Angular typecheck/build y cuatro E2E aprobados.
+El ZIP local tiene 106.922.211 bytes; SHA-256:
+`00126951cb8e1e6a02c8d610be0c458aaa3c9b01a43493ea9253f234d9edb68e`.
+
+Medición de dependencias Linux en imagen de servicio: 317,72 MiB; datos
+146,63 MiB; suma aproximada 464,35 MiB. No es un bundle medido en Vercel.
+Pendientes: publicar asset, configurar secretos/importar proyecto en dashboard,
+build real Services y validación pública con OpenAI. No se subieron archivos
+ni se realizaron commits, push, release o despliegue.
+
+Las cuatro pruebas específicas de sesiones pasaron, incluida reconstrucción
+desde un cliente nuevo usando datos canónicos reales sin escribir runs,
+selección por fecha y partido, rechazo de firmas alteradas y de fingerprints incompatibles. OpenAPI conserva
+el esquema HTTP existente. Verificación documental: 92 enlaces/29 documentos.
+
+Se probaron además tres recorridos de navegador con modo stateless activo:
+selección por partido, móvil/tema oscuro y recursos visuales. Pasaron tras
+conservar también `target_match_id` en el contexto firmado, evitando diferencias
+de identidad entre selección por fecha y partido. El recorrido completo de
+cuatro E2E anterior usó modo local con archivos. No confundir ambos registros.

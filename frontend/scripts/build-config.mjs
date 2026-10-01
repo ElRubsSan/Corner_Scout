@@ -2,7 +2,7 @@ import { writeFileSync } from 'node:fs';
 
 // This origin is public browser configuration. Never place backend credentials here.
 const origin = (process.env.CORNERSCOUT_API_BASE_URL ?? '').trim().replace(/\/$/, '');
-if (process.env.VERCEL && !origin) {
+if (process.env.VERCEL && !origin && process.env.CORNERSCOUT_SAME_ORIGIN !== '1') {
   throw new Error('Configure CORNERSCOUT_API_BASE_URL with the public HTTPS backend origin before deploying.');
 }
 if (origin) {

@@ -261,12 +261,18 @@ esa copia. No son una dependencia de instalación ni ejecución. Ver
 
 ## Despliegue: pendiente
 
+La ruta preparada para alojamiento gratuito es **Vercel Services con Angular
+y FastAPI en el mismo dominio**. Seguir [Vercel paso a paso](docs/vercel.md):
+incluye ZIP canónico fuera de Git, build verificado y sesiones firmadas sin
+disco persistente. La publicación y el tamaño final del bundle aún requieren
+verificación en Vercel. OpenAI usa la clave del propietario y tiene consumo
+facturado independiente del alojamiento.
+
 El backend Docker y OpenAI se probaron localmente. **No hay despliegue público
-validado**. Antes de publicar se requiere alojamiento del backend con los
-artefactos persistentes y después configurar la URL del frontend y CORS.
-Vercel y las pruebas HTTPS públicas quedan pendientes. No se afirma que la
-configuración serverless del proyecto del profesor sirva sin adaptación para
-nuestros datos. [Guía de despliegue](docs/deployment.md).
+validado**. La ruta Services empaqueta los artefactos y usa contexto firmado
+para evitar depender de escritura persistente. La alternativa de frontend
+separado requiere backend público, URL y CORS. Vercel y las pruebas HTTPS
+públicas quedan pendientes. [Guía de despliegue](docs/deployment.md).
 
 Fuente: [StatsBomb Open Data](https://github.com/statsbomb/open-data), revisión
 `4b73468fc5b0f1950f9f66fada70ad3a4f9327cb`.

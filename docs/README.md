@@ -15,6 +15,7 @@ Empieza por [instalación y primer análisis](../README.md).
 | Revisar comandos probados | [Validación](validation.md) |
 | Revisar limpieza y siguientes pasos | [Cierre previo al despliegue](predeploy.md) |
 | Preparar Docker y publicación futura | [Despliegue](deployment.md) |
+| Publicar ambos servicios en Vercel Hobby | [Vercel paso a paso](vercel.md) |
 | Presentar el proyecto | [Demo](demo.md), [guion](presentation.md) |
 | Leer la entrega separada | [Entrega académica](academic-report.md), [Colab](colab.md) |
 | Consultar documentación de proveedores | [Fuentes oficiales](official-sources.md) |

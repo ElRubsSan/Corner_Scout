@@ -117,13 +117,32 @@ def create_run(request: RunRequest) -> Run:
     run_id = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()
     run = Run(run_id=run_id, rival=request.rival, analyst=request.analyst, cutoff_date=cutoff,
               matches=matches, dataset_version=canonical.fingerprint, canonical_runs=canonical.identity)
-    write_json(data_dir() / "processed" / "runs" / f"{run_id}.json", run.model_dump())
+    from backend.run_context import enabled
+    if not enabled():
+        write_json(data_dir() / "processed" / "runs" / f"{run_id}.json", run.model_dump())
     return run
 
 
 def get_run(run_id: str) -> Run:
     if len(run_id) != 64 or any(char not in "0123456789abcdef" for char in run_id):
         raise HTTPException(404, "Analisis desconocido")
+    from backend.run_context import enabled, run_context, verify
+    if enabled():
+        token = run_context.get()
+        if not token:
+            raise HTTPException(404, "Analisis desconocido")
+        payload = verify(token)
+        if payload.get("run_id") != run_id:
+            raise HTTPException(404, "Analisis desconocido")
+        if payload.get("dataset_version") != repo().fingerprint:
+            raise HTTPException(409, "Version canonica distinta; cree otro analisis")
+        target = payload.get("target_match_id")
+        run = create_run(RunRequest(rival=payload.get("rival"),
+                                   cutoff_date=None if target else payload.get("cutoff"),
+                                   target_match_id=target, analyst=payload.get("analyst")))
+        if run.run_id != run_id:
+            raise HTTPException(409, "La ventana del analisis cambio")
+        return run
     path = data_dir() / "processed" / "runs" / f"{run_id}.json"
     if not path.exists():
         raise HTTPException(404, "Analisis desconocido")
