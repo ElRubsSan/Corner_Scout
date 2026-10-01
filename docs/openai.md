@@ -1,38 +1,72 @@
-# OpenAI en FastAPI
+# Reporte y agente
 
-## Alcance
+Solo FastAPI lee `OPENAI_API_KEY` y `OPENAI_MODEL`. Crear `.env` desde
+`.env.example` y arrancar con `--env-file .env` como indica el README. Docker
+Compose carga `.env` automáticamente. El navegador solo llama a nuestra API.
 
-OpenAI esta integrado exclusivamente en FastAPI mediante el SDK oficial, Responses API, Structured Outputs y modelos Pydantic. Se usa para redactar el reporte tactico y responder mediante un agente acotado; Python conserva todos los calculos, selecciones, referencias y decisiones.
+`backend/openai.py` construye una salida Pydantic de reporte, verifica citas y
+cifras y usa fallback ante clave ausente, salida inválida o proveedor caído.
+El modelo configurado debe aceptar Responses API y salida estructurada.
 
-Configurar `OPENAI_API_KEY` y, opcionalmente, `OPENAI_MODEL` solo en el entorno del backend. El modelo predeterminado implementado es `gpt-4.1-mini`. `.env.example` es una plantilla y no debe contener secretos. Angular y Vercel frontend nunca reciben la clave.
+## Configurar y comprobar
 
-```powershell
-uv sync --extra api --extra llm
-$env:OPENAI_API_KEY="..."
-$env:OPENAI_MODEL="gpt-4.1-mini"
-uv run --extra api --extra llm uvicorn backend.main:app --host 127.0.0.1 --port 8000
+Desde la raíz, instala `uv sync --locked --all-extras`. Crea `.env` con:
+
+```dotenv
+OPENAI_API_KEY=
+OPENAI_MODEL=gpt-4.1-mini
+CORNERSCOUT_ORIGINS=http://localhost:4200,http://127.0.0.1:4200
 ```
 
-No se ha ejecutado una llamada real con una clave OpenAI; la cobertura actual usa mocks y fallback.
+Para empezar sin proveedor, deja la clave vacía. Para usarlo, introduce tu
+clave en ese archivo local y escoge un modelo disponible en tu cuenta.
+Arranca FastAPI con el comando del README y reinícialo después de editar `.env`.
+Uvicorn sin `--env-file .env` solo recibe las variables de la terminal.
 
-## Reporte
+En Angular, crea un análisis y solicita Reporte o Asistente. La respuesta
+identifica el modo utilizado. Un error de modelo, credenciales o verificación
+puede activar fallback aunque exista una clave; consulta el motivo de la
+respuesta HTTP en Swagger o la pestaña Network del navegador.
 
-FastAPI construye una entrada validada con rival, corte, ocho partidos, SCR-15, xG descriptivo, patrones, evidencia y limitaciones. OpenAI solo redacta sobre esa entrada. La salida estructurada se valida con Pydantic y se rechazan referencias desconocidas, cifras no respaldadas y lenguaje determinista no sustentado.
+`backend/agent.py` registra tres herramientas: `obtener_historial`,
+`obtener_perfil_corners`, `consultar_evidencia`. La sesión fija rival y corte.
+Las cifras provienen de Python. Hay una única reparación final sin nuevas
+tools; un segundo fallo activa fallback. Límites por sesión: cuatro tools,
+cuatro turnos, 45 segundos y 12.000 tokens. No hay apuestas, web, SQL libre,
+entrenamiento ni cambios de datos por el agente.
 
-La falta de clave produce `missing_api_key`; una salida invalida produce `invalid_output`; un fallo del proveedor produce `provider_unavailable`. En todos esos casos se entrega una plantilla determinista y el modo de fallback queda visible. El timeout del cliente es de 20 segundos y no se filtran errores internos al frontend.
+El proveedor recibe evidencia ya calculada. En el agente, Python inserta las
+cifras y la lectura cronológica después de verificar el borrador; una respuesta
+directa sin herramientas no sustituye la consulta requerida. El reporte
+verifica las cifras contra las evidencias citadas. Ninguna de esas rutas
+descarga datos ni permite al modelo producir SQL.
 
-## Agente y tools
+El reporte limita la salida a 2.500 tokens y usa timeout de 20 segundos por
+solicitud al proveedor. El SDK admite un reintento: ese timeout no equivale a
+un límite absoluto de duración de todo el endpoint.
 
-El agente dispone exactamente de tres tools registradas, estrictamente tipadas y de solo lectura:
+Las llamadas reales locales y su consumo están registrados en
+`docs/deployment.md`. La entrega Colab con Terra también registró aprobación,
+pero es un entorno distinto: no prueba el despliegue público. Los costes
+facturados se consultan en el panel del proveedor. Un fallback válido no se
+cuenta como aprobación de OpenAI. Repetir llamadas reales puede generar cargos.
 
-- `obtener_historial`: devuelve los ocho `match_id` previos de la sesion.
-- `obtener_perfil_corners`: devuelve indicadores, limitaciones y resultados de modelos promovidos.
-- `consultar_evidencia`: devuelve el detalle de `evidence_ids` existentes.
+## Pruebas reproducibles sin cargos
 
-Rival y fecha de corte quedan bloqueados a la sesion. No hay tool de SQL, escritura, archivos, web, raw, entrenamiento ni calculo libre. Se validan argumentos, citas y cifras; se aplican presupuestos de llamadas, tiempo, tokens y turnos. Preguntas fuera de alcance y fallos del proveedor usan respuesta determinista.
+Desde la raíz:
 
-## Limites
+```powershell
+uv run --all-extras pytest tests/test_openai.py tests/test_agent.py tests/test_agent_tools.py
+```
 
-Validar IDs y cifras no demuestra la correccion semantica completa de texto libre. Las recomendaciones requieren revision humana y siempre conservan las limitaciones: datos historicos de LaLiga 2015/16, ocho partidos, sin video, tracking ni datos actuales.
+Las pruebas usan proveedores simulados para verificar modos, alcance, citas,
+cifras y reparación final. Para un smoke HTTP sin proveedor, arranca el backend
+con clave vacía y ejecuta:
 
-Fuentes oficiales: https://platform.openai.com/docs/guides/structured-outputs, https://platform.openai.com/docs/guides/function-calling y https://github.com/openai/openai-python.
+```powershell
+uv run --extra api python scripts/smoke_deployment.py --base-url http://127.0.0.1:8000 --assistant-mode deterministic
+```
+
+`--assistant-mode openai` hace llamadas reales y exige ese modo. No se ejecuta
+automáticamente como parte de la validación de limpieza. El modo por defecto
+`skip` del smoke no llama al reporte ni al agente.

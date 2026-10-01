@@ -4,6 +4,8 @@
 data
 artifacts
 notebooks
+*.ipynb
+*.zip
 .env
 .env.*
 **/__pycache__

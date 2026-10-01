@@ -13,6 +13,7 @@ class ErrorResponse(Contract):
 
 class Team(Contract):
     name: str
+    team_id: int | None = None
 
 
 class Match(Contract):
@@ -21,6 +22,15 @@ class Match(Contract):
     kick_off: str
     home_team: str
     away_team: str
+    home_team_id: int | None = None
+    away_team_id: int | None = None
+    home_score: int | None = None
+    away_score: int | None = None
+
+
+class MatchProfile(Match):
+    rival_corners: int = Field(ge=0)
+    main_takers: list[str]
 
 
 class RunRequest(Contract):
@@ -51,6 +61,8 @@ class Corner(Contract):
     match_id: int
     event_id: str
     player: str
+    player_id: int | None = None
+    team_id: int | None = None
     x: float
     y: float
     end_x: float
@@ -75,6 +87,56 @@ class Group(Contract):
     count: int
 
 
+class DestinationCell(Contract):
+    x: int = Field(ge=0, lt=120)
+    y: int = Field(ge=0, lt=80)
+    count: int = Field(gt=0)
+
+
+class DestinationHeatmap(Contract):
+    cell_width: int = 10
+    cell_height: int = 10
+    filtered_corners: int = Field(ge=0)
+    included: int = Field(ge=0)
+    excluded_spatial: int = Field(ge=0)
+    excluded_non_direct: int = Field(ge=0)
+    max_count: int = Field(ge=0)
+    cells: list[DestinationCell]
+    zones: list[Group]
+
+
+class HabitZone(Contract):
+    label: str
+    count: int = Field(ge=0)
+    matches: int = Field(ge=0, le=8)
+
+
+class HabitSide(Contract):
+    label: str
+    corners: int = Field(ge=0)
+    direct: int = Field(ge=0)
+    zones: list[HabitZone]
+
+
+class HabitTaker(Contract):
+    name: str
+    player_id: int | None
+    corners: int = Field(ge=0)
+    matches: int = Field(ge=0, le=8)
+    short: int = Field(ge=0)
+    sides: list[Group]
+    zones: list[HabitZone]
+
+
+class HabitProfile(Contract):
+    corners: int = Field(ge=0)
+    direct: int = Field(ge=0)
+    max_match_corners: int = Field(ge=0)
+    sides: list[HabitSide]
+    takers: list[HabitTaker]
+    zones: list[HabitZone]
+
+
 class Summary(Contract):
     rival: str
     cutoff_date: str
@@ -82,6 +144,7 @@ class Summary(Contract):
     corners: int
     evaluable_corners: int
     excluded_corners: int
+    classified_direct_corners: int
     shots: int
     scr15: float | None = Field(ge=0, le=1)
     xg_per_corner: float | None = Field(ge=0)

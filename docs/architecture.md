@@ -22,10 +22,10 @@ StatsBomb Open Data / Google Drive
   -> FastAPI + DuckDB controlado
        -> 06_reporte_tactico_llm: evidencia/OpenAI/fallback
        -> 07_herramientas_agente: tres tools read-only
-  -> OpenAPI -> Angular standalone -> Vercel
+  -> OpenAPI -> Angular standalone -> Vercel (pendiente)
 ```
 
-Los notebooks `01`-`07` explican el proceso; los modulos `analytics` y `backend` son la implementacion ejecutable canonica extraida.
+La entrega académica explica el proceso por separado; `analytics` y `backend` son la implementación ejecutable canónica.
 
 ## Limites de etapas
 
@@ -39,6 +39,36 @@ FastAPI abre exclusivamente contratos y artefactos canonicos de `02_clean`, `03_
 
 Cada scouting run fija rival, fecha de corte, ocho `match_id`, fingerprint y runs canonicos. Se persiste bajo `data/processed/runs`; un cambio de version invalida runs anteriores.
 
+Las tablas consultables incluyen `matches_clean`, `corners_engineered`,
+`cluster_assignments`, `cluster_centers`, `objective_winners` y
+`temporal_metrics`. El repositorio verifica también `03_scr15` y sus secuencias,
+aunque no las exponga como una tabla de consulta pública.
+
+```mermaid
+sequenceDiagram
+    actor U as Usuario
+    participant F as Angular
+    participant B as FastAPI
+    participant D as Artefactos verificados
+    participant O as OpenAI opcional
+    U->>F: Rival y corte histórico
+    F->>B: Consultar ocho partidos previos
+    B->>D: Lectura controlada de Parquet
+    D-->>B: Ventana histórica
+    B-->>F: Partidos para confirmar
+    F->>B: Crear scouting run
+    B-->>F: Run persistido
+    F->>B: Solicitar reporte o pregunta
+    B->>D: Calcular y consultar evidencia de la sesión
+    alt Proveedor configurado y salida válida
+        B->>O: Evidencia tipada y solicitud acotada
+        O-->>B: Redacción estructurada
+        B-->>F: Respuesta verificada
+    else Clave ausente, error o salida inválida
+        B-->>F: Respaldo determinista identificado
+    end
+```
+
 ## OpenAI y agente
 
 `backend.openai` usa Responses API y Structured Outputs/Pydantic para el reporte. `OPENAI_API_KEY` y `OPENAI_MODEL` existen solo en backend. Una clave ausente, fallo de proveedor o salida no validable activa una plantilla determinista identificada.
@@ -49,6 +79,24 @@ Cada scouting run fija rival, fecha de corte, ocho `match_id`, fingerprint y run
 
 Angular standalone consume OpenAPI mediante cliente tipado. La cancha SVG usa coordenadas StatsBomb 120 x 80. `tools/codegen` aisla la version TypeScript del generador. El navegador no contiene secretos ni llama directamente a OpenAI.
 
+`frontend/scripts/build-config.mjs` publica el origen del backend en
+`config.json`. En desarrollo las rutas relativas usan `proxy.conf.json`.
+Los escudos y retratos se distribuyen en `public/media`, sin descargas en build.
+
 ## Despliegue
 
-Vercel y el contenedor backend estan configurados, sin despliegue ni prueba real de Docker. El contenedor debe recibir `02_clean`, `03_scr15`, `04_features`, `05_modeling` y un volumen escribible para `runs`; no debe usar artefactos demo antiguos. Ver `docs/deployment.md`.
+Docker se probó localmente con un motor real. La publicación externa y Vercel están pendientes. El contenedor recibe `02_clean`, `03_scr15`, `04_features`, `05_modeling` en lectura y `runs` con escritura; no usa artefactos demo antiguos. Ver `docs/deployment.md`.
+
+## Puntos de entrada y mantenimiento
+
+- `analytics/cli.py`: `ingest`, `build`, `train` y etapas individuales.
+- `backend/main.py`: aplicación ASGI y endpoints `/api/v1`.
+- `backend/repository.py`: contratos, hashes, linaje y DuckDB.
+- `backend/service.py`: selección histórica e indicadores de la sesión.
+- `backend/openai.py`, `backend/agent.py`: proveedor y validación de respuestas.
+- `frontend/src/app/features/`: vistas; `core/`: API y utilidades compartidas.
+- `scripts/export_openapi.py` y `tools/codegen`: contrato HTTP y cliente.
+
+Instalación: [README](../README.md). Entradas y entidades:
+[contratos](../contracts/README.md). Estado probado:
+[validación](validation.md). Cierre de limpieza: [predeploy](predeploy.md).

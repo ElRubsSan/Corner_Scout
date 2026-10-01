@@ -1,95 +1,276 @@
-# CornerScout
+# CornerScout ⚽
 
-CornerScout es un MVP academico de analisis prepartido de corners ofensivos. El caso de estudio usa StatsBomb Open Data de LaLiga 2015/16 (`competition_id=11`, `season_id=27`): todos los resultados son historicos y no describen el estado actual de los equipos.
+**Del córner observado a una preparación táctica con evidencia.** MVP académico
+del Diplomado en Ciencia de Datos: analiza los ocho partidos anteriores de un
+rival, muestra sus ejecuciones y destinos, y permite consultar un asistente.
 
-## Estado
+> Caso histórico: **LaLiga 2015/16**, StatsBomb Open Data. No son datos actuales
+> ni una garantía de resultados deportivos. Publicación externa pendiente.
 
-La aplicacion local incluye pipeline modular canonico `01`-`07`, evaluacion temporal, FastAPI/OpenAPI, Angular standalone y generacion OpenAI exclusivamente desde FastAPI con fallback determinista. No se ha realizado una llamada real a OpenAI, validado Docker con un motor real ni desplegado el sistema.
+[Instalar y ejecutar](#1-instalar-las-herramientas) ·
+[Datos](docs/data-restoration.md) · [Arquitectura](docs/architecture.md) ·
+[Validación](docs/validation.md) · [Despliegue pendiente](docs/deployment.md)
 
-Resultados canonicos: 380 partidos, 1,295,354 eventos, 3,841 corners, 3,835 secuencias SCR-15 evaluables, 6 excluidas por ambiguedad temporal y 1,245 secuencias con tiro.
+## Una mirada a la aplicación
 
-## Pipeline canonico
+![Resumen táctico de una muestra histórica de Barcelona](docs/images/summary.png)
 
-| Etapa | Implementacion | Salida principal |
-|---|---|---|
-| `01_ingestion` | `analytics.ingestion`, `analytics.io` | contrato de ingesta y raw verificado |
-| `02_clean` | `analytics.cleaning`, `analytics.context` | eventos normalizados y contexto previo |
-| `03_scr15` | `analytics.scr15` | secuencias SCR-15 auditables |
-| `04_features` | `analytics.features` | variables prepartido y K-Means descriptivo |
-| `05_modeling` | `analytics.modeling` | evaluacion temporal y decisiones por objetivo |
-| `06_reporte_tactico_llm` | `analytics.tactical_report`, `backend.openai` | evidencia y reporte validado con fallback |
-| `07_herramientas_agente` | `analytics.agent_tools`, `backend.agent` | agente acotado a tres tools de solo lectura |
+![Mapa de calor suavizado de destinos de pases de córner](docs/images/map.png)
 
-Los notebooks `01`-`07` conservan la explicacion y evidencia cientifica; la logica ejecutable canonica ya esta extraida a modulos Python probados. Los originales aportados permanecen en `notebooks/prueba/` y sus hashes en `notebooks/source-manifest.json`.
+Las capturas se obtienen del recorrido E2E local. Los puntos muestran destinos
+del pase; las cifras pertenecen a la ventana seleccionada de 2015/16.
 
-## Instalacion y ejecucion
+## Qué incluye
 
-Requisitos: uv, Python >=3.11, Node y npm. Desde la raiz:
+- Seis secciones: Resumen, Mapa, Patrones, Reporte, Calidad y Asistente.
+- 380 partidos, 1.295.354 eventos y 3.841 córners; 3.835 evaluables y seis
+  excluidos por reloj ambiguo. 1.245 secuencias evaluables tienen tiro.
+- FastAPI con contratos verificados y Angular standalone con cliente OpenAPI.
+- 20 escudos y 202 retratos de cobradores incluidos, sin descargarlos al compilar.
+- OpenAI exclusivamente en el backend, con respuesta determinista de respaldo.
+
+## Arquitectura
+
+```mermaid
+flowchart LR
+    S[StatsBomb Open Data] --> P[Pipeline Python offline 01–05]
+    P --> D[Contratos y Parquet verificados]
+    D --> B[FastAPI y DuckDB]
+    B --> O[OpenAI: reporte y agente]
+    B --> F[Angular: seis secciones]
+    O --> B
+```
+
+Los datos se descargan y los modelos se entrenan **antes de arrancar la app**.
+Una solicitud web no descarga StatsBomb ni entrena. DuckDB consulta tablas
+controladas; el agente no genera SQL.
+
+## 1. Instalar las herramientas
+
+Necesitas Git, Python **3.11 o superior**, uv y Node **24.15 o superior dentro
+de la versión 24** (incluye npm). Docker Desktop es opcional para la ruta Docker.
+
+Descargas: [Git](https://git-scm.com/downloads),
+[Python](https://www.python.org/downloads/),
+[uv](https://docs.astral.sh/uv/getting-started/installation/),
+[Node](https://nodejs.org/en/download),
+[Docker Desktop](https://www.docker.com/products/docker-desktop/).
+
+En Windows instala Git y Python desde sus instaladores oficiales; para Python,
+habilita la opción de añadirlo a PATH. Instala Node 24 con npm. Para uv, abre
+PowerShell y usa el comando oficial:
+
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+Este comando descarga y ejecuta el instalador de uv. Abre una terminal nueva
+al terminar. Docker Desktop solo es necesario si vas a seguir la ruta Docker;
+inícialo y espera a que el motor esté disponible antes de usar `docker compose`.
+
+En una terminal PowerShell verifica:
+
+```powershell
+git --version
+python --version
+uv --version
+node --version
+npm --version
+```
+
+Si una herramienta no se reconoce, termina su instalación y abre una terminal
+nueva. Los comandos siguientes se ejecutan desde la raíz del proyecto.
+
+## 2. Obtener e instalar CornerScout
+
+```powershell
+git clone https://github.com/ElRubsSan/Corner_Scout.git
+Set-Location Corner_Scout
+```
+
+Abre la carpeta descargada en tu editor y una terminal dentro de ella. Debes
+ver `pyproject.toml`, `uv.lock`, `backend/` y `frontend/`.
 
 ```powershell
 uv sync --locked --all-extras
-uv run cornerscout ingest
-uv run cornerscout clean
-uv run cornerscout scr15
-uv run cornerscout features
-uv run --extra ml cornerscout train
-uv run --extra api --extra llm uvicorn backend.main:app --host 127.0.0.1 --port 8000
+npm --prefix frontend ci
 ```
 
-`uv run cornerscout build` ejecuta `02_clean`, `03_scr15` y `04_features` en orden. La ingesta es explicita y reanudable; no se descarga ni entrena durante una solicitud web. Para restaurar la copia de Drive, seguir `docs/data-restoration.md` y no sobrescribir `data/raw`.
+uv crea `.venv` y npm instala exactamente el lockfile del frontend. No necesitas
+activar manualmente el entorno cuando usas `uv run`.
 
-En otra terminal:
+Para macOS/Linux, instala las mismas herramientas con sus guías oficiales.
+Los comandos `uv` y `npm --prefix` son los mismos; entra con `cd Corner_Scout`
+y usa `export NOMBRE=valor` en lugar de `$env:NOMBRE = "valor"`.
+
+## 3. Preparar datos y modelos (una sola vez)
+
+Los datos pesados **no están en Git**. Una clonación recién instalada necesita
+descargarlos o restaurarlos; copiar solo el código no basta para arrancar la API.
+
+### Opción A: construir desde StatsBomb
 
 ```powershell
-npm --prefix frontend ci
+uv run cornerscout ingest
+uv run --all-extras cornerscout build
+uv run --all-extras cornerscout train
+```
+
+La primera ejecución requiere Internet, espacio y tiempo: procesa más de un
+millón de eventos. No se fija una duración universal. La descarga usa una
+revisión concreta del proveedor y reanuda archivos faltantes sin sobrescribir
+raw. `build` ejecuta limpieza, SCR-15 y variables; `train` publica modelado.
+
+### Opción B: restaurar una copia completa
+
+Sigue [restauración de datos](docs/data-restoration.md). Debes conservar los
+contratos y **todos** los archivos declarados de `interim/02_clean`,
+`interim/03_scr15`, `processed/04_features` y `processed/05_modeling`.
+No sustituirlos por Parquet antiguos con nombres parecidos. Para usar otro
+directorio padre de `raw/`, `interim/` y `processed/`:
+
+```powershell
+$env:CORNERSCOUT_DATA_DIR = "D:\CornerScout-data"
+```
+
+## 4. Configurar OpenAI (opcional)
+
+Copia `.env.example` a `.env` desde el editor y completa únicamente en ese archivo:
+
+```dotenv
+OPENAI_API_KEY=tu_clave
+OPENAI_MODEL=tu_modelo_disponible
+CORNERSCOUT_ORIGINS=http://localhost:4200,http://127.0.0.1:4200
+```
+
+También puedes copiarlo desde PowerShell **si todavía no existe `.env`**:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+No publiques `.env`. El modelo debe estar disponible para tu cuenta. El notebook
+académico ejecutado utilizó Terra con éxito; eso no demuestra que cualquier
+cuenta tenga acceso al mismo identificador. La app usa su configuración backend.
+Sin clave, reporte y agente funcionan con respaldo determinista visible.
+
+El comando de arranque de abajo carga `.env` explícitamente. Si no deseas OpenAI,
+puedes dejar `OPENAI_API_KEY` vacío. Reinicia el backend al cambiar el archivo.
+
+## 5. Arrancar la aplicación: dos terminales
+
+**Terminal 1 — backend**, desde la raíz:
+
+```powershell
+uv run --all-extras uvicorn backend.main:app --env-file .env --host 127.0.0.1 --port 8000
+```
+
+Si no creaste `.env`, omite `--env-file .env`.
+
+**Terminal 2 — frontend**, también desde la raíz:
+
+```powershell
 npm --prefix frontend start
 ```
 
-Abrir http://127.0.0.1:4200; Swagger queda en http://127.0.0.1:8000/docs. Ejemplo historico: rival Barcelona y corte exclusivo `2016-03-01`.
+- Aplicación: http://127.0.0.1:4200
+- Swagger: http://127.0.0.1:8000/docs
+- Proceso activo: http://127.0.0.1:8000/api/v1/health
+- Datos preparados: http://127.0.0.1:8000/api/v1/ready
 
-## OpenAI y agente
+El frontend local utiliza el proxy hacia el backend. Detén cada servicio con
+Ctrl+C en su terminal. No hace falta abrir ni ejecutar notebooks para usarlo.
 
-`OPENAI_API_KEY` y `OPENAI_MODEL` son variables exclusivas del backend. Sin clave, ante indisponibilidad o si la salida estructurada no supera las validaciones, FastAPI devuelve un fallback determinista identificado como tal. Angular nunca recibe claves, prompts ni acceso directo al proveedor. No se afirma una llamada real con una clave.
+## 6. Primer análisis
 
-El agente solo puede invocar `obtener_historial`, `obtener_perfil_corners` y `consultar_evidencia`. Las tres tools son de solo lectura, operan sobre la sesion bloqueada por rival y fecha de corte, no aceptan SQL libre y no calculan ni entrenan modelos. Ver `docs/openai.md`.
+1. Abre «Nuevo análisis» y selecciona Barcelona como rival.
+2. Elige «Hasta una fecha histórica» y establece `2016-03-01`.
+3. Consulta y confirma los ocho partidos anteriores; el día de corte no entra.
+4. Crea el análisis. Recorre Resumen, Mapa, Patrones y Calidad.
+5. En Reporte solicita una lectura; en Asistente pregunta qué partidos se
+   analizaron o cuántos córners evaluables terminaron en tiro.
 
-## Metodo y decisiones
+Las listas se leen cronológicamente. Un destino visual representa un pase,
+no un remate. Calidad explica qué modelo fue seleccionado y los límites.
 
-SCR-15 comienza en un `Pass` de tipo `Corner` y termina por el primer cierre aplicable: 15 segundos, cambio de `possession_team`, fin de periodo o nuevo corner. Un tiro exactamente a los 15 segundos cuenta si no ocurrio antes otro cierre. Un cambio de ID de posesion con el mismo equipo y otras reanudaciones solo se auditan.
+## 7. Verificar una instalación
 
-Decisiones canonicas de `05_modeling`:
-
-- `scr15`: `league_reference`.
-- `short_direct`: `candidate`.
-- `delivery_zone`: `not_modelled`.
-- `corner_count`: `candidate`.
-- K-Means queda fijo con datos predesarrollo, es descriptivo y no entra como predictor.
-
-FastAPI consume exclusivamente contratos y artefactos canonicos verificados de `02_clean`, `03_scr15`, `04_features` y `05_modeling`. DuckDB ejecuta consultas controladas; la API no consulta los artefactos demo antiguos.
-
-## Verificacion registrada
-
-- Python: `uv run --all-extras pytest` dio `77 passed, 1 skipped`.
-- Angular: `npm --prefix frontend run typecheck` y `npm --prefix frontend run build` pasaron.
-- Navegador: `npm --prefix frontend run e2e` paso 2 recorridos.
-- No se ha probado Docker, Vercel ni una llamada real a OpenAI.
-
-Para validar notebooks sin reescribirlos: `uv run --all-extras python scripts/notebooks.py --through 7`. Para contratos: `uv run --extra api python scripts/export_openapi.py`, `npm --prefix tools/codegen ci` y `npm --prefix tools/codegen run generate`.
-
-## Datos y arquitectura
-
-Los datos crudos y artefactos pesados no forman parte de Git. La copia canonica raw esta en `/content/drive/MyDrive/Corner_Scout/data/raw`; localmente se usa `data/raw/` o `CORNERSCOUT_DATA_DIR`.
-
-```text
-StatsBomb raw (inmutable)
-  -> 01 ingestion
-  -> 02 clean
-  -> 03 SCR-15
-  -> 04 features + K-Means descriptivo
-  -> 05 modeling
-  -> FastAPI/DuckDB -> 06 reporte + 07 agente -> Angular
+```powershell
+uv run --all-extras python -m pytest -q
+uv run --extra api python scripts/check_visual_coverage.py --require-complete
+npm --prefix frontend run typecheck
+npm --prefix frontend run build
+npm --prefix frontend exec playwright install chromium
+npm --prefix frontend run e2e
 ```
 
-Documentacion principal: `docs/architecture.md`, `docs/scr15-methodology.md`, `docs/model-card.md`, `docs/openai.md`, `docs/deployment.md`, `docs/demo.md` y `RESUMEN_DE_CONTINUIDAD.md`.
+E2E arranca sus propios servicios en puertos 8001 y 4201. Requiere datos
+canónicos, Node y Chromium. El registro de comandos, resultados y omisiones
+está en [validación local](docs/validation.md).
 
-Fuente: [StatsBomb Open Data](https://github.com/statsbomb/open-data), revision `4b73468fc5b0f1950f9f66fada70ad3a4f9327cb`. Incorporar el logo oficial del media pack antes de una publicacion externa; este repositorio no redistribuye raw.
+## Docker
+
+Con Docker Desktop iniciado y los datos preparados:
+
+```powershell
+docker compose build backend
+docker compose up -d backend
+uv run --extra api python scripts/smoke_deployment.py --base-url http://127.0.0.1:8000
+docker compose down
+```
+
+Docker publica el mismo puerto 8000: no arranques simultáneamente el backend
+local. Solo `processed/runs` tiene escritura persistente; las cuatro etapas
+canónicas se montan en lectura. [Detalles y pruebas reales](docs/deployment.md).
+
+## Solución de problemas
+
+| Problema | Qué comprobar |
+|---|---|
+| `/health` funciona pero `/ready` devuelve 503 | Restaurar o construir todos los contratos y artefactos canónicos. |
+| No se puede crear análisis | Elegir una fecha con ocho partidos anteriores disponibles. |
+| Interfaz no conecta | Mantener ambas terminales activas; backend 8000 y proxy local. |
+| Aparece respuesta determinista | Clave ausente, proveedor no disponible o respuesta rechazada; no implica datos inventados. |
+| Error al cargar `.env` | Instalar `uv sync --locked --all-extras` y comprobar que el archivo existe. |
+| Error de hash o linaje | No editar artefactos; restaurar el conjunto coherente o reconstruir las etapas. |
+| Build Vercel rechaza URL ausente | Configurar `CORNERSCOUT_API_BASE_URL` al desplegar; ver guía. |
+
+## Estructura y documentación
+
+```text
+analytics/     ingesta, limpieza, variables, modelado y herramientas científicas
+backend/       FastAPI, acceso verificado, reporte y agente
+frontend/      Angular y recursos visuales estáticos
+contracts/     contrato OpenAPI versionado
+tests/         pruebas del pipeline y backend
+scripts/       inventario visual, codegen y smoke de despliegue
+docs/          método, modelos, datos y operación
+data/          datos locales fuera de Git
+```
+
+[Arquitectura](docs/architecture.md) · [SCR-15](docs/scr15-methodology.md) ·
+[Modelos](docs/model-card.md) · [OpenAI](docs/openai.md) ·
+[Datos](docs/data-restoration.md) · [Imágenes](docs/visual-assets.md) ·
+[Índice completo de guías](docs/README.md)
+
+La entrega científica se conserva aparte en `artifacts/entrega-academica.zip`
+local, fuera de Git; contiene el notebook ejecutado comentado y las fuentes.
+Los notebooks se retiraron del repositorio de producto después de verificar
+esa copia. No son una dependencia de instalación ni ejecución. Ver
+[entrega académica](docs/academic-report.md).
+
+## Despliegue: pendiente
+
+El backend Docker y OpenAI se probaron localmente. **No hay despliegue público
+validado**. Antes de publicar se requiere alojamiento del backend con los
+artefactos persistentes y después configurar la URL del frontend y CORS.
+Vercel y las pruebas HTTPS públicas quedan pendientes. No se afirma que la
+configuración serverless del proyecto del profesor sirva sin adaptación para
+nuestros datos. [Guía de despliegue](docs/deployment.md).
+
+Fuente: [StatsBomb Open Data](https://github.com/statsbomb/open-data), revisión
+`4b73468fc5b0f1950f9f66fada70ad3a4f9327cb`.
+
+Créditos de imágenes: [fuentes y cobertura](docs/visual-assets.md) y la página
+«Créditos de imágenes» de la aplicación. La organización de las instrucciones
+toma como referencia [Inver-AI del profesor](https://github.com/FernandoBRdgz/inverai-claude).

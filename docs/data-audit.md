@@ -1,13 +1,67 @@
-# Auditoria real de datos — fase 2
+# Calidad y auditoría de datos
 
-Descarga explicita de StatsBomb Open Data fijada a revision `4b73468fc5b0f1950f9f66fada70ad3a4f9327cb`. Los nombres de archivos raw aprobados se conservan. `CORNERSCOUT_DATA_DIR` permite restaurar o montar una copia de Drive sin rutas personales.
+La revisión fija de StatsBomb y el raw inmutable permiten rastrear cada evento.
+El adaptador admite eventos anidados y exportaciones aplanadas. No se editan
+relojes ni se imputan posiciones para forzar una secuencia válida.
 
-El notebook original exporta con statsbombpy `flatten_attrs=True`. El adaptador admite ese formato y el JSON anidado del proveedor; no sobrescribe originales. La descarga nueva usa JSON anidado y registra su formato en metadata_ingesta.json.
+## Conteos del corpus canónico
 
-Resultado: 380 partidos, 20 equipos, 1,295,354 eventos, 3,841 corners. Sin IDs duplicados ni archivos faltantes. Se auditan 126 regresiones de timestamp y 25 eventos con coordenadas fuera del terreno. Evidencia local: `data/interim/anomalies.json`.
+| Comprobación | Resultado |
+|---|---:|
+| Partidos / equipos | 380 / 20 |
+| Eventos | 1.295.354 |
+| Córners | 3.841 |
+| Regresiones de reloj auditadas | 126 |
+| Coordenadas fuera de rango auditadas | 25 |
+| Secuencias evaluables / desconocidas | 3.835 / 6 |
+| Córners evaluables con tiro | 1.245 |
+| Tiros compartidos | 0 |
 
-Politica conservadora: conservar orden por periodo/index. No imputar timestamps. Seis secuencias con reloj regresivo dentro de la ventana tienen target/xG nulos y quedan excluidas del denominador evaluable (nunca tratadas como negativas). Mostrar siempre corners totales, evaluables y excluidos. Un corner fuera de limites se conserva para SCR-15 pero se excluye de mapas y clustering. Otros eventos fuera de limites no alteran la atribucion temporal. Raw permanece intacto.
+Son resultados del conjunto canónico, no de cada ventana de ocho partidos.
+Las posiciones inválidas limitan mapas y clusters, pero no excluyen por sí
+solas del KPI temporal. Solo las anomalías de la ventana activa invalidan la
+secuencia; un retroceso después del cierre no cambia su resultado.
 
-SCR-15 provisional: [0,15] segundos, cierre por equipo en posesion o periodo; cambios de ID de posesion y reanudaciones solo se auditan. No se reabre despues de perder posesion. Las zonas son destinos de pase, no remates. Corto: distancia euclidiana <=15 unidades; umbral descriptivo provisional. Lado: y_bajo/y_alto evita etiquetar izquierda/derecha sin perspectiva explicita.
+## Reconstrucción del contexto
 
-Ejecutar: `uv sync --extra dev`, `uv run cornerscout ingest`, `uv run python -m analytics.audit`, `uv run cornerscout build`, `uv run --extra dev pytest`. Los manifiestos contienen hashes reales y los Parquet permanecen fuera de Git.
+La limpieza concilia los 380 marcadores y conserva auditorías de autogoles,
+sustituciones y expulsiones. La corrida académica registró 29 autogoles,
+2.190 sustituciones y 109 registros de expulsión: 106 en campo y tres fuera.
+Una roja a un suplente no reduce los jugadores en campo. El contexto se
+calcula antes de cada evento; no incorpora el gol o tarjeta del propio evento
+como información previa.
+
+## Dónde revisar la evidencia
+
+- `interim/02_clean`: `data_quality`, `match_state_quality`, auditorías de
+  autogoles, expulsiones y sustituciones, y particiones de eventos.
+- `interim/03_scr15`: `scr15_quality_report`, `restart_audit`,
+  `shared_shots_audit` y secuencias.
+- `processed/04_features`: auditoría de las 40 etiquetas, comprobaciones de
+  histórico y perturbación, alcance temporal y decisiones descriptivas.
+- `processed/05_modeling`: métricas por ventana, gates y ganadores por objetivo.
+
+Los nombres de archivo exactos, hashes y conteos están en `contract.json` de
+cada etapa. En la app, Calidad muestra cobertura y límites de la sesión.
+El inspector antiguo `analytics/audit.py` se retiró: dependía de una
+representación anterior y no tenía consumidores vigentes.
+
+## Ejecutar y comprobar
+
+Desde la raíz, con dependencias instaladas como indica el README:
+
+```powershell
+uv run cornerscout ingest
+uv run --all-extras cornerscout build
+uv run --all-extras cornerscout train
+```
+
+La publicación de una etapa exige coherencia con su entrada; una respuesta
+503 de ready no se resuelve sustituyendo hashes. Restaurar el conjunto coherente
+o reconstruir según [la guía de datos](data-restoration.md).
+Las pruebas ejecutadas y sus omisiones están en [validación](validation.md).
+
+Las 40 etiquetas de corto son exploratorias y asistidas, no validación humana
+independiente. Los resultados históricos no prueban comportamiento actual ni
+utilidad táctica universal. Para reglas específicas, consultar
+[SCR-15](scr15-methodology.md) y [model card](model-card.md).

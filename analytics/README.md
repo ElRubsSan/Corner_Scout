@@ -1,35 +1,62 @@
-# Analytics
+# Analytics · pipeline offline
 
-Pipeline offline canonico, sin ejecucion de notebooks. Cada frontera carga un
-`contract.json` con Pydantic, exige la etapa y version esperadas y verifica el
-SHA-256 de todos sus artefactos antes de consumirlos. El contrato se publica de
-forma atomica y siempre despues de completar los artefactos. `data/raw` solo se
-crea durante la ingesta y nunca se reescribe.
+La lógica científica se ejecuta en módulos Python, sin notebooks. Las etapas
+publican contratos Pydantic, SHA-256, conteos y linaje antes de que la siguiente
+pueda consumir sus archivos. Raw no se sobrescribe.
 
-Comandos:
+## Preparación
+
+Desde la raíz, después de instalar Python y uv:
 
 ```powershell
+uv sync --locked --all-extras
 uv run cornerscout ingest
-uv run --extra ml cornerscout build
-uv run --extra ml cornerscout clean
-uv run --extra ml cornerscout scr15
-uv run --extra ml cornerscout features
-uv run --extra ml cornerscout train
+uv run --all-extras cornerscout build
+uv run --all-extras cornerscout train
 ```
 
-`build` produce y valida `02_clean` -> `03_scr15` -> `04_features` usando
-`cleaning`, `context`, `scr15`, `features` y `modeling`. Los comandos de etapa
-requieren que el contrato anterior ya exista y sea valido; no saltan controles.
+`build` encadena `clean`, `scr15` y `features`. No incluye ingesta ni modelado.
+Cada comando de etapa también puede ejecutarse individualmente:
 
-`train` consume `04_features` solo despues de validar todos sus hashes y publica
-`05-modeling-v3-objectives` con modelos, esquemas, predicciones, tuning,
-metricas, bootstrap por partido, gates y contrato. Usa LR regularizada para
-objetivos categoricos y Poisson para conteo; Random Forest y K-Means no son
-predictores. Las decisiones usan exclusivamente las tres ventanas de desarrollo.
-El periodo final puede evaluarse, pero permanece como confirmacion y no altera
-gates, hiperparametros globales ni ganadores.
+```powershell
+uv run --all-extras cornerscout clean
+uv run --all-extras cornerscout scr15
+uv run --all-extras cornerscout features
+```
 
-Para validar sin sustituir una publicacion existente se puede llamar
-`analytics.pipeline.train(Path("data"), output=directorio_temporal)`; la fuente
-04 se verifica en su ubicacion canonica y toda la salida 05 se aisla en el
-directorio indicado.
+Estos comandos requieren el contrato previo completo. Las etapas derivadas se
+republican al ejecutarlas; las salidas existentes no son una copia de seguridad.
+Para otra raíz de datos, configura `CORNERSCOUT_DATA_DIR` en la terminal;
+el CLI no carga `.env` automáticamente. Ver [datos](../docs/data-restoration.md).
+
+## Módulos y resultados
+
+| Etapa | Módulos principales | Resultado |
+|---|---|---|
+| 01 | `ingestion`, `io` | Fuente inmutable e inventario verificado. |
+| 02 | `cleaning`, `context`, `pipeline` | Eventos normalizados y contexto anterior. |
+| 03 | `scr15`, `pipeline` | Secuencias evaluables y auditoría de primer cierre. |
+| 04 | `features`, `modeling`, `pipeline` | Historiales de ocho partidos y K-Means descriptivo. |
+| 05 | `modeling`, `pipeline` | Ventanas, métricas, gates, modelos y ganadores. |
+| 06–07 | `tactical_report`, `agent_tools`, backend | Evidencia tipada y consultas de sesión. |
+
+La versión de modelado es `05-modeling-v3-objectives`. Compara referencias
+ligueras e históricas con regresión logística regularizada o Poisson según
+objetivo. No hay Random Forest vigente. K-Means solo describe destinos y nunca
+es predictor. Las tres ventanas de desarrollo deciden; el periodo final confirma.
+Ver [model card](../docs/model-card.md).
+
+Para evaluar 05 sin sustituir una publicación existente, la función
+`analytics.pipeline.train(Path("data"), output=directorio_temporal)` permite
+una salida aislada; ese directorio debe elegirse explícitamente.
+
+## Verificación
+
+```powershell
+uv run --all-extras pytest
+```
+
+Las pruebas pequeñas usan fixtures identificadas; las regresiones completas
+usan datos locales cuando están disponibles. No se rellenan datos productivos
+ausentes con fixtures. Los resultados recientes están en
+[validación](../docs/validation.md).

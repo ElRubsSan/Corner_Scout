@@ -7,7 +7,13 @@ from backend.schemas import *
 from backend.reporting import deterministic, PLAN
 
 app = FastAPI(title="CornerScout", version="0.7.0", description="StatsBomb Open Data. Analisis historico de LaLiga 2015/16.")
-app.add_middleware(CORSMiddleware, allow_origins=os.environ.get("CORNERSCOUT_ORIGINS", "http://localhost:4200").split(","), allow_methods=["GET", "POST"], allow_headers=["Content-Type"])
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[origin.strip() for origin in os.environ.get(
+        "CORNERSCOUT_ORIGINS", "http://localhost:4200,http://127.0.0.1:4200"
+    ).split(",") if origin.strip()],
+    allow_methods=["GET", "POST"], allow_headers=["Content-Type"],
+)
 PREFIX = "/api/v1"
 NOT_FOUND = {404: {"model": ErrorResponse, "description": "Recurso no encontrado"}}
 CONFLICT = {409: {"model": ErrorResponse, "description": "Conflicto con la version o ventana canonica"}}
@@ -18,6 +24,14 @@ UNAVAILABLE = {503: {"model": ErrorResponse, "description": "Artefactos canonico
 @app.get(PREFIX + "/health", operation_id="health")
 def health() -> dict[str, str]:
     return {"status": "ok", "product": "CornerScout"}
+
+
+@app.get(PREFIX + "/ready", operation_id="readiness", responses=UNAVAILABLE)
+def ready() -> dict[str, str]:
+    """Verify the mounted canonical contracts, hashes and readable matches."""
+    service.repo()
+    service.query("matches_clean", "LIMIT 1")
+    return {"status": "ready", "product": "CornerScout"}
 
 
 @app.get(PREFIX + "/teams", operation_id="getTeams", responses=UNAVAILABLE)
@@ -45,9 +59,19 @@ def get_run(run_id: str) -> Run:
     return service.get_run(run_id)
 
 
+@app.get(PREFIX + "/scouting-runs/{run_id}/matches-profile", operation_id="getMatchProfiles", responses={**NOT_FOUND, **CONFLICT, **UNAVAILABLE})
+def match_profiles(run_id: str) -> list[MatchProfile]:
+    return service.match_profiles(service.get_run(run_id))
+
+
 @app.get(PREFIX + "/scouting-runs/{run_id}/summary", operation_id="getSummary", responses={**NOT_FOUND, **CONFLICT, **UNAVAILABLE})
 def summary(run_id: str) -> Summary:
     return service.summary(service.get_run(run_id))
+
+
+@app.get(PREFIX + "/scouting-runs/{run_id}/habits", operation_id="getHabits", responses={**NOT_FOUND, **CONFLICT, **UNAVAILABLE})
+def habits(run_id: str) -> HabitProfile:
+    return service.habits(service.get_run(run_id))
 
 
 @app.get(PREFIX + "/scouting-runs/{run_id}/corners", operation_id="getCorners", responses={**NOT_FOUND, **CONFLICT, **INVALID, **UNAVAILABLE})
@@ -55,6 +79,15 @@ def corners(run_id: str, player: str | None = None, side: str | None = None, del
     rows = service.corners_for(service.get_run(run_id))
     rows = [c for c in rows if all(value is None or getattr(c, field) == value for field, value in {"player": player, "side": side, "delivery": delivery, "cluster": cluster}.items())]
     return rows[offset:offset+limit]
+
+
+@app.get(PREFIX + "/scouting-runs/{run_id}/destination-heatmap", operation_id="getDestinationHeatmap", responses={**NOT_FOUND, **CONFLICT, **INVALID, **UNAVAILABLE})
+def destination_heatmap(run_id: str, player: str | None = None,
+                        side: Literal["y_bajo", "y_alto"] | None = None,
+                        delivery: Literal["corto", "envio", "desconocido"] | None = None,
+                        cluster: int | None = None) -> DestinationHeatmap:
+    return service.destination_heatmap(service.get_run(run_id), player=player, side=side,
+                                       delivery=delivery, cluster=cluster)
 
 
 @app.get(PREFIX + "/scouting-runs/{run_id}/patterns", operation_id="getPatterns", responses={**NOT_FOUND, **CONFLICT, **UNAVAILABLE})

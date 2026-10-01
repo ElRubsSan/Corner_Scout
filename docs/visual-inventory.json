@@ -1,0 +1,3868 @@
+{
+  "provider": "StatsBomb Open Data",
+  "competition": "LaLiga 2015/16",
+  "clubs": [
+    {
+      "id": 207,
+      "name": "Valencia"
+    },
+    {
+      "id": 208,
+      "name": "Las Palmas"
+    },
+    {
+      "id": 209,
+      "name": "Celta Vigo"
+    },
+    {
+      "id": 210,
+      "name": "Real Sociedad"
+    },
+    {
+      "id": 212,
+      "name": "Atlético Madrid"
+    },
+    {
+      "id": 213,
+      "name": "Sevilla"
+    },
+    {
+      "id": 214,
+      "name": "Espanyol"
+    },
+    {
+      "id": 215,
+      "name": "Athletic Club"
+    },
+    {
+      "id": 216,
+      "name": "Getafe"
+    },
+    {
+      "id": 217,
+      "name": "Barcelona"
+    },
+    {
+      "id": 218,
+      "name": "Real Betis"
+    },
+    {
+      "id": 219,
+      "name": "RC Deportivo La Coruña"
+    },
+    {
+      "id": 220,
+      "name": "Real Madrid"
+    },
+    {
+      "id": 221,
+      "name": "Levante UD"
+    },
+    {
+      "id": 222,
+      "name": "Villarreal"
+    },
+    {
+      "id": 223,
+      "name": "Málaga"
+    },
+    {
+      "id": 322,
+      "name": "Eibar"
+    },
+    {
+      "id": 360,
+      "name": "Rayo Vallecano"
+    },
+    {
+      "id": 1041,
+      "name": "Sporting Gijón"
+    },
+    {
+      "id": 1049,
+      "name": "Granada"
+    }
+  ],
+  "players": [
+    {
+      "id": 3023,
+      "name": "Yuri Berchiche Izeta",
+      "team_ids": [
+        210
+      ]
+    },
+    {
+      "id": 3063,
+      "name": "Danilo Luiz da Silva",
+      "team_ids": [
+        220
+      ]
+    },
+    {
+      "id": 3084,
+      "name": "Christian Atsu Twasam",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 3130,
+      "name": "Gaël Kakuta",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 3160,
+      "name": "Rene Krhin",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 3236,
+      "name": "Sergi Darder Moll",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 3240,
+      "name": "Mathew Ryan",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 3253,
+      "name": "Adil Rami",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 3292,
+      "name": "Abdoulaye Doucouré",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 3302,
+      "name": "Nordin Amrabat",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 3324,
+      "name": "Eric Bertrand Bailly",
+      "team_ids": [
+        222
+      ]
+    },
+    {
+      "id": 3379,
+      "name": "Alphonse Areola",
+      "team_ids": [
+        222
+      ]
+    },
+    {
+      "id": 3486,
+      "name": "Fernando Llorente Torres",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 3497,
+      "name": "Vicente Iborra De La Fuente",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 3508,
+      "name": "Sandro Ramírez Castillo",
+      "team_ids": [
+        217
+      ]
+    },
+    {
+      "id": 3601,
+      "name": "Charly Musonda Junior",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 3610,
+      "name": "Roque Mesa Quevedo",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 3637,
+      "name": "Grzegorz Krychowiak",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 3638,
+      "name": "Shkodran Mustafi",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 3990,
+      "name": "Jesé Rodríguez Ruiz",
+      "team_ids": [
+        220
+      ]
+    },
+    {
+      "id": 4320,
+      "name": "Neymar da Silva Santos Junior",
+      "team_ids": [
+        217
+      ]
+    },
+    {
+      "id": 4324,
+      "name": "Daniel Alves da Silva",
+      "team_ids": [
+        217
+      ]
+    },
+    {
+      "id": 4353,
+      "name": "Aymeric Laporte",
+      "team_ids": [
+        215
+      ]
+    },
+    {
+      "id": 4406,
+      "name": "Aymen Abdennour",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 4418,
+      "name": "Matheus Dória Macedo",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 4498,
+      "name": "Jean-Sylvain Claude Babin",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 4546,
+      "name": "Dimitri Foulquier",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 4558,
+      "name": "Pape Cheikh Diop Gueye",
+      "team_ids": [
+        209
+      ]
+    },
+    {
+      "id": 4691,
+      "name": "Claudio Andrés Bravo Muñoz",
+      "team_ids": [
+        217
+      ]
+    },
+    {
+      "id": 4711,
+      "name": "Pablo Hernández Domínguez",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 4741,
+      "name": "Juan Rafael Fuentes Hernández",
+      "team_ids": [
+        214
+      ]
+    },
+    {
+      "id": 4788,
+      "name": "Jesús Gámez Duarte",
+      "team_ids": [
+        212
+      ]
+    },
+    {
+      "id": 4926,
+      "name": "Francisco Román Alarcón Suárez",
+      "team_ids": [
+        220
+      ]
+    },
+    {
+      "id": 5186,
+      "name": "Denis Cheryshev",
+      "team_ids": [
+        207,
+        220
+      ]
+    },
+    {
+      "id": 5199,
+      "name": "Jorge Resurrección Merodio",
+      "team_ids": [
+        212
+      ]
+    },
+    {
+      "id": 5200,
+      "name": "Lucas Vázquez Iglesias",
+      "team_ids": [
+        220
+      ]
+    },
+    {
+      "id": 5201,
+      "name": "Sergio Ramos García",
+      "team_ids": [
+        220
+      ]
+    },
+    {
+      "id": 5202,
+      "name": "José Ignacio Fernández Iglesias",
+      "team_ids": [
+        220
+      ]
+    },
+    {
+      "id": 5203,
+      "name": "Sergio Busquets i Burgos",
+      "team_ids": [
+        217
+      ]
+    },
+    {
+      "id": 5207,
+      "name": "Cristiano Ronaldo dos Santos Aveiro",
+      "team_ids": [
+        220
+      ]
+    },
+    {
+      "id": 5211,
+      "name": "Jordi Alba Ramos",
+      "team_ids": [
+        217
+      ]
+    },
+    {
+      "id": 5213,
+      "name": "Gerard Piqué Bernabéu",
+      "team_ids": [
+        217
+      ]
+    },
+    {
+      "id": 5216,
+      "name": "Andrés Iniesta Luján",
+      "team_ids": [
+        217
+      ]
+    },
+    {
+      "id": 5217,
+      "name": "Iago Aspas Juncal",
+      "team_ids": [
+        209
+      ]
+    },
+    {
+      "id": 5246,
+      "name": "Luis Alberto Suárez Díaz",
+      "team_ids": [
+        217
+      ]
+    },
+    {
+      "id": 5249,
+      "name": "Diego Roberto Godín Leal",
+      "team_ids": [
+        212
+      ]
+    },
+    {
+      "id": 5259,
+      "name": "José María Giménez de Vargas",
+      "team_ids": [
+        212
+      ]
+    },
+    {
+      "id": 5456,
+      "name": "Mateo Kovačić",
+      "team_ids": [
+        220
+      ]
+    },
+    {
+      "id": 5463,
+      "name": "Luka Modrić",
+      "team_ids": [
+        220
+      ]
+    },
+    {
+      "id": 5470,
+      "name": "Ivan Rakitić",
+      "team_ids": [
+        217
+      ]
+    },
+    {
+      "id": 5484,
+      "name": "Lucas Hernández Pi",
+      "team_ids": [
+        212
+      ]
+    },
+    {
+      "id": 5485,
+      "name": "Raphaël Varane",
+      "team_ids": [
+        220
+      ]
+    },
+    {
+      "id": 5487,
+      "name": "Antoine Griezmann",
+      "team_ids": [
+        212
+      ]
+    },
+    {
+      "id": 5503,
+      "name": "Lionel Andrés Messi Cuccittini",
+      "team_ids": [
+        217
+      ]
+    },
+    {
+      "id": 5504,
+      "name": "Éver Maximiliano David Banega",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 5506,
+      "name": "Javier Alejandro Mascherano",
+      "team_ids": [
+        217
+      ]
+    },
+    {
+      "id": 5539,
+      "name": "Carlos Henrique Casimiro",
+      "team_ids": [
+        220
+      ]
+    },
+    {
+      "id": 5552,
+      "name": "Marcelo Vieira da Silva Júnior",
+      "team_ids": [
+        220
+      ]
+    },
+    {
+      "id": 5560,
+      "name": "Carlos Alberto Vela Garrido",
+      "team_ids": [
+        210
+      ]
+    },
+    {
+      "id": 5574,
+      "name": "Toni Kroos",
+      "team_ids": [
+        220
+      ]
+    },
+    {
+      "id": 5577,
+      "name": "Francisco Guillermo Ochoa Magaña",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 5582,
+      "name": "Celso Borges Mora",
+      "team_ids": [
+        219
+      ]
+    },
+    {
+      "id": 5588,
+      "name": "Antonio Rukavina",
+      "team_ids": [
+        222
+      ]
+    },
+    {
+      "id": 5597,
+      "name": "Keylor Navas Gamboa",
+      "team_ids": [
+        220
+      ]
+    },
+    {
+      "id": 5598,
+      "name": "Óscar Esau Duarte Gaitán",
+      "team_ids": [
+        214
+      ]
+    },
+    {
+      "id": 5633,
+      "name": "Yannick Ferreira Carrasco",
+      "team_ids": [
+        212
+      ]
+    },
+    {
+      "id": 5671,
+      "name": "Alfred John Momar N''Diaye",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 5678,
+      "name": "Jefferson Andrés Lerma Solís",
+      "team_ids": [
+        221
+      ]
+    },
+    {
+      "id": 5687,
+      "name": "Takashi Inui",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 5695,
+      "name": "James David Rodríguez Rubio",
+      "team_ids": [
+        220
+      ]
+    },
+    {
+      "id": 5718,
+      "name": "Rodrigo Moreno Machado",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 5719,
+      "name": "Marco Asensio Willemsen",
+      "team_ids": [
+        214
+      ]
+    },
+    {
+      "id": 5721,
+      "name": "Daniel Carvajal Ramos",
+      "team_ids": [
+        220
+      ]
+    },
+    {
+      "id": 5724,
+      "name": "Fayçal Fajr",
+      "team_ids": [
+        219
+      ]
+    },
+    {
+      "id": 5737,
+      "name": "Steven N''Kemboanza Mike Christopher Nzonzi",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 5741,
+      "name": "Enzo Nicolás Pérez",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 6038,
+      "name": "John Guidetti",
+      "team_ids": [
+        209
+      ]
+    },
+    {
+      "id": 6320,
+      "name": "Filipe Luís Kasmirski",
+      "team_ids": [
+        212
+      ]
+    },
+    {
+      "id": 6332,
+      "name": "Thomas Vermaelen",
+      "team_ids": [
+        217
+      ]
+    },
+    {
+      "id": 6349,
+      "name": "Federico Julián Fazio",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 6356,
+      "name": "Michael Krohn-Dehli",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 6357,
+      "name": "Jonathan dos Santos Ramírez",
+      "team_ids": [
+        222
+      ]
+    },
+    {
+      "id": 6375,
+      "name": "Juan Francisco Torres Belén",
+      "team_ids": [
+        212
+      ]
+    },
+    {
+      "id": 6376,
+      "name": "Stefan Savić",
+      "team_ids": [
+        212
+      ]
+    },
+    {
+      "id": 6377,
+      "name": "Ángel Martín Correa",
+      "team_ids": [
+        212
+      ]
+    },
+    {
+      "id": 6378,
+      "name": "Jan Oblak",
+      "team_ids": [
+        212
+      ]
+    },
+    {
+      "id": 6379,
+      "name": "Sergi Roberto Carnicer",
+      "team_ids": [
+        217
+      ]
+    },
+    {
+      "id": 6381,
+      "name": "Saúl Ñíguez Esclapez",
+      "team_ids": [
+        212
+      ]
+    },
+    {
+      "id": 6382,
+      "name": "Fernando José Torres Sanz",
+      "team_ids": [
+        212
+      ]
+    },
+    {
+      "id": 6383,
+      "name": "Thomas Teye Partey",
+      "team_ids": [
+        212
+      ]
+    },
+    {
+      "id": 6384,
+      "name": "Gabriel Fernández Arenas",
+      "team_ids": [
+        212
+      ]
+    },
+    {
+      "id": 6386,
+      "name": "Eneko Bóveda Altube",
+      "team_ids": [
+        215
+      ]
+    },
+    {
+      "id": 6388,
+      "name": "Ander Iturraspe Derteano",
+      "team_ids": [
+        215
+      ]
+    },
+    {
+      "id": 6389,
+      "name": "Mikel San José Domínguez",
+      "team_ids": [
+        215
+      ]
+    },
+    {
+      "id": 6390,
+      "name": "Markel Susaeta Laskurain",
+      "team_ids": [
+        215
+      ]
+    },
+    {
+      "id": 6391,
+      "name": "Raúl García Escudero",
+      "team_ids": [
+        212,
+        215
+      ]
+    },
+    {
+      "id": 6392,
+      "name": "Íñigo Lekue Martínez",
+      "team_ids": [
+        215
+      ]
+    },
+    {
+      "id": 6393,
+      "name": "Iñaki Williams Arthuer",
+      "team_ids": [
+        215
+      ]
+    },
+    {
+      "id": 6394,
+      "name": "Aritz Aduriz Zubeldia",
+      "team_ids": [
+        215
+      ]
+    },
+    {
+      "id": 6396,
+      "name": "Beñat Etxebarria Urkiaga",
+      "team_ids": [
+        215
+      ]
+    },
+    {
+      "id": 6399,
+      "name": "Gareth Frank Bale",
+      "team_ids": [
+        220
+      ]
+    },
+    {
+      "id": 6400,
+      "name": "Aleix Vidal Parreu",
+      "team_ids": [
+        217
+      ]
+    },
+    {
+      "id": 6401,
+      "name": "Kevin Gameiro",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 6402,
+      "name": "Francisco Alcácer García",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 6557,
+      "name": "Adrián González Morales",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 6559,
+      "name": "Juan Carlos Pérez López",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 6561,
+      "name": "Luis Hernández Rodríguez",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 6563,
+      "name": "Juan Pablo Añor Acosta",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 6566,
+      "name": "Borja González Tomás",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 6569,
+      "name": "Roberto José Rosales Altuve",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 6573,
+      "name": "Bernardo José Espinosa Zúñiga",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 6576,
+      "name": "Gorka Iraizoz Moreno",
+      "team_ids": [
+        215
+      ]
+    },
+    {
+      "id": 6580,
+      "name": "José Luis García del Pozo",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 6581,
+      "name": "Jonathan Rodríguez Menéndez",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 6592,
+      "name": "Rúben Miguel Nunes Vezo",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 6593,
+      "name": "Martín Montoya Torralbo",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 6594,
+      "name": "Santiago Mina Lorenzo",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 6595,
+      "name": "Daniel Parejo Muñoz",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 6596,
+      "name": "José Luis Gayà Peña",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 6599,
+      "name": "Rubén Salvador Pérez Del Mármol",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 6600,
+      "name": "Claudio Beauvue",
+      "team_ids": [
+        209
+      ]
+    },
+    {
+      "id": 6602,
+      "name": "Miguel Ángel Guerrero Martín",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 6605,
+      "name": "Joseba Zaldúa Bengoetxea",
+      "team_ids": [
+        210
+      ]
+    },
+    {
+      "id": 6606,
+      "name": "Javier Eraso Goñi",
+      "team_ids": [
+        215
+      ]
+    },
+    {
+      "id": 6608,
+      "name": "Nabil El Zhar",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 6609,
+      "name": "Denis Suárez Fernández",
+      "team_ids": [
+        222
+      ]
+    },
+    {
+      "id": 6610,
+      "name": "Iván Cuéllar Sacristán",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 6612,
+      "name": "Rubén Duarte Sánchez",
+      "team_ids": [
+        214
+      ]
+    },
+    {
+      "id": 6614,
+      "name": "Alexis Ruano Delgado",
+      "team_ids": [
+        216
+      ]
+    },
+    {
+      "id": 6616,
+      "name": "Munir El Haddadi Mohamed",
+      "team_ids": [
+        217
+      ]
+    },
+    {
+      "id": 6617,
+      "name": "Ibai Gómez Pérez",
+      "team_ids": [
+        215
+      ]
+    },
+    {
+      "id": 6622,
+      "name": "Tomás Pina Isla",
+      "team_ids": [
+        222
+      ]
+    },
+    {
+      "id": 6624,
+      "name": "Jorge Franco Alviz",
+      "team_ids": [
+        214
+      ]
+    },
+    {
+      "id": 6625,
+      "name": "Vicente Guaita Panadero",
+      "team_ids": [
+        216
+      ]
+    },
+    {
+      "id": 6626,
+      "name": "Mubarak Wakaso",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 6627,
+      "name": "Damián Nicolás Suárez Suárez",
+      "team_ids": [
+        216
+      ]
+    },
+    {
+      "id": 6630,
+      "name": "Jorge Molina Vidal",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 6633,
+      "name": "Markel Bergara Larrañaga",
+      "team_ids": [
+        210
+      ]
+    },
+    {
+      "id": 6647,
+      "name": "Zouhair Feddal",
+      "team_ids": [
+        221
+      ]
+    },
+    {
+      "id": 6649,
+      "name": "Óscar de Marcos Arana",
+      "team_ids": [
+        215
+      ]
+    },
+    {
+      "id": 6651,
+      "name": "Joaquín Sánchez Rodríguez",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 6654,
+      "name": "Antonio Adán Garrido",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 6655,
+      "name": "Fabián Ruiz Peña",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 6656,
+      "name": "Mikel Rico Moreno",
+      "team_ids": [
+        215
+      ]
+    },
+    {
+      "id": 6659,
+      "name": "Víctor Camarasa Ferrando",
+      "team_ids": [
+        221
+      ]
+    },
+    {
+      "id": 6662,
+      "name": "Iago Herrerín Buisán",
+      "team_ids": [
+        215
+      ]
+    },
+    {
+      "id": 6663,
+      "name": "Antonio Barragán Fernández",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 6665,
+      "name": "Íñigo Martínez Berridi",
+      "team_ids": [
+        210
+      ]
+    },
+    {
+      "id": 6666,
+      "name": "Sabin Merino Zuloaga",
+      "team_ids": [
+        215
+      ]
+    },
+    {
+      "id": 6668,
+      "name": "José Luis Morales Nogales",
+      "team_ids": [
+        221
+      ]
+    },
+    {
+      "id": 6669,
+      "name": "David Zurutuza Veillet",
+      "team_ids": [
+        210
+      ]
+    },
+    {
+      "id": 6671,
+      "name": "Asier Illarramendi Andonegi",
+      "team_ids": [
+        210
+      ]
+    },
+    {
+      "id": 6672,
+      "name": "Jorge Andújar Moreno",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 6673,
+      "name": "Sergio Canales Madrazo",
+      "team_ids": [
+        210
+      ]
+    },
+    {
+      "id": 6674,
+      "name": "Alberto De La Bella Madureño",
+      "team_ids": [
+        210
+      ]
+    },
+    {
+      "id": 6675,
+      "name": "Antonio Manuel Luna Rodríguez",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 6676,
+      "name": "Igor Zubeldia Elorza",
+      "team_ids": [
+        210
+      ]
+    },
+    {
+      "id": 6677,
+      "name": "Imanol Agirretxe Arruti",
+      "team_ids": [
+        210
+      ]
+    },
+    {
+      "id": 6679,
+      "name": "Aritz Elustondo Irribaria",
+      "team_ids": [
+        210
+      ]
+    },
+    {
+      "id": 6680,
+      "name": "Rubén Rochina Naixes",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 6684,
+      "name": "Roger Martí Salvador",
+      "team_ids": [
+        221
+      ]
+    },
+    {
+      "id": 6685,
+      "name": "Mikel Oyarzabal Ugarte",
+      "team_ids": [
+        210
+      ]
+    },
+    {
+      "id": 6690,
+      "name": "Xabier Prieto Argarate",
+      "team_ids": [
+        210
+      ]
+    },
+    {
+      "id": 6692,
+      "name": "Oier Olazábal Paredes",
+      "team_ids": [
+        210
+      ]
+    },
+    {
+      "id": 6694,
+      "name": "Gerónimo Rulli",
+      "team_ids": [
+        210
+      ]
+    },
+    {
+      "id": 6697,
+      "name": "Daniel Ceballos Fernández",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 6699,
+      "name": "Ander Capa Rodríguez",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 6700,
+      "name": "Sergio Enrich Ametller",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 6701,
+      "name": "Joan Jordán Moreno",
+      "team_ids": [
+        214
+      ]
+    },
+    {
+      "id": 6702,
+      "name": "David Rodríguez Lombán",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 6706,
+      "name": "Francisco Casilla Cortés",
+      "team_ids": [
+        220
+      ]
+    },
+    {
+      "id": 6707,
+      "name": "Charles Días Barbosa de Oliveira",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 6709,
+      "name": "Anaitz Arbilla Zabala",
+      "team_ids": [
+        214
+      ]
+    },
+    {
+      "id": 6712,
+      "name": "Gonzalo Escalante",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 6713,
+      "name": "Diego Javier Llorente Ríos",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 6718,
+      "name": "Sergio Escudero Palomo",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 6720,
+      "name": "Pablo Sarabia García",
+      "team_ids": [
+        216
+      ]
+    },
+    {
+      "id": 6721,
+      "name": "Willian José da Silva",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 6724,
+      "name": "Manuel Agudo Durán",
+      "team_ids": [
+        209
+      ]
+    },
+    {
+      "id": 6725,
+      "name": "Zakaria Bakkali",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 6727,
+      "name": "Raúl Albentosa Redal",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 6728,
+      "name": "Federico Nicolás Cartabia",
+      "team_ids": [
+        219
+      ]
+    },
+    {
+      "id": 6730,
+      "name": "Rubén Iván Martínez Andrade",
+      "team_ids": [
+        221
+      ]
+    },
+    {
+      "id": 6732,
+      "name": "Lucas Pérez Martínez",
+      "team_ids": [
+        219
+      ]
+    },
+    {
+      "id": 6733,
+      "name": "Pedro Mosquera Parada",
+      "team_ids": [
+        219
+      ]
+    },
+    {
+      "id": 6734,
+      "name": "Luis Carlos Correia Pinto",
+      "team_ids": [
+        219
+      ]
+    },
+    {
+      "id": 6735,
+      "name": "Adrián López Álvarez",
+      "team_ids": [
+        222
+      ]
+    },
+    {
+      "id": 6736,
+      "name": "Álvaro Medrán Just",
+      "team_ids": [
+        216
+      ]
+    },
+    {
+      "id": 6737,
+      "name": "Alfonso Pedraza Sag",
+      "team_ids": [
+        222
+      ]
+    },
+    {
+      "id": 6738,
+      "name": "Juan Francisco Moreno Fuertes",
+      "team_ids": [
+        219
+      ]
+    },
+    {
+      "id": 6740,
+      "name": "Gonzalo Castro Irizábal",
+      "team_ids": [
+        210,
+        223
+      ]
+    },
+    {
+      "id": 6742,
+      "name": "Sergio Gontán Gallardo",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 6743,
+      "name": "Manuel Rolando Iturra Urrutia",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 6744,
+      "name": "Luciano Vietto",
+      "team_ids": [
+        212
+      ]
+    },
+    {
+      "id": 6745,
+      "name": "Mehdi Lacen",
+      "team_ids": [
+        216
+      ]
+    },
+    {
+      "id": 6749,
+      "name": "Diego González Polanco",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 6751,
+      "name": "Javier Fuego Martínez",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 6752,
+      "name": "Víctor Ruíz Torre",
+      "team_ids": [
+        222
+      ]
+    },
+    {
+      "id": 6755,
+      "name": "Sergio Asenjo Andrés",
+      "team_ids": [
+        222
+      ]
+    },
+    {
+      "id": 6758,
+      "name": "Víctor Sánchez Mata",
+      "team_ids": [
+        214
+      ]
+    },
+    {
+      "id": 6761,
+      "name": "Leonardo Carrilho Baptistão",
+      "team_ids": [
+        222
+      ]
+    },
+    {
+      "id": 6762,
+      "name": "Álvaro González Soberón",
+      "team_ids": [
+        214
+      ]
+    },
+    {
+      "id": 6763,
+      "name": "Pablo Daniel Piatti",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 6764,
+      "name": "Pablo Fornals Malla",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 6765,
+      "name": "Rodrigo Hernández Cascante",
+      "team_ids": [
+        222
+      ]
+    },
+    {
+      "id": 6766,
+      "name": "Gerard Moreno Balaguero",
+      "team_ids": [
+        214
+      ]
+    },
+    {
+      "id": 6770,
+      "name": "Esteban Félix Granero Molina",
+      "team_ids": [
+        210
+      ]
+    },
+    {
+      "id": 6771,
+      "name": "Manuel Trigueros Muñoz",
+      "team_ids": [
+        222
+      ]
+    },
+    {
+      "id": 6772,
+      "name": "Mario Gaspar Pérez Martínez",
+      "team_ids": [
+        222
+      ]
+    },
+    {
+      "id": 6775,
+      "name": "Daniel García Carrillo",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 6776,
+      "name": "David Juncà Reñé",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 6777,
+      "name": "Sidnei Rechel da Silva Júnior",
+      "team_ids": [
+        219
+      ]
+    },
+    {
+      "id": 6778,
+      "name": "Iván Ramis Barrios",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 6783,
+      "name": "Samuel García Sánchez",
+      "team_ids": [
+        222
+      ]
+    },
+    {
+      "id": 6784,
+      "name": "Antonio García Aranda",
+      "team_ids": [
+        221
+      ]
+    },
+    {
+      "id": 6787,
+      "name": "Pedro López Muñoz",
+      "team_ids": [
+        221
+      ]
+    },
+    {
+      "id": 6788,
+      "name": "Xabier Etxeita Gorritxategi",
+      "team_ids": [
+        215
+      ]
+    },
+    {
+      "id": 6789,
+      "name": "Mikel Balenziaga Oruesagasti",
+      "team_ids": [
+        215
+      ]
+    },
+    {
+      "id": 6791,
+      "name": "Javier López Rodríguez",
+      "team_ids": [
+        214
+      ]
+    },
+    {
+      "id": 6792,
+      "name": "Pau López Sabata",
+      "team_ids": [
+        214
+      ]
+    },
+    {
+      "id": 6794,
+      "name": "Gustavo Daniel Cabral Cáceres",
+      "team_ids": [
+        209
+      ]
+    },
+    {
+      "id": 6795,
+      "name": "Rubén Blanco Veiga",
+      "team_ids": [
+        209
+      ]
+    },
+    {
+      "id": 6796,
+      "name": "Nemanja Radoja",
+      "team_ids": [
+        209
+      ]
+    },
+    {
+      "id": 6797,
+      "name": "Daniel Wass",
+      "team_ids": [
+        209
+      ]
+    },
+    {
+      "id": 6801,
+      "name": "Pedro Pablo Hernández",
+      "team_ids": [
+        209
+      ]
+    },
+    {
+      "id": 6802,
+      "name": "Jonathan Castro Otto",
+      "team_ids": [
+        209
+      ]
+    },
+    {
+      "id": 6804,
+      "name": "Sergi Gómez Solà",
+      "team_ids": [
+        209
+      ]
+    },
+    {
+      "id": 6805,
+      "name": "Hugo Mallo Novegil",
+      "team_ids": [
+        209
+      ]
+    },
+    {
+      "id": 6807,
+      "name": "Roberto Suárez Pier",
+      "team_ids": [
+        219
+      ]
+    },
+    {
+      "id": 6823,
+      "name": "Sergio Rico González",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 6825,
+      "name": "Daniel Filipe Martins Carriço",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 6827,
+      "name": "Daniele Bonera",
+      "team_ids": [
+        222
+      ]
+    },
+    {
+      "id": 6828,
+      "name": "Jaume Vicent Costa Jordá",
+      "team_ids": [
+        222
+      ]
+    },
+    {
+      "id": 6829,
+      "name": "Samuel Castillejo Azuaga",
+      "team_ids": [
+        222
+      ]
+    },
+    {
+      "id": 6832,
+      "name": "Rubén Castro Martín",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 6834,
+      "name": "Gerard Gumbau Garriga",
+      "team_ids": [
+        217
+      ]
+    },
+    {
+      "id": 6837,
+      "name": "Mauro Javier Dos Santos",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 6838,
+      "name": "Hernán Arsenio Pérez González",
+      "team_ids": [
+        214
+      ]
+    },
+    {
+      "id": 6840,
+      "name": "Marcos Llorente Moreno",
+      "team_ids": [
+        220
+      ]
+    },
+    {
+      "id": 6841,
+      "name": "Víctor Machín Pérez",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 6842,
+      "name": "Iker Muniain Goñi",
+      "team_ids": [
+        215
+      ]
+    },
+    {
+      "id": 6844,
+      "name": "Federico Ricca Rostagnol",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 6845,
+      "name": "Ager Aketxe Barrutia",
+      "team_ids": [
+        215
+      ]
+    },
+    {
+      "id": 6847,
+      "name": "Adalberto Peñaranda Maestre",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 6852,
+      "name": "Jozabed Sánchez Ruiz",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 6856,
+      "name": "Carlos Martín Vigaray",
+      "team_ids": [
+        216
+      ]
+    },
+    {
+      "id": 6860,
+      "name": "Mariano Damián Barbosa",
+      "team_ids": [
+        222
+      ]
+    },
+    {
+      "id": 6861,
+      "name": "Juan Torres Ruiz",
+      "team_ids": [
+        216
+      ]
+    },
+    {
+      "id": 6862,
+      "name": "Cédric Bakambu",
+      "team_ids": [
+        222
+      ]
+    },
+    {
+      "id": 6865,
+      "name": "Francisco José Molinero Calderón",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 6867,
+      "name": "Papa Kouly Diop",
+      "team_ids": [
+        214
+      ]
+    },
+    {
+      "id": 6869,
+      "name": "Alejandro Arribas Garrido",
+      "team_ids": [
+        219
+      ]
+    },
+    {
+      "id": 6872,
+      "name": "Bruno González Cabrera",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 6873,
+      "name": "Francisco Portillo Soler",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 6878,
+      "name": "Miguel Torres Gómez",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 6880,
+      "name": "Arnaldo Antonio Sanabria Ayala",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 6884,
+      "name": "Sergio Álvarez Conde",
+      "team_ids": [
+        209
+      ]
+    },
+    {
+      "id": 6890,
+      "name": "Andreu Fontàs Prat",
+      "team_ids": [
+        209
+      ]
+    },
+    {
+      "id": 6898,
+      "name": "Jaume Doménech Sánchez",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 6899,
+      "name": "Rubén Pardo Gutiérrez",
+      "team_ids": [
+        210
+      ]
+    },
+    {
+      "id": 6906,
+      "name": "Jon Bautista Orgilles",
+      "team_ids": [
+        210
+      ]
+    },
+    {
+      "id": 6907,
+      "name": "Pedro León Sánchez Gil",
+      "team_ids": [
+        216
+      ]
+    },
+    {
+      "id": 6913,
+      "name": "Fernando Navarro i Corbacho",
+      "team_ids": [
+        219
+      ]
+    },
+    {
+      "id": 6914,
+      "name": "Roberto Román Triguero",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 6918,
+      "name": "Isaac Ajayi Success",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 6926,
+      "name": "Alen Halilović",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 6927,
+      "name": "David García Santana",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 6928,
+      "name": "Pedro Taunausú Domínguez Placeres",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 6929,
+      "name": "José Vicente Gómez Umpiérrez",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 6932,
+      "name": "Dani Castellano Betancor",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 6934,
+      "name": "Jerónimo Figueroa Cabrera",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 6935,
+      "name": "Adrián Marín Gómez",
+      "team_ids": [
+        222
+      ]
+    },
+    {
+      "id": 6998,
+      "name": "Rafael Alcântara do Nascimento",
+      "team_ids": [
+        217
+      ]
+    },
+    {
+      "id": 7005,
+      "name": "João Pedro Cavaco Cancelo",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 7034,
+      "name": "Mateo Pablo Musacchio",
+      "team_ids": [
+        222
+      ]
+    },
+    {
+      "id": 7068,
+      "name": "Marc Bartra Aregall",
+      "team_ids": [
+        217
+      ]
+    },
+    {
+      "id": 7105,
+      "name": "Fabián Ariel Orellana Valenzuela",
+      "team_ids": [
+        209
+      ]
+    },
+    {
+      "id": 7141,
+      "name": "Giuseppe Rossi",
+      "team_ids": [
+        221
+      ]
+    },
+    {
+      "id": 7154,
+      "name": "Sebastián Carlos Cristóforo Pepe",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 7158,
+      "name": "Cristiano Biraghi",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 7161,
+      "name": "Germán Alejandro Pezzella",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 7170,
+      "name": "Simone Verdi",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 7577,
+      "name": "Carles Planas Antolínez",
+      "team_ids": [
+        209
+      ]
+    },
+    {
+      "id": 7692,
+      "name": "Mauricio Lemos Merladet",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 7781,
+      "name": "Felipe Salvador Caicedo Corozo",
+      "team_ids": [
+        214
+      ]
+    },
+    {
+      "id": 7782,
+      "name": "Luis Alberto Romero Alconchel",
+      "team_ids": [
+        219
+      ]
+    },
+    {
+      "id": 7788,
+      "name": "Ciro Immobile",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 7797,
+      "name": "Rodrigo Javier De Paul",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 7900,
+      "name": "Tiago Manuel Dias Correia",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 7904,
+      "name": "Javi Castellano Betancor",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 7905,
+      "name": "Raúl Lizoáin Cruz",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 7906,
+      "name": "David Simón Rodríguez Santana",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 7907,
+      "name": "Pedro Bigas Rigo",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 7909,
+      "name": "Nicolás Martín Pareja",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 7948,
+      "name": "Marco Andreolli",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 8167,
+      "name": "Sergio Ezequiel Araújo",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 8234,
+      "name": "Ignacio Camacho Barnola",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 8264,
+      "name": "Adnane Tighadouini",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 8419,
+      "name": "Duje Čop",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 8440,
+      "name": "Aythami Artiles Oliva",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 8522,
+      "name": "Armindo Tué Na Bangna",
+      "team_ids": [
+        210
+      ]
+    },
+    {
+      "id": 8523,
+      "name": "Yevhen Konoplyanka",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 8584,
+      "name": "Jonathas Cristian de Jesus",
+      "team_ids": [
+        210
+      ]
+    },
+    {
+      "id": 8697,
+      "name": "Andrés Eduardo Fernández Moreno",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 8724,
+      "name": "Carlos Martínez Díez",
+      "team_ids": [
+        210
+      ]
+    },
+    {
+      "id": 8801,
+      "name": "Iván López Mendoza",
+      "team_ids": [
+        221
+      ]
+    },
+    {
+      "id": 8803,
+      "name": "Daniel Giménez Hernández",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 8818,
+      "name": "Jorge Meré Pérez",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 8866,
+      "name": "Carlos Fernández Luna",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 9246,
+      "name": "Patrick Ebert",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 9403,
+      "name": "Izet Hajrović",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 9462,
+      "name": "José Ignacio Peleteiro Ramallo",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 10037,
+      "name": "Danilo Barbosa da Silva",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 10476,
+      "name": "Timothée Kolodziejczak",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 10609,
+      "name": "Jérémy Mathieu",
+      "team_ids": [
+        217
+      ]
+    },
+    {
+      "id": 10612,
+      "name": "Yoel Rodríguez Oterino",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 10727,
+      "name": "Răzvan Dincă Raț",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 10754,
+      "name": "Héctor Hernández Ortega",
+      "team_ids": [
+        210
+      ]
+    },
+    {
+      "id": 10755,
+      "name": "Jonathan Viera Ramos",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 10763,
+      "name": "Asier Riesgo Unamuno",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 10802,
+      "name": "André Filipe Tavares Gomes",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 10852,
+      "name": "Miguel Filipe Nunes Cardoso",
+      "team_ids": [
+        219
+      ]
+    },
+    {
+      "id": 10868,
+      "name": "Ricardo Jorge Luz Horta",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 10881,
+      "name": "Diogo José Rosário Gomes Figueiras",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 11094,
+      "name": "Arda Turan",
+      "team_ids": [
+        217
+      ]
+    },
+    {
+      "id": 11146,
+      "name": "Luis Carlos Fariña Olivera",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 11212,
+      "name": "Fábio Ricardo Gomes Fonseca",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 11298,
+      "name": "José Ignacio Martínez García",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 11537,
+      "name": "Alberto García Cabrera",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 11539,
+      "name": "Adrián Embarba Blázquez",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 11542,
+      "name": "Javier Guerra Rodríguez",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 11543,
+      "name": "José Antonio Dorado Ramírez",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 11634,
+      "name": "Cristiano Piccini",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 11675,
+      "name": "Moisés Gómez Bordonado",
+      "team_ids": [
+        216
+      ]
+    },
+    {
+      "id": 11813,
+      "name": "Emiliano Buendía",
+      "team_ids": [
+        216
+      ]
+    },
+    {
+      "id": 12021,
+      "name": "Óliver Torres Muñoz",
+      "team_ids": [
+        212
+      ]
+    },
+    {
+      "id": 12191,
+      "name": "Gorka Elustondo Urkola",
+      "team_ids": [
+        215
+      ]
+    },
+    {
+      "id": 12349,
+      "name": "Wilfried Aimeric Zahibo",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 13107,
+      "name": "Sergio Álvarez Díaz",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 13552,
+      "name": "Borja Fernández Fernández",
+      "team_ids": [
+        209
+      ]
+    },
+    {
+      "id": 15297,
+      "name": "Mickaël Ciani",
+      "team_ids": [
+        214
+      ]
+    },
+    {
+      "id": 15602,
+      "name": "Juan Carlos Valerón Santana",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 15805,
+      "name": "Hernán Daniel Santana Trujillo",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 15893,
+      "name": "Víctor Rodríguez Romero",
+      "team_ids": [
+        216
+      ]
+    },
+    {
+      "id": 16073,
+      "name": "Aras Özbiliz",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 16332,
+      "name": "Ognjen Vranješ",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 16338,
+      "name": "Uche Henry Agbo",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 16426,
+      "name": "Wanderson Maciel Sousa Campos",
+      "team_ids": [
+        216
+      ]
+    },
+    {
+      "id": 16456,
+      "name": "Enzo Pablo Roco Roco",
+      "team_ids": [
+        214
+      ]
+    },
+    {
+      "id": 16539,
+      "name": "Diego Antonio Reyes Rosales",
+      "team_ids": [
+        210
+      ]
+    },
+    {
+      "id": 16622,
+      "name": "Mikel González de Martín Martínez",
+      "team_ids": [
+        210
+      ]
+    },
+    {
+      "id": 16723,
+      "name": "Egor Filipenko",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 17054,
+      "name": "Emiliano Daniel Velázquez Maldonado",
+      "team_ids": [
+        216
+      ]
+    },
+    {
+      "id": 17622,
+      "name": "Jackson Arley Martínez Valencia",
+      "team_ids": [
+        212
+      ]
+    },
+    {
+      "id": 18398,
+      "name": "Omar Mascarell González",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 18404,
+      "name": "José Ángel Crespo Rincón",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 18407,
+      "name": "José Alberto Cañas Ruiz Herrera",
+      "team_ids": [
+        214
+      ]
+    },
+    {
+      "id": 18721,
+      "name": "Robert Ibáñez Castro",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 18724,
+      "name": "Sofiane Feghouli",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 18867,
+      "name": "Matías Nahuel Leiva Esquivel",
+      "team_ids": [
+        222
+      ]
+    },
+    {
+      "id": 18904,
+      "name": "Claudio Matías Kranevitter",
+      "team_ids": [
+        212
+      ]
+    },
+    {
+      "id": 18925,
+      "name": "Ignacio Cases Mora",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 19431,
+      "name": "Fernando Damián Tissone",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 19454,
+      "name": "Ricardo Miguel Moreira da Costa",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 19668,
+      "name": "Augusto Matías Fernández",
+      "team_ids": [
+        209,
+        212
+      ]
+    },
+    {
+      "id": 19677,
+      "name": "Karim Benzema",
+      "team_ids": [
+        220
+      ]
+    },
+    {
+      "id": 19724,
+      "name": "Rafael van der Vaart",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 20016,
+      "name": "Kléper Laveran Lima Ferreira",
+      "team_ids": [
+        220
+      ]
+    },
+    {
+      "id": 20055,
+      "name": "Marc-André ter Stegen",
+      "team_ids": [
+        217
+      ]
+    },
+    {
+      "id": 20063,
+      "name": "Javier Ontiveros Parra",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 20064,
+      "name": "Hugo Miguel Almeida Costa Lopes",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 20086,
+      "name": "Stipe Pletikosa",
+      "team_ids": [
+        219
+      ]
+    },
+    {
+      "id": 20215,
+      "name": "Álvaro Arbeloa Coca",
+      "team_ids": [
+        220
+      ]
+    },
+    {
+      "id": 20542,
+      "name": "Álvaro Negredo Sánchez",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 20669,
+      "name": "Tiago Cardoso Mendes",
+      "team_ids": [
+        212
+      ]
+    },
+    {
+      "id": 21147,
+      "name": "Borja Mayoral Moya",
+      "team_ids": [
+        220
+      ]
+    },
+    {
+      "id": 21210,
+      "name": "Mariano Ferreira Filho",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 21229,
+      "name": "Sergi Samper Montaña",
+      "team_ids": [
+        217
+      ]
+    },
+    {
+      "id": 21877,
+      "name": "Ignacio Monsalve Vicente",
+      "team_ids": [
+        212
+      ]
+    },
+    {
+      "id": 22102,
+      "name": "Adriano Correia Claro",
+      "team_ids": [
+        217
+      ]
+    },
+    {
+      "id": 22819,
+      "name": "Bruno Soriano Llido",
+      "team_ids": [
+        222
+      ]
+    },
+    {
+      "id": 23416,
+      "name": "Stefan Šćepović",
+      "team_ids": [
+        216
+      ]
+    },
+    {
+      "id": 23761,
+      "name": "Alhassane Bangoura",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 23785,
+      "name": "Théo Bongonda Mbul''Ofeko Batombo",
+      "team_ids": [
+        209
+      ]
+    },
+    {
+      "id": 23791,
+      "name": "Víctor Casadesús Castaño",
+      "team_ids": [
+        221
+      ]
+    },
+    {
+      "id": 23799,
+      "name": "Eddy Silvestre Pascual İsrafilov",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 23800,
+      "name": "Laureano Sanabria Ruiz",
+      "team_ids": [
+        219
+      ]
+    },
+    {
+      "id": 23802,
+      "name": "Juan Muñoz Muñoz",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 23806,
+      "name": "Alejandro Bergantiños García",
+      "team_ids": [
+        219
+      ]
+    },
+    {
+      "id": 23816,
+      "name": "José Antonio Reyes Calderón",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 23833,
+      "name": "Borja Viguera Manzanares",
+      "team_ids": [
+        215
+      ]
+    },
+    {
+      "id": 23838,
+      "name": "Pablo Pérez Rodríguez",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 23843,
+      "name": "Diego Mariño Villar",
+      "team_ids": [
+        221
+      ]
+    },
+    {
+      "id": 23848,
+      "name": "Carlos Carmona Bonet",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 23849,
+      "name": "Francisco José Villalba Rodrigo",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 23924,
+      "name": "Mamadou Sylla Diallo",
+      "team_ids": [
+        214
+      ]
+    },
+    {
+      "id": 23930,
+      "name": "Ikechukwu Uche",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 23936,
+      "name": "Antonio Jesús Cotán Pérez",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 23943,
+      "name": "Rubén García Santos",
+      "team_ids": [
+        221
+      ]
+    },
+    {
+      "id": 23970,
+      "name": "José María Martín-Bejarano Serrano",
+      "team_ids": [
+        221
+      ]
+    },
+    {
+      "id": 23972,
+      "name": "José Joaquín Matos García",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 23974,
+      "name": "Roberto Antonio Correa Silva",
+      "team_ids": [
+        214
+      ]
+    },
+    {
+      "id": 23994,
+      "name": "Alejandro Menéndez Díez",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 24035,
+      "name": "Álvaro Vázquez García",
+      "team_ids": [
+        216
+      ]
+    },
+    {
+      "id": 24070,
+      "name": "Saúl Berjón Pérez",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 24072,
+      "name": "Salvador Sevilla López",
+      "team_ids": [
+        214
+      ]
+    },
+    {
+      "id": 24086,
+      "name": "Antonio José Raillo Arenas",
+      "team_ids": [
+        214
+      ]
+    },
+    {
+      "id": 24132,
+      "name": "Francisco Miguel Varela Martín",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 24138,
+      "name": "Joaquín José Marín Ruiz",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 24143,
+      "name": "Álvaro Vadillo Cifuentes",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 24144,
+      "name": "Ángel Montoro Sánchez",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 24149,
+      "name": "José Antonio García Rabasco",
+      "team_ids": [
+        221
+      ]
+    },
+    {
+      "id": 24162,
+      "name": "Xavier Torres Buigues",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 24173,
+      "name": "Carlos Castro García",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 24234,
+      "name": "Juan Domínguez Lamas",
+      "team_ids": [
+        219
+      ]
+    },
+    {
+      "id": 24249,
+      "name": "Juan Muñiz Gallego",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 24255,
+      "name": "Juan Carlos Martín Corral",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 24263,
+      "name": "Ismael López Blanco",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 24277,
+      "name": "Vincenzo Renato Rennella",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 24318,
+      "name": "Alberto Guitián Ceballos",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 24453,
+      "name": "Josip Radošević",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 24508,
+      "name": "Manuel Castellano Castro",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 24577,
+      "name": "Salvador Ruiz Rodríguez",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 24578,
+      "name": "Francisco Montañés Claverías",
+      "team_ids": [
+        214
+      ]
+    },
+    {
+      "id": 24686,
+      "name": "Roberto Canella Suárez",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 24711,
+      "name": "David Carmona Sierra",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 24782,
+      "name": "Jonhatan Montiel Caballero",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 24783,
+      "name": "Javier Márquez Moreno",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 25057,
+      "name": "Alejandro Barrera García",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 25126,
+      "name": "Nicolás Federico López Alonso",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 25134,
+      "name": "Deyverson Brum Silva Acosta",
+      "team_ids": [
+        221
+      ]
+    },
+    {
+      "id": 25144,
+      "name": "Diego Alves Carreira",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 25707,
+      "name": "Francisco Manuel Rico Castro",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 25824,
+      "name": "Ángel Trujillo Canorea",
+      "team_ids": [
+        221
+      ]
+    },
+    {
+      "id": 25859,
+      "name": "Sérgio Paulo Barbosa Valente",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 25881,
+      "name": "Juan Antonio Rodríguez Villamuela",
+      "team_ids": [
+        216
+      ]
+    },
+    {
+      "id": 25921,
+      "name": "Rubén Gracia Calmache",
+      "team_ids": [
+        219
+      ]
+    },
+    {
+      "id": 25984,
+      "name": "Ángel Domingo López Ruano",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 25997,
+      "name": "Jonás Manuel Gutiérrez",
+      "team_ids": [
+        219
+      ]
+    },
+    {
+      "id": 26009,
+      "name": "Roberto Soldado Rillo",
+      "team_ids": [
+        222
+      ]
+    },
+    {
+      "id": 26012,
+      "name": "David Navarro Pedrós",
+      "team_ids": [
+        221
+      ]
+    },
+    {
+      "id": 26020,
+      "name": "Ángel Lafita Castillo",
+      "team_ids": [
+        216
+      ]
+    },
+    {
+      "id": 26023,
+      "name": "Juan Francisco García García",
+      "team_ids": [
+        221
+      ]
+    },
+    {
+      "id": 26070,
+      "name": "Antonio Rodríguez Martínez",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 26087,
+      "name": "Carlos Gurpegi Nausia",
+      "team_ids": [
+        215
+      ]
+    },
+    {
+      "id": 26103,
+      "name": "Idriss Carlos Kameni",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 26107,
+      "name": "Alberto Lopo García",
+      "team_ids": [
+        219
+      ]
+    },
+    {
+      "id": 26209,
+      "name": "Manuel Pablo García Díaz",
+      "team_ids": [
+        219
+      ]
+    },
+    {
+      "id": 26211,
+      "name": "Joan Verdú Fernández",
+      "team_ids": [
+        221
+      ]
+    },
+    {
+      "id": 26222,
+      "name": "José Eduardo Rosa Vale de Castro",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 26248,
+      "name": "David Barral Torres",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 26256,
+      "name": "Igor Lichnovsky Osorio",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 26288,
+      "name": "Jonathan Javier Rodríguez Portillo",
+      "team_ids": [
+        219
+      ]
+    },
+    {
+      "id": 26387,
+      "name": "Edgar Antonio Méndez Ortega",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 26448,
+      "name": "Javier Garrido Behovide",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 26518,
+      "name": "Enrique Sola Clemente",
+      "team_ids": [
+        215
+      ]
+    },
+    {
+      "id": 26607,
+      "name": "José Raúl Baena Urdiales",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 26633,
+      "name": "Alberto Lora Ramos",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 26647,
+      "name": "Henok Goitom",
+      "team_ids": [
+        216
+      ]
+    },
+    {
+      "id": 26669,
+      "name": "Weligton Róbson Pena de Oliveira",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 26685,
+      "name": "Nicolás Ladislao Fedor Flores",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 26689,
+      "name": "Nauzet Alemán Viera",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 26690,
+      "name": "Alberto Mateus Contreiras Gonçalves",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 26723,
+      "name": "Álvaro Cejudo Carmona",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 26736,
+      "name": "Borja Ekiza Imaz",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 26753,
+      "name": "Javier Varas Herrera",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 26764,
+      "name": "Jon Ansotegi Gorostola",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 26775,
+      "name": "Thievy Guivane Bifouma Koulossa",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 26776,
+      "name": "Juan Isaac Cuenca López",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 26780,
+      "name": "Guilherme Magdalena Siqueira",
+      "team_ids": [
+        207,
+        212
+      ]
+    },
+    {
+      "id": 26781,
+      "name": "Diego Mainz García",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 26783,
+      "name": "Roque Luis Santa Cruz Cantero",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 26797,
+      "name": "Francisco Medina Luna",
+      "team_ids": [
+        360,
+        1049
+      ]
+    },
+    {
+      "id": 26801,
+      "name": "Jordi Figueras Montel",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 26848,
+      "name": "Roberto Trashorras Gayoso",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 26941,
+      "name": "Francisco Javier García Noblejas Hernanz",
+      "team_ids": [
+        216
+      ]
+    },
+    {
+      "id": 27052,
+      "name": "Lévy Clément Madinda",
+      "team_ids": [
+        209
+      ]
+    },
+    {
+      "id": 27054,
+      "name": "Roberto Lago Soto",
+      "team_ids": [
+        216
+      ]
+    },
+    {
+      "id": 27092,
+      "name": "Abdoul Karim Yoda",
+      "team_ids": [
+        216
+      ]
+    },
+    {
+      "id": 27109,
+      "name": "Youssef El-Arabi",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 27111,
+      "name": "António Alberto Bastos Pimparel",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 27122,
+      "name": "Simão Mate",
+      "team_ids": [
+        221
+      ]
+    },
+    {
+      "id": 27123,
+      "name": "Jordi Xumetra Feliu",
+      "team_ids": [
+        221
+      ]
+    },
+    {
+      "id": 27144,
+      "name": "Antonio Amaya Carazo",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 27148,
+      "name": "Abraham González Casanova",
+      "team_ids": [
+        214
+      ]
+    },
+    {
+      "id": 27154,
+      "name": "Nikolaos Karabelas",
+      "team_ids": [
+        221
+      ]
+    },
+    {
+      "id": 27155,
+      "name": "Bojan Jokić",
+      "team_ids": [
+        222
+      ]
+    },
+    {
+      "id": 27184,
+      "name": "Marcos Alberto Angeleri",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 27239,
+      "name": "Aleksandar Pantić",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 27240,
+      "name": "Jesús Fernández Collado",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 27241,
+      "name": "Víctor Guillermo Álvarez Delgado",
+      "team_ids": [
+        214
+      ]
+    },
+    {
+      "id": 27243,
+      "name": "Oriol Riera Magem",
+      "team_ids": [
+        219
+      ]
+    },
+    {
+      "id": 27250,
+      "name": "Nabil Ghilas",
+      "team_ids": [
+        221
+      ]
+    },
+    {
+      "id": 27251,
+      "name": "Francisco José Perdomo Borges",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 27305,
+      "name": "Germán Darío Lux",
+      "team_ids": [
+        219
+      ]
+    },
+    {
+      "id": 27318,
+      "name": "Douglas Pereira dos Santos",
+      "team_ids": [
+        217
+      ]
+    },
+    {
+      "id": 27335,
+      "name": "Arthur Etienne Boka",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 27340,
+      "name": "Dejan Dražić",
+      "team_ids": [
+        209
+      ]
+    },
+    {
+      "id": 27341,
+      "name": "Marcelo Alfonso Díaz Rojas",
+      "team_ids": [
+        209
+      ]
+    },
+    {
+      "id": 27342,
+      "name": "Josep Señé Escudero",
+      "team_ids": [
+        209
+      ]
+    },
+    {
+      "id": 27345,
+      "name": "Didier Digard",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 27346,
+      "name": "Petros Matheus dos Santos Araújo",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 27347,
+      "name": "Juan Manuel Vargas Risco",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 27348,
+      "name": "Ricky van Wolfswinkel",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 27349,
+      "name": "Heiko Westermann",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 27401,
+      "name": "Bernard Mensah",
+      "team_ids": [
+        216
+      ]
+    },
+    {
+      "id": 27402,
+      "name": "Álvaro Daniel Pereira Barragán",
+      "team_ids": [
+        216
+      ]
+    },
+    {
+      "id": 27403,
+      "name": "Santiago Vergini",
+      "team_ids": [
+        216
+      ]
+    },
+    {
+      "id": 27457,
+      "name": "Manuel Fernández Muñíz",
+      "team_ids": [
+        219
+      ]
+    },
+    {
+      "id": 27462,
+      "name": "Xabier Iruretagoiena Aranzamendi",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 27463,
+      "name": "Mauricio Andrés Cuero Castillo",
+      "team_ids": [
+        221
+      ]
+    },
+    {
+      "id": 27480,
+      "name": "Lucas Alfonso Orbán Alegre",
+      "team_ids": [
+        207,
+        221
+      ]
+    },
+    {
+      "id": 27481,
+      "name": "Carlos Carbonell Gil",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 27482,
+      "name": "Aderllan Leandro de Jesus Santos",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 27483,
+      "name": "Benoît Trémoulinas",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 27521,
+      "name": "Juan Emmanuel Culio",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 27522,
+      "name": "Antolín Alcáraz Viveros",
+      "team_ids": [
+        208
+      ]
+    },
+    {
+      "id": 27526,
+      "name": "Rachid Aït-Atmane",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 27656,
+      "name": "Carl Medjani",
+      "team_ids": [
+        221
+      ]
+    },
+    {
+      "id": 27970,
+      "name": "Ian González Nieto",
+      "team_ids": [
+        216
+      ]
+    },
+    {
+      "id": 30429,
+      "name": "Hugo Fraile Martín",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 30454,
+      "name": "Francisco José Sánchez Rodríguez",
+      "team_ids": [
+        213
+      ]
+    },
+    {
+      "id": 31467,
+      "name": "Eneko Capilla González",
+      "team_ids": [
+        210
+      ]
+    },
+    {
+      "id": 31469,
+      "name": "Andrés Pascual Santoja",
+      "team_ids": [
+        207
+      ]
+    },
+    {
+      "id": 31904,
+      "name": "Giedrius Arlauskis",
+      "team_ids": [
+        214
+      ]
+    },
+    {
+      "id": 34728,
+      "name": "Diego Alende López",
+      "team_ids": [
+        209
+      ]
+    },
+    {
+      "id": 37212,
+      "name": "Leandro Damião da Silva dos Santos",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 40822,
+      "name": "Daniel Arnaud N''Di\t",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 43354,
+      "name": "Chengdong Zhang",
+      "team_ids": [
+        360
+      ]
+    },
+    {
+      "id": 49433,
+      "name": "Hachim Mastour",
+      "team_ids": [
+        223
+      ]
+    },
+    {
+      "id": 75537,
+      "name": "David Goldar Gómez",
+      "team_ids": [
+        209
+      ]
+    },
+    {
+      "id": 79615,
+      "name": "Néstor Díaz García",
+      "team_ids": [
+        209
+      ]
+    },
+    {
+      "id": 158769,
+      "name": "Ivan Kelava",
+      "team_ids": [
+        1049
+      ]
+    },
+    {
+      "id": 166764,
+      "name": "Ander Gayoso Reina",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 186264,
+      "name": "Foued Kadir",
+      "team_ids": [
+        218
+      ]
+    },
+    {
+      "id": 197493,
+      "name": "Mikel Arruabarrena Aranbide",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 197562,
+      "name": "Iñigo Barrenetxea García",
+      "team_ids": [
+        322
+      ]
+    },
+    {
+      "id": 197595,
+      "name": "Sergio Mendigutxia Iglesias",
+      "team_ids": [
+        1041
+      ]
+    },
+    {
+      "id": 220761,
+      "name": "Miguel Ángel Muñoz Alonso",
+      "team_ids": [
+        216
+      ]
+    }
+  ]
+}

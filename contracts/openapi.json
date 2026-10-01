@@ -28,6 +28,39 @@
         }
       }
     },
+    "/api/v1/ready": {
+      "get": {
+        "summary": "Ready",
+        "description": "Verify the mounted canonical contracts, hashes and readable matches.",
+        "operationId": "readiness",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object",
+                  "title": "Response Readiness"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Artefactos canonicos no disponibles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/teams": {
       "get": {
         "summary": "Teams",
@@ -296,6 +329,79 @@
         }
       }
     },
+    "/api/v1/scouting-runs/{run_id}/matches-profile": {
+      "get": {
+        "summary": "Match Profiles",
+        "operationId": "getMatchProfiles",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MatchProfile"
+                  },
+                  "title": "Response Getmatchprofiles"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflicto con la version o ventana canonica",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Artefactos canonicos no disponibles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/scouting-runs/{run_id}/summary": {
       "get": {
         "summary": "Summary",
@@ -318,6 +424,75 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Summary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflicto con la version o ventana canonica",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Artefactos canonicos no disponibles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/scouting-runs/{run_id}/habits": {
+      "get": {
+        "summary": "Habits",
+        "operationId": "getHabits",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HabitProfile"
                 }
               }
             }
@@ -478,6 +653,148 @@
                     "$ref": "#/components/schemas/Corner"
                   },
                   "title": "Response Getcorners"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recurso no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflicto con la version o ventana canonica",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Solicitud no procesable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Artefactos canonicos no disponibles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/scouting-runs/{run_id}/destination-heatmap": {
+      "get": {
+        "summary": "Destination Heatmap",
+        "operationId": "getDestinationHeatmap",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          },
+          {
+            "name": "player",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Player"
+            }
+          },
+          {
+            "name": "side",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "y_bajo",
+                    "y_alto"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Side"
+            }
+          },
+          {
+            "name": "delivery",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "corto",
+                    "envio",
+                    "desconocido"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Delivery"
+            }
+          },
+          {
+            "name": "cluster",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cluster"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DestinationHeatmap"
                 }
               }
             }
@@ -1179,6 +1496,28 @@
             "type": "string",
             "title": "Player"
           },
+          "player_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Player Id"
+          },
+          "team_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Team Id"
+          },
           "x": {
             "type": "number",
             "title": "X"
@@ -1303,6 +1642,100 @@
         ],
         "title": "Corner"
       },
+      "DestinationCell": {
+        "properties": {
+          "x": {
+            "type": "integer",
+            "exclusiveMaximum": 120.0,
+            "minimum": 0.0,
+            "title": "X"
+          },
+          "y": {
+            "type": "integer",
+            "exclusiveMaximum": 80.0,
+            "minimum": 0.0,
+            "title": "Y"
+          },
+          "count": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Count"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "x",
+          "y",
+          "count"
+        ],
+        "title": "DestinationCell"
+      },
+      "DestinationHeatmap": {
+        "properties": {
+          "cell_width": {
+            "type": "integer",
+            "title": "Cell Width",
+            "default": 10
+          },
+          "cell_height": {
+            "type": "integer",
+            "title": "Cell Height",
+            "default": 10
+          },
+          "filtered_corners": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Filtered Corners"
+          },
+          "included": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Included"
+          },
+          "excluded_spatial": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Excluded Spatial"
+          },
+          "excluded_non_direct": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Excluded Non Direct"
+          },
+          "max_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Max Count"
+          },
+          "cells": {
+            "items": {
+              "$ref": "#/components/schemas/DestinationCell"
+            },
+            "type": "array",
+            "title": "Cells"
+          },
+          "zones": {
+            "items": {
+              "$ref": "#/components/schemas/Group"
+            },
+            "type": "array",
+            "title": "Zones"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "filtered_corners",
+          "included",
+          "excluded_spatial",
+          "excluded_non_direct",
+          "max_count",
+          "cells",
+          "zones"
+        ],
+        "title": "DestinationHeatmap"
+      },
       "ErrorResponse": {
         "properties": {
           "detail": {
@@ -1391,6 +1824,179 @@
         "type": "object",
         "title": "HTTPValidationError"
       },
+      "HabitProfile": {
+        "properties": {
+          "corners": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Corners"
+          },
+          "direct": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Direct"
+          },
+          "max_match_corners": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Max Match Corners"
+          },
+          "sides": {
+            "items": {
+              "$ref": "#/components/schemas/HabitSide"
+            },
+            "type": "array",
+            "title": "Sides"
+          },
+          "takers": {
+            "items": {
+              "$ref": "#/components/schemas/HabitTaker"
+            },
+            "type": "array",
+            "title": "Takers"
+          },
+          "zones": {
+            "items": {
+              "$ref": "#/components/schemas/HabitZone"
+            },
+            "type": "array",
+            "title": "Zones"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "corners",
+          "direct",
+          "max_match_corners",
+          "sides",
+          "takers",
+          "zones"
+        ],
+        "title": "HabitProfile"
+      },
+      "HabitSide": {
+        "properties": {
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "corners": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Corners"
+          },
+          "direct": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Direct"
+          },
+          "zones": {
+            "items": {
+              "$ref": "#/components/schemas/HabitZone"
+            },
+            "type": "array",
+            "title": "Zones"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "label",
+          "corners",
+          "direct",
+          "zones"
+        ],
+        "title": "HabitSide"
+      },
+      "HabitTaker": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "player_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Player Id"
+          },
+          "corners": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Corners"
+          },
+          "matches": {
+            "type": "integer",
+            "maximum": 8.0,
+            "minimum": 0.0,
+            "title": "Matches"
+          },
+          "short": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Short"
+          },
+          "sides": {
+            "items": {
+              "$ref": "#/components/schemas/Group"
+            },
+            "type": "array",
+            "title": "Sides"
+          },
+          "zones": {
+            "items": {
+              "$ref": "#/components/schemas/HabitZone"
+            },
+            "type": "array",
+            "title": "Zones"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "player_id",
+          "corners",
+          "matches",
+          "short",
+          "sides",
+          "zones"
+        ],
+        "title": "HabitTaker"
+      },
+      "HabitZone": {
+        "properties": {
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Count"
+          },
+          "matches": {
+            "type": "integer",
+            "maximum": 8.0,
+            "minimum": 0.0,
+            "title": "Matches"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "label",
+          "count",
+          "matches"
+        ],
+        "title": "HabitZone"
+      },
       "Match": {
         "properties": {
           "match_id": {
@@ -1412,6 +2018,50 @@
           "away_team": {
             "type": "string",
             "title": "Away Team"
+          },
+          "home_team_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Home Team Id"
+          },
+          "away_team_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Away Team Id"
+          },
+          "home_score": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Home Score"
+          },
+          "away_score": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Away Score"
           }
         },
         "additionalProperties": false,
@@ -1424,6 +2074,98 @@
           "away_team"
         ],
         "title": "Match"
+      },
+      "MatchProfile": {
+        "properties": {
+          "match_id": {
+            "type": "integer",
+            "title": "Match Id"
+          },
+          "match_date": {
+            "type": "string",
+            "title": "Match Date"
+          },
+          "kick_off": {
+            "type": "string",
+            "title": "Kick Off"
+          },
+          "home_team": {
+            "type": "string",
+            "title": "Home Team"
+          },
+          "away_team": {
+            "type": "string",
+            "title": "Away Team"
+          },
+          "home_team_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Home Team Id"
+          },
+          "away_team_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Away Team Id"
+          },
+          "home_score": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Home Score"
+          },
+          "away_score": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Away Score"
+          },
+          "rival_corners": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Rival Corners"
+          },
+          "main_takers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Main Takers"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "match_id",
+          "match_date",
+          "kick_off",
+          "home_team",
+          "away_team",
+          "rival_corners",
+          "main_takers"
+        ],
+        "title": "MatchProfile"
       },
       "ModelEvaluation": {
         "properties": {
@@ -1944,6 +2686,10 @@
             "type": "integer",
             "title": "Excluded Corners"
           },
+          "classified_direct_corners": {
+            "type": "integer",
+            "title": "Classified Direct Corners"
+          },
           "shots": {
             "type": "integer",
             "title": "Shots"
@@ -2028,6 +2774,7 @@
           "corners",
           "evaluable_corners",
           "excluded_corners",
+          "classified_direct_corners",
           "shots",
           "scr15",
           "xg_per_corner",
@@ -2045,6 +2792,17 @@
           "name": {
             "type": "string",
             "title": "Name"
+          },
+          "team_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Team Id"
           }
         },
         "additionalProperties": false,

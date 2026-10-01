@@ -1,13 +1,71 @@
-# Model card — CornerScout v0.3
+# Modelado canónico por objetivo
 
-Target: shot_within_15s de secuencias evaluables, no goles. 3,039 corners con ocho partidos previos disponibles. Variables de cada corner: SCR historico evaluable, corners por partido, proporcion de cortos y proporcion de envios altos de los ocho encuentros anteriores. No destino real ni outcome del corner objetivo. Todos los corners de un partido comparten variables prepartido; no confundir con prediccion en vivo.
+La versión vigente es `05-modeling-v3-objectives`, implementada en
+`analytics/modeling.py` y orquestada por `analytics/pipeline.py`.
 
-Entrenamiento expansivo: validacion enero–14 febrero, validacion 15 febrero–marzo; holdout abril–mayo. Partidos y dias completos no se dividen entre entrenamiento y prueba. Preprocesamiento se ajusta en cada entrenamiento. No se ajustan hiperparametros con holdout. Umbral 0.5 fijo ilustrativo (F1 nulo por probabilidades inferiores; no demuestra inutilidad absoluta, evaluar Brier/calibracion).
+| Objetivo | Candidato | Decisión canónica |
+|---|---|---|
+| Tiro en SCR-15 | Regresión logística regularizada | Tasa histórica de liga |
+| Corto/directo | Regresión logística regularizada | Candidato seleccionado |
+| Volumen por equipo-partido | Regresión de Poisson regularizada | Candidato seleccionado |
+| Zona del pase | Gate de soporte y persistencia | Sin predicción |
 
-Modelos: tasa base en entrenamiento, StandardScaler + LogisticRegression(C=1), RandomForest(200 arboles, profundidad 4, hoja minima 30). Semilla 42. Promocion exige Brier menor y AP mayor que baseline en ambos bloques de validacion, y confirmacion Brier en holdout. Resultado: **baseline**. Las mejoras pequenas en holdout no revierten el fallo en validacion. No se promocionan LR/RF. Su evaluacion completa esta en model-evaluation.json y calibration.png.
+Las variables resumen ocho partidos estrictamente anteriores. Preprocesamiento
+y ajuste se realizan dentro del entrenamiento temporal; el destino del córner
+objetivo y K-Means no son predictores. Tres ventanas de desarrollo seleccionan;
+el periodo final confirma y no modifica ganadores. No es un holdout completamente
+intacto: hubo verificación global de calidad y conteos, documentada en el contrato.
 
-K-Means: k=2..6, estandarizacion, n_init=10, silhouette y minimo 20 observaciones por grupo. Variables: destino x/y; baseline espacial interpretable. Snapshots mensuales entrenados solo con historia anterior. No predice tiros ni identifica jugadas ensayadas. La UI usa el ultimo snapshot disponible anterior/al corte, excluyendo geometria invalida. IDs de cluster solo comparables dentro del mismo snapshot.
+### Alcance de cada objetivo
 
-Los resultados de evaluacion global de temporada se muestran como evaluacion retrospectiva del sistema, no evidencia disponible a un entrenador en el corte historico. Probabilidad operativa anterior a junio: baseline historico usando exclusivamente partidos anteriores al corte. No se usa el modelo entrenado con datos futuros.
+SCR-15 y volumen son objetivos prepartido. **Corto/directo es secundario de
+escenario pre-cobro**, cuando se conocen minuto, marcador, diferencia numérica
+y lado del córner concedido; no se presenta como predicción estrictamente
+prepartido. El target corto es el proxy geométrico versionado, no una etiqueta
+humana independiente. Zona no superó el gate de persistencia y no se predice.
 
-Artefactos locales: artifacts/v0.3 (modelos y hashes), data/processed/features.parquet, clusters.parquet y model-evaluation.json. Regenerar con `uv run --extra ml cornerscout train` tras pasar el gate de calidad.
+### Ventanas registradas en la entrega ejecutada
+
+Los límites son exclusivos por la derecha:
+
+| Ventana | Inicio | Fin exclusivo | Uso |
+|---|---|---|---|
+| Desarrollo 1 | 2016-01-25 | 2016-02-21 | Selección |
+| Desarrollo 2 | 2016-02-21 | 2016-03-15 | Selección |
+| Desarrollo 3 | 2016-03-18 | 2016-04-18 | Selección |
+| Final | 2016-04-19 | 2016-05-16 | Confirmación |
+
+SCR-15 pasó cero de tres ventanas y conserva la referencia liguera.
+Corto/directo pasó dos. El candidato de conteo fue seleccionado con familia
+Poisson. Las ventanas y métricas de una publicación concreta se leen de sus
+artefactos, no de una evaluación antigua `v0.3`.
+
+Se comparan referencia liguera e histórico suavizado. Para binarios se examinan
+Brier, log loss, AP y calibración; para volumen MAE y deviance Poisson. Se
+remuestrean partidos completos para comparar incertidumbre. Las métricas y
+ventanas exactas están en `data/processed/05_modeling/` con hashes y contrato.
+
+La promoción binaria exige mejoras en Brier, log loss y AP sin degradar
+calibración en al menos dos ventanas de desarrollo. La evaluación no necesita
+un umbral clasificatorio de 0,5. Los artefactos retrospectivos se ajustan antes
+del periodo final; los `refit_full` usan la temporada completa y no se presentan
+como reevaluados fuera de muestra.
+
+K-Means se fija antes de desarrollo y solo describe destinos de pases directos.
+No descubre por sí mismo jugadas ensayadas ni garantiza tiros. El proxy de corto
+usa 18 unidades StatsBomb; la auditoría de 40 eventos fue asistida por la
+clasificación, no independiente. Registró 28 TP, 10 TN, 0 FP y 2 FN. No se
+extrapola el 95 % de acuerdo a toda la temporada.
+
+El ajuste descriptivo de K-Means usa destinos anteriores a `2016-01-01`, con
+cuatro grupos fijados por la decisión exploratoria documentada. No se escoge
+otra cantidad por cada consulta ni se promociona una probabilidad de tiro a
+partir del cluster.
+
+Reproducir: `uv run --all-extras cornerscout train`, después de `ingest` y
+`build`. FastAPI sirve artefactos verificados y no entrena por solicitud.
+
+Para interpretar una sesión, revisar Calidad en la app y mantener separados
+los indicadores observados de la ventana, la referencia liguera y la decisión
+del modelo. Otras temporadas y revisión de vídeo son líneas futuras; no hay
+validación de comportamiento actual de equipos.

@@ -60,6 +60,8 @@ def session():
         ("Consulta E_SHORT", "E_SHORT"),
         ("Consulta E_HIGH y su referencia", "E_HIGH"),
         ("Consulta L_MODEL", "L_MODEL"),
+        ("¿Cuántos córners generaron un tiro en los siguientes 15 segundos?", "E_SCR15"),
+        ("¿Cuántos tiros hubo tras los córners?", "E_SCR15"),
     ],
 )
 def test_mock_questions(session, question, evidence_id):

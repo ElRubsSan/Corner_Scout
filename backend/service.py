@@ -16,11 +16,11 @@ from backend.reporting import destination_label
 from backend.schemas import *
 
 LIMITATIONS = [
-    "Caso historico LaLiga 2015/16; no informacion actual ni en vivo.",
-    "Zonas de destino del pase, no ubicaciones de remate. Sin video ni tracking.",
-    "Muestra de ocho partidos; patrones poco frecuentes no prueban jugadas ensayadas.",
-    "SCR-15 usa corners evaluables; secuencias excluidas no se consideran negativas.",
-    "Los resultados de modelos proceden de la evaluacion temporal canonica; la API no entrena.",
+    "Caso histórico de LaLiga 2015/16; no contiene información actual ni en vivo.",
+    "Las zonas indican destinos del pase, no ubicaciones de remate. No hay vídeo ni seguimiento de jugadores.",
+    "La muestra comprende ocho partidos; los patrones poco frecuentes no prueban jugadas ensayadas.",
+    "SCR-15 utiliza córners evaluables; las secuencias excluidas no cuentan como negativas.",
+    "Los modelos proceden de una evaluación temporal histórica; no garantizan el próximo partido.",
 ]
 
 
@@ -53,7 +53,20 @@ def _json_list(value: Any) -> list[str]:
 
 def teams() -> list[Team]:
     matches = query("matches_clean")
-    return [Team(name=name) for name in sorted({row[key] for row in matches for key in ("home_team", "away_team")})]
+    names = sorted({row[key] for row in matches for key in ("home_team", "away_team")})
+    ids = team_ids()
+    return [Team(name=name, team_id=ids.get(name)) for name in names]
+
+
+def team_ids() -> dict[str, int]:
+    """Resolve the verified stage-04 team identity without reading raw data."""
+    mapping: dict[str, int] = {}
+    for row in query("corners_engineered"):
+        name, value = str(row["team"]), int(row["team_id"])
+        if name in mapping and mapping[name] != value:
+            raise HTTPException(503, "Identidad de club inconsistente")
+        mapping[name] = value
+    return mapping
 
 
 def matches_for(rival: str | None = None, before: str | None = None, limit: int = 380) -> list[Match]:
@@ -69,8 +82,12 @@ def matches_for(rival: str | None = None, before: str | None = None, limit: int 
     sql = ("WHERE " + " AND ".join(clauses) if clauses else "")
     sql += " ORDER BY match_date DESC, kick_off DESC, match_id DESC LIMIT ?"
     records = query("matches_clean", sql, [*params, limit])
+    clubs = team_ids()
     return [Match(match_id=row["match_id"], match_date=_text(row["match_date"]), kick_off=_text(row["kick_off"]),
-                  home_team=row["home_team"], away_team=row["away_team"]) for row in records]
+                  home_team=row["home_team"], away_team=row["away_team"],
+                  home_team_id=clubs.get(str(row["home_team"])),
+                  away_team_id=clubs.get(str(row["away_team"])),
+                  home_score=row.get("home_score"), away_score=row.get("away_score")) for row in records]
 
 
 def create_run(request: RunRequest) -> Run:
@@ -155,6 +172,8 @@ def corners_for(run: Run) -> list[Corner]:
         values = {
             "match_id": int(row["match_id"]), "event_id": event_id,
             "player": str(row.get("player") or "Desconocido"),
+            "player_id": int(row["player_id"]) if row.get("player_id") is not None and math.isfinite(float(row["player_id"])) and float(row["player_id"]).is_integer() else None,
+            "team_id": int(row["team_id"]) if row.get("team_id") is not None else None,
             "x": float(row["x"]), "y": float(row["y"]), "end_x": float(row["end_x"]), "end_y": float(row["end_y"]),
             "side": side,
             "delivery": delivery,
@@ -172,8 +191,98 @@ def corners_for(run: Run) -> list[Corner]:
     return results
 
 
+def match_profiles(run: Run) -> list[MatchProfile]:
+    ids = [match.match_id for match in run.matches]
+    placeholders = ",".join("?" for _ in ids)
+    scores = {int(row["match_id"]): row for row in query(
+        "matches_clean", f"WHERE match_id IN ({placeholders})", ids
+    )}
+    if len(scores) != len(ids):
+        raise HTTPException(503, "Partidos canonicos incompletos")
+    clubs = team_ids()
+    by_match: dict[int, Counter[str]] = {match_id: Counter() for match_id in ids}
+    totals: Counter[int] = Counter()
+    for corner in corners_for(run):
+        totals[corner.match_id] += 1
+        if corner.player != "Desconocido":
+            by_match[corner.match_id][corner.player] += 1
+    result = []
+    for match in run.matches:
+        counts = by_match[match.match_id]
+        maximum = max(counts.values(), default=0)
+        row = scores[match.match_id]
+        values = match.model_dump()
+        values.update(
+            home_team_id=clubs.get(match.home_team), away_team_id=clubs.get(match.away_team),
+            home_score=row.get("home_score"), away_score=row.get("away_score"),
+            rival_corners=totals[match.match_id],
+            main_takers=sorted(name for name, count in counts.items() if count == maximum),
+        )
+        result.append(MatchProfile(**values))
+    return result
+
+
+def destination_heatmap(run: Run, *, player: str | None = None, side: str | None = None,
+                        delivery: str | None = None, cluster: int | None = None) -> DestinationHeatmap:
+    corners = [corner for corner in corners_for(run) if all(
+        value is None or getattr(corner, field) == value
+        for field, value in {"player": player, "side": side, "delivery": delivery, "cluster": cluster}.items()
+    )]
+    spatial = [corner for corner in corners if corner.spatial_valid]
+    direct = [corner for corner in spatial if corner.delivery == "envio"]
+    bins: Counter[tuple[int, int]] = Counter()
+    for corner in direct:
+        # Coordinates are on the verified 120 x 80 StatsBomb pitch. The outer
+        # edge belongs to the final cell rather than introducing a 13th column.
+        x = min(int(corner.end_x // 10), 11) * 10
+        y = min(int(corner.end_y // 10), 7) * 10
+        bins[x, y] += 1
+    return DestinationHeatmap(
+        filtered_corners=len(corners), included=len(direct),
+        excluded_spatial=len(corners) - len(spatial),
+        excluded_non_direct=len(spatial) - len(direct),
+        max_count=max(bins.values(), default=0),
+        cells=[DestinationCell(x=x, y=y, count=count)
+               for (x, y), count in sorted(bins.items())],
+        zones=groups(direct, "zone"),
+    )
+
+
 def groups(corners: list[Corner], field: str) -> list[Group]:
     return [Group(label=key, count=count) for key, count in Counter(getattr(item, field) for item in corners).most_common()]
+
+
+def habits(run: Run) -> HabitProfile:
+    corners = corners_for(run)
+    direct = [corner for corner in corners if corner.delivery == "envio" and corner.spatial_valid
+              and corner.zone != "no_disponible"]
+
+    def zones(rows: list[Corner]) -> list[HabitZone]:
+        counts = Counter(corner.zone for corner in rows)
+        return [HabitZone(label=zone, count=count,
+                          matches=len({corner.match_id for corner in rows if corner.zone == zone}))
+                for zone, count in sorted(counts.items(), key=lambda item: (-item[1], item[0]))]
+
+    side_groups = groups(corners, "side")
+    sides = [HabitSide(label=side.label, corners=side.count,
+                       direct=sum(corner.side == side.label for corner in direct),
+                       zones=zones([corner for corner in direct if corner.side == side.label]))
+             for side in side_groups]
+    takers = []
+    for player in groups(corners, "player"):
+        owned = [corner for corner in corners if corner.player == player.label]
+        ids = {corner.player_id for corner in owned if corner.player_id is not None}
+        takers.append(HabitTaker(
+            name=player.label, player_id=next(iter(ids)) if len(ids) == 1 else None,
+            corners=player.count, matches=len({corner.match_id for corner in owned}),
+            short=sum(corner.delivery == "corto" for corner in owned),
+            sides=groups(owned, "side"),
+            zones=zones([corner for corner in direct if corner.player == player.label]),
+        ))
+    return HabitProfile(corners=len(corners), direct=len(direct),
+                        max_match_corners=max(Counter(corner.match_id for corner in corners).values(), default=0),
+                        sides=sides,
+                        takers=takers, zones=zones(direct))
 
 
 def summary(run: Run) -> Summary:
@@ -184,6 +293,7 @@ def summary(run: Run) -> Summary:
     xg_values = [corner.xg for corner in valid if corner.xg is not None]
     return Summary(rival=run.rival, cutoff_date=run.cutoff_date, matches=len(run.matches), corners=len(corners),
                    evaluable_corners=len(valid), excluded_corners=len(corners) - len(valid),
+                   classified_direct_corners=sum(corner.zone != "no_disponible" for corner in corners),
                    shots=sum(bool(corner.shot_within_15s) for corner in valid),
                    scr15=sum(bool(corner.shot_within_15s) for corner in valid) / len(valid) if valid else None,
                    xg_per_corner=sum(xg_values) / len(valid) if valid and len(xg_values) == len(valid) else None,
@@ -237,11 +347,13 @@ def model_result(run: Run) -> ModelResult:
 
 def report_input(run: Run) -> ReportInput:
     result, pattern_rows = summary(run), patterns(run)
-    evidence = [Evidence(id="scr15", description="SCR-15 observado", value=f"{result.scr15:.3f}" if result.scr15 is not None else "No evaluable"),
-                Evidence(id="corners", description="Corners totales", value=str(result.corners)),
-                Evidence(id="xg", description="xG por corner evaluable", value=f"{result.xg_per_corner:.4f}" if result.xg_per_corner is not None else "No evaluable")]
+    evidence = [Evidence(id="scr15", description="SCR-15 observado", value=(
+        f"{result.shots} de {result.evaluable_corners} córners evaluables ({result.scr15 * 100:.1f} %)"
+        if result.scr15 is not None else "No evaluable")),
+                Evidence(id="corners", description="Córners totales", value=str(result.corners)),
+                Evidence(id="xg", description="xG por córner evaluable", value=f"{result.xg_per_corner:.4f}" if result.xg_per_corner is not None else "No evaluable")]
     evidence.extend(Evidence(id=f"cluster-{item.cluster}",
-                             description=f"Envíos con destino {destination_label(item.dominant_zone)}; cobrador más frecuente: {item.main_taker}",
+                             description=f"Envíos hacia {destination_label(item.dominant_zone)}; cobrador más frecuente: {item.main_taker}",
                              value=str(item.count), event_ids=item.example_event_ids) for item in pattern_rows)
     return ReportInput(rival=run.rival, cutoff_date=run.cutoff_date, matches=run.matches, summary=result,
                        patterns=pattern_rows, evidence=evidence, limitations=LIMITATIONS)

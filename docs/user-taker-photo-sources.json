@@ -1,0 +1,902 @@
+{
+  "3601": {
+    "id": 3601,
+    "name": "Charly Musonda Junior",
+    "original_filename": "3601.jfif",
+    "original_sha256": "205c5da2951dc7ff904904b6bf57d1a6a181b0d762c92738cdb7e2616a1cbcf6",
+    "original_dimensions": [
+      300,
+      300
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "3610": {
+    "id": 3610,
+    "name": "Roque Mesa Quevedo",
+    "original_filename": "3610.jfif",
+    "original_sha256": "d85885b8139c38078a2670cc5887718d6148e743ae9e703b77131331f9ea1279",
+    "original_dimensions": [
+      430,
+      500
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "5552": {
+    "id": 5552,
+    "name": "Marcelo Vieira da Silva Júnior",
+    "original_filename": "5552.jfif",
+    "original_sha256": "7e951e953b4fa3e6ba2f4709798d6e91ca4ef58576816edb1aed315f25d06688",
+    "original_dimensions": [
+      411,
+      486
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "5718": {
+    "id": 5718,
+    "name": "Rodrigo Moreno Machado",
+    "original_filename": "5718.jfif",
+    "original_sha256": "e3742286963c805753a3d6cd8ea171b667df2cd685f6bcbd4405f6bdde1975e9",
+    "original_dimensions": [
+      200,
+      250
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6377": {
+    "id": 6377,
+    "name": "Ángel Martín Correa",
+    "original_filename": "6377.jfif",
+    "original_sha256": "d5dfcfff84cfe61054b6bc7029f5d16004133a7dd8abb9297f0857663499d402",
+    "original_dimensions": [
+      225,
+      225
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6388": {
+    "id": 6388,
+    "name": "Ander Iturraspe Derteano",
+    "original_filename": "6388.jfif",
+    "original_sha256": "7401b9a78bb364fa09b6327c67f9fb872bd8e90747d311afde9ba72e5c13073f",
+    "original_dimensions": [
+      250,
+      333
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6389": {
+    "id": 6389,
+    "name": "Mikel San José Domínguez",
+    "original_filename": "6389.jfif",
+    "original_sha256": "e7fd5fb50c566e813703ffd4869edfbfe009d327d2d63294ceba1944fef6f3a4",
+    "original_dimensions": [
+      269,
+      270
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6392": {
+    "id": 6392,
+    "name": "Íñigo Lekue Martínez",
+    "original_filename": "6392.jfif",
+    "original_sha256": "b416002b38f109804bf59830da90fda1b582854b2a135fd8f0afdf7bc3c0ed3f",
+    "original_dimensions": [
+      197,
+      256
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6563": {
+    "id": 6563,
+    "name": "Juan Pablo Añor Acosta",
+    "original_filename": "6563.jfif",
+    "original_sha256": "2fa459e7e1fa998cbbf5252944de29c46383f913943c9ccdbe0147f36299e62e",
+    "original_dimensions": [
+      300,
+      390
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6594": {
+    "id": 6594,
+    "name": "Santiago Mina Lorenzo",
+    "original_filename": "6594.jfif",
+    "original_sha256": "7cbd59c128b7e73c5f006a1bd2f9f33fafe4e7ad71b32b766307555ad44e9ee4",
+    "original_dimensions": [
+      225,
+      225
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6599": {
+    "id": 6599,
+    "name": "Rubén Salvador Pérez Del Mármol",
+    "original_filename": "6599.jfif",
+    "original_sha256": "faacf35045b6f933ce4c063520543db1cd6d65bef389b83bd030ebabb168a81f",
+    "original_dimensions": [
+      225,
+      225
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6606": {
+    "id": 6606,
+    "name": "Javier Eraso Goñi",
+    "original_filename": "6606.jfif",
+    "original_sha256": "c4a12bd008d29cddfb29aa2fe35ed82240f77aa63ff362438ce4f08ea69f38de",
+    "original_dimensions": [
+      300,
+      390
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6624": {
+    "id": 6624,
+    "name": "Jorge Franco Alviz",
+    "original_filename": "6624.jfif",
+    "original_sha256": "0f4212996329de699df97c89ec8ccb9f5625f4b1b3abbbdb757cf8ad29f804da",
+    "original_dimensions": [
+      300,
+      413
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6627": {
+    "id": 6627,
+    "name": "Damián Nicolás Suárez Suárez",
+    "original_filename": "6627.jfif",
+    "original_sha256": "92a78a1c82c260d505407140e755a0245110546d39d791ea62c9b2989e9d43f0",
+    "original_dimensions": [
+      399,
+      500
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6671": {
+    "id": 6671,
+    "name": "Asier Illarramendi Andonegi",
+    "original_filename": "6671.jfif",
+    "original_sha256": "80b5de1af199b785cf50b783a9c1a9ac3a712a45c54a0ffb86fc34cbf8043089",
+    "original_dimensions": [
+      447,
+      447
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6690": {
+    "id": 6690,
+    "name": "Xabier Prieto Argarate",
+    "original_filename": "6690.jfif",
+    "original_sha256": "54f202301d765260b64d3cf7bdf3e98e488a5d600bc78f87fe6a6fb51393346d",
+    "original_dimensions": [
+      195,
+      259
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6721": {
+    "id": 6721,
+    "name": "Willian José da Silva",
+    "original_filename": "6721.jfif",
+    "original_sha256": "79a077b05ec25351a20dada07acde2add69aac19643d4e14fec08d67aee536b3",
+    "original_dimensions": [
+      225,
+      225
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6728": {
+    "id": 6728,
+    "name": "Federico Nicolás Cartabia",
+    "original_filename": "6728.jfif",
+    "original_sha256": "a63a6f05f878c7e42918ce569fe742c88dc77500be7ba88aa2702845f03722d1",
+    "original_dimensions": [
+      300,
+      390
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6736": {
+    "id": 6736,
+    "name": "Álvaro Medrán Just",
+    "original_filename": "6736.jfif",
+    "original_sha256": "a14535de314ceec80fd086516a0ba2a411ddb28ea781f6b939ff4b5b473b50bc",
+    "original_dimensions": [
+      242,
+      354
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6738": {
+    "id": 6738,
+    "name": "Juan Francisco Moreno Fuertes",
+    "original_filename": "6738.jfif",
+    "original_sha256": "dcf75cc15c45a9f8b487879e448a3e569580950138c6efd8c2ac1e6b0223a3d8",
+    "original_dimensions": [
+      200,
+      200
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6742": {
+    "id": 6742,
+    "name": "Sergio Gontán Gallardo",
+    "original_filename": "6742.jfif",
+    "original_sha256": "0520389963b6d70e7878095b1e507c450c8032a16fd5f43de4dbf69ab831276b",
+    "original_dimensions": [
+      225,
+      225
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6745": {
+    "id": 6745,
+    "name": "Mehdi Lacen",
+    "original_filename": "6745.jfif",
+    "original_sha256": "64f1ee106c01ba7a3a70ed568a031e9386331b48d3c854d4719a5a6501d02407",
+    "original_dimensions": [
+      300,
+      390
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6766": {
+    "id": 6766,
+    "name": "Gerard Moreno Balaguero",
+    "original_filename": "6766.jfif",
+    "original_sha256": "9ae34b851bdc96663bc42385e57bb1c5c78ddb8d57829588e6d5c91294ee75ba",
+    "original_dimensions": [
+      300,
+      390
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6770": {
+    "id": 6770,
+    "name": "Esteban Félix Granero Molina",
+    "original_filename": "6770.jfif",
+    "original_sha256": "20b3b293b80a4436756828170e058892a37cbedba939ee8c6f226ba4c3c0e1d8",
+    "original_dimensions": [
+      194,
+      259
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6771": {
+    "id": 6771,
+    "name": "Manuel Trigueros Muñoz",
+    "original_filename": "6771.jfif",
+    "original_sha256": "71403e4fea41fd05b390de7604814793a122afde6f589290d5caceaf2e21dd63",
+    "original_dimensions": [
+      162,
+      162
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6776": {
+    "id": 6776,
+    "name": "David Juncà Reñé",
+    "original_filename": "6776.jfif",
+    "original_sha256": "cf1b4c3cda3ffcb7d678a5d4f23581be9c0409ff18f854725f88bf9ea8775541",
+    "original_dimensions": [
+      225,
+      225
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6784": {
+    "id": 6784,
+    "name": "Antonio García Aranda",
+    "original_filename": "6784.jfif",
+    "original_sha256": "0e1daedefac3147dfcc308b9f6c17567dbd9e306f308ea255dac516b0e855b5f",
+    "original_dimensions": [
+      225,
+      225
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6838": {
+    "id": 6838,
+    "name": "Hernán Arsenio Pérez González",
+    "original_filename": "6838.jfif",
+    "original_sha256": "99415ef9d7c825d091f89e604c9538c2b21494821ef7a099e6844e560e28062f",
+    "original_dimensions": [
+      359,
+      557
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6845": {
+    "id": 6845,
+    "name": "Ager Aketxe Barrutia",
+    "original_filename": "6845.jfif",
+    "original_sha256": "575f26fef9a4dc3708a2dbc36bfa87bf733942aa8e9b1923c2cf1d6cd3ef8a9a",
+    "original_dimensions": [
+      269,
+      270
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6865": {
+    "id": 6865,
+    "name": "Francisco José Molinero Calderón",
+    "original_filename": "6865.jfif",
+    "original_sha256": "2f4d3583032a20a9f710cda0630ca318d54fb27fc1f457f882d157b4cdefab5f",
+    "original_dimensions": [
+      554,
+      554
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6873": {
+    "id": 6873,
+    "name": "Francisco Portillo Soler",
+    "original_filename": "6873.jfif",
+    "original_sha256": "e216e0baf79ba3dfedc4bf03b3330523171d3896f9d2584f952599c86f6ebe5d",
+    "original_dimensions": [
+      197,
+      256
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6928": {
+    "id": 6928,
+    "name": "Pedro Taunausú Domínguez Placeres",
+    "original_filename": "6928.jfif",
+    "original_sha256": "e0444fafea61525195a463b5403bce42cbc76f8d1e1d7ec5c387f90a65f8c537",
+    "original_dimensions": [
+      197,
+      256
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6932": {
+    "id": 6932,
+    "name": "Dani Castellano Betancor",
+    "original_filename": "6932.jfif",
+    "original_sha256": "ff73900a12bb26561a8dfa7f8afe4246aea190dbd336bf56313d39077c8ba81e",
+    "original_dimensions": [
+      399,
+      500
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "6934": {
+    "id": 6934,
+    "name": "Jerónimo Figueroa Cabrera",
+    "original_filename": "6934.jfif",
+    "original_sha256": "d5848338ac950b8bce25a09e65ef1976f5317a5c3772aa25d17496b366a96f0b",
+    "original_dimensions": [
+      201,
+      251
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "7005": {
+    "id": 7005,
+    "name": "João Pedro Cavaco Cancelo",
+    "original_filename": "7005.jfif",
+    "original_sha256": "918d5f25b6b66e735b8cd3bd49715cb9814b33930bbe26c4298d1ff50ee91ed3",
+    "original_dimensions": [
+      200,
+      250
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "7105": {
+    "id": 7105,
+    "name": "Fabián Ariel Orellana Valenzuela",
+    "original_filename": "7105.jfif",
+    "original_sha256": "2888ed986ebead25516ea6020a4b2db1737dca978596a3842e503e64e7d7d77d",
+    "original_dimensions": [
+      300,
+      390
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "7141": {
+    "id": 7141,
+    "name": "Giuseppe Rossi",
+    "original_filename": "7141.jfif",
+    "original_sha256": "6dd2757c9e663ce9d132d6d1fba0fbd59ab3f46dcbdd3b68deadee6ab1d1a0aa",
+    "original_dimensions": [
+      532,
+      575
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "7154": {
+    "id": 7154,
+    "name": "Sebastián Carlos Cristóforo Pepe",
+    "original_filename": "7154.jfif",
+    "original_sha256": "07d19bfdcf703b1b0b6564de2fc13c91c2f7d30c76eb7c9291f2262953a25013",
+    "original_dimensions": [
+      400,
+      400
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "7781": {
+    "id": 7781,
+    "name": "Felipe Salvador Caicedo Corozo",
+    "original_filename": "7781.jfif",
+    "original_sha256": "48369063eb6d2a9387b143b834dd933d28d254410f7c152cfe4be496c36bf67f",
+    "original_dimensions": [
+      392,
+      510
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "7906": {
+    "id": 7906,
+    "name": "David Simón Rodríguez Santana",
+    "original_filename": "7906.jfif",
+    "original_sha256": "e4ae8a735cfe51a7a77c601ef534f583cac04bb08bc42e19d0e41146c3d044b7",
+    "original_dimensions": [
+      200,
+      200
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "8522": {
+    "id": 8522,
+    "name": "Armindo Tué Na Bangna",
+    "original_filename": "8522.jfif",
+    "original_sha256": "bc3003b21f6401f2d5d372d558a767a9d8c8a7b317ea2ff31d1075ce3719c694",
+    "original_dimensions": [
+      325,
+      615
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "9403": {
+    "id": 9403,
+    "name": "Izet Hajrović",
+    "original_filename": "9403.jfif",
+    "original_sha256": "541a007675b3eb20c2f602d45122dcf907c5e0790bd489d5b83ece349184d27e",
+    "original_dimensions": [
+      364,
+      549
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "9462": {
+    "id": 9462,
+    "name": "José Ignacio Peleteiro Ramallo",
+    "original_filename": "9462.jfif",
+    "original_sha256": "c79ecd64180c12869db53b4461315c846a08919b4d31a2039d571f59f774580a",
+    "original_dimensions": [
+      480,
+      640
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "10037": {
+    "id": 10037,
+    "name": "Danilo Barbosa da Silva",
+    "original_filename": "10037.jfif",
+    "original_sha256": "860d9dd6c70a74b9f61ac817fdf1eb56e78c2a00c2b560b1086970614937f061",
+    "original_dimensions": [
+      500,
+      500
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "10868": {
+    "id": 10868,
+    "name": "Ricardo Jorge Luz Horta",
+    "original_filename": "10868.jfif",
+    "original_sha256": "b891d59a20198ff033636a752142448d42939ecbd12aa667cd4cacaed3894665",
+    "original_dimensions": [
+      239,
+      381
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "11298": {
+    "id": 11298,
+    "name": "José Ignacio Martínez García",
+    "original_filename": "11298.jfif",
+    "original_sha256": "5c9ab50f7107ee0a715edaf11d8920bc8417365b381b1ae12cd13bf31a7a3841",
+    "original_dimensions": [
+      200,
+      200
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "11675": {
+    "id": 11675,
+    "name": "Moisés Gómez Bordonado",
+    "original_filename": "11675.jfif",
+    "original_sha256": "7d0db8863a03bb5ee5692b6111bf0f6c3017a7ab9b17ae17e1acedbdce279ad5",
+    "original_dimensions": [
+      180,
+      180
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "12021": {
+    "id": 12021,
+    "name": "Óliver Torres Muñoz",
+    "original_filename": "12021.jfif",
+    "original_sha256": "774ea5ba5ea4a505ba29c11daa6fd6ed0e7607178523c3c28684fd75a217e44d",
+    "original_dimensions": [
+      447,
+      447
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "18867": {
+    "id": 18867,
+    "name": "Matías Nahuel Leiva Esquivel",
+    "original_filename": "18867.jfif",
+    "original_sha256": "af6b47bb62b3efa1f9b14348551ecf05621257fdbda0cec62070fa71604d9b36",
+    "original_dimensions": [
+      150,
+      150
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "18925": {
+    "id": 18925,
+    "name": "Ignacio Cases Mora",
+    "original_filename": "18925.jfif",
+    "original_sha256": "f3f735e5b8f097586bcb1c372abf4ff50c22eb46a66fd89a85acec11264c1de8",
+    "original_dimensions": [
+      197,
+      256
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "20016": {
+    "id": 20016,
+    "name": "Kléper Laveran Lima Ferreira",
+    "original_filename": "20016.jfif",
+    "original_sha256": "82b71300bab320585b510fe086f89920d06fa63b974c924ad9c5c79bb2bbb6c0",
+    "original_dimensions": [
+      206,
+      244
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "23785": {
+    "id": 23785,
+    "name": "Théo Bongonda Mbul''Ofeko Batombo",
+    "original_filename": "23785.jfif",
+    "original_sha256": "9be57197157ac6f851de63578b761470fe488fa664ee96c316dc44344c3e9ada",
+    "original_dimensions": [
+      500,
+      500
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "23970": {
+    "id": 23970,
+    "name": "José María Martín-Bejarano Serrano",
+    "original_filename": "23970.jfif",
+    "original_sha256": "334adb527f5ab1ff0fe7f82a6fdf59cdeec3c847f070814357eea7168ffb4625",
+    "original_dimensions": [
+      197,
+      256
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "24138": {
+    "id": 24138,
+    "name": "Joaquín José Marín Ruiz",
+    "original_filename": "24138.jfif",
+    "original_sha256": "f0588dbfe2add5dfe20f074acfa78295277150f52a9fd7fbc66b416515c7828e",
+    "original_dimensions": [
+      135,
+      214
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "24144": {
+    "id": 24144,
+    "name": "Ángel Montoro Sánchez",
+    "original_filename": "24144.jfif",
+    "original_sha256": "566cb820b6bf1fb39fffd73c2e03cbd0fd34784fbb5a0ab99fa445035caabc92",
+    "original_dimensions": [
+      399,
+      500
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "24249": {
+    "id": 24249,
+    "name": "Juan Muñiz Gallego",
+    "original_filename": "24249.jfif",
+    "original_sha256": "89649428b2263e3553ea2568e16af392847f7a7abfd3bd56cd9429d2bbc622f4",
+    "original_dimensions": [
+      300,
+      390
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "24783": {
+    "id": 24783,
+    "name": "Javier Márquez Moreno",
+    "original_filename": "24783.jfif",
+    "original_sha256": "cbb3740642d3b99e41dea609b7f5b6bffdf6ad0491891b44475a9725b577bc79",
+    "original_dimensions": [
+      200,
+      200
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "25126": {
+    "id": 25126,
+    "name": "Nicolás Federico López Alonso",
+    "original_filename": "25126.jfif",
+    "original_sha256": "a66a3ccdc20dabadb4ee02f5c6a2adbb9bee9e2d78dde07bf2499dcdd3b790de",
+    "original_dimensions": [
+      180,
+      180
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "25707": {
+    "id": 25707,
+    "name": "Francisco Manuel Rico Castro",
+    "original_filename": "25707.jfif",
+    "original_sha256": "42cb70a281a267aeced7cbeef823d4b5be593c02ba93eabc623b576327c64638",
+    "original_dimensions": [
+      400,
+      400
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "25921": {
+    "id": 25921,
+    "name": "Rubén Gracia Calmache",
+    "original_filename": "25921.jfif",
+    "original_sha256": "89d656f88774242f2557185e335c1d8a74f8c28a0861e5483adb0de8f587bc41",
+    "original_dimensions": [
+      208,
+      305
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "26023": {
+    "id": 26023,
+    "name": "Juan Francisco García García",
+    "original_filename": "26023.jfif",
+    "original_sha256": "20dc3188f6d932d5e4220d47d5df5b7a35b0ec925c8d4e3d9aab72b19e307fbb",
+    "original_dimensions": [
+      200,
+      200
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "26448": {
+    "id": 26448,
+    "name": "Javier Garrido Behovide",
+    "original_filename": "26448.jfif",
+    "original_sha256": "41b1a633d2a0c48a7f5f4ae7564ab998a0f2bb1cdb21b78274504d29e54097b5",
+    "original_dimensions": [
+      399,
+      500
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "26607": {
+    "id": 26607,
+    "name": "José Raúl Baena Urdiales",
+    "original_filename": "26607.jfif",
+    "original_sha256": "9976707d7479d80e560f87c36f57364a0e3da7344a98aff0c2b7cd2c52a5ee8b",
+    "original_dimensions": [
+      399,
+      500
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "26685": {
+    "id": 26685,
+    "name": "Nicolás Ladislao Fedor Flores",
+    "original_filename": "26685.jfif",
+    "original_sha256": "e63039f88581e4d7e08d82ce54665c8ed919f305c5ee88706e2443540a56668c",
+    "original_dimensions": [
+      139,
+      181
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "26689": {
+    "id": 26689,
+    "name": "Nauzet Alemán Viera",
+    "original_filename": "26689.jfif",
+    "original_sha256": "b22c100f31f25f109ea9838a25697317f5a15421a2fc76f46ef951b541de9558",
+    "original_dimensions": [
+      399,
+      500
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "26723": {
+    "id": 26723,
+    "name": "Álvaro Cejudo Carmona",
+    "original_filename": "26723.jfif",
+    "original_sha256": "9478d081523a000305ee4668273d6c7a920092be5f355d7c55dda7e3fb68c328",
+    "original_dimensions": [
+      201,
+      251
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "26780": {
+    "id": 26780,
+    "name": "Guilherme Magdalena Siqueira",
+    "original_filename": "26780.jfif",
+    "original_sha256": "fbb21f8ef0873109c263b017517e8f74b39b01bbabfc6f69fc551a1f0f03c897",
+    "original_dimensions": [
+      200,
+      250
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "27123": {
+    "id": 27123,
+    "name": "Jordi Xumetra Feliu",
+    "original_filename": "27123.jfif",
+    "original_sha256": "d06013ae526f94db8a00e4b7e9eb7acdde179b2d329ad58408fffc37e5ae326d",
+    "original_dimensions": [
+      300,
+      390
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "27148": {
+    "id": 27148,
+    "name": "Abraham González Casanova",
+    "original_filename": "27148.jfif",
+    "original_sha256": "d44691aed6fcb4a9e71951b7709afbffd08951cccb21cc14267b392951649c34",
+    "original_dimensions": [
+      439,
+      289
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "27241": {
+    "id": 27241,
+    "name": "Víctor Guillermo Álvarez Delgado",
+    "original_filename": "27241.jfif",
+    "original_sha256": "3cf2149e698ffb40739b856b360758fba6bdad979fde25e0a9449e96cb7d3f31",
+    "original_dimensions": [
+      300,
+      474
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "27341": {
+    "id": 27341,
+    "name": "Marcelo Alfonso Díaz Rojas",
+    "original_filename": "27341.jfif",
+    "original_sha256": "16ac110d4bf0c4f3e43d2b583a2417d839ece86e669dcee61c6438f9f436b694",
+    "original_dimensions": [
+      194,
+      259
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "27463": {
+    "id": 27463,
+    "name": "Mauricio Andrés Cuero Castillo",
+    "original_filename": "27463.jfif",
+    "original_sha256": "af8a3d3181dcae6ec57564cec8a1955725ed83990c7b3d92a308fe0f56311848",
+    "original_dimensions": [
+      360,
+      360
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "27522": {
+    "id": 27522,
+    "name": "Antolín Alcáraz Viveros",
+    "original_filename": "27522.jfif",
+    "original_sha256": "d4b2e5d6c22ae90245ae098c098d41c7c9adb0237bf43f4ee1aa4a2e38ac4b7d",
+    "original_dimensions": [
+      399,
+      500
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "30429": {
+    "id": 30429,
+    "name": "Hugo Fraile Martín",
+    "original_filename": "30429.jfif",
+    "original_sha256": "c255bae67c14ec8a8f92f571a4b3a36e185324a0579a11089efbb07e3d99042e",
+    "original_dimensions": [
+      200,
+      200
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  },
+  "30454": {
+    "id": 30454,
+    "name": "Francisco José Sánchez Rodríguez",
+    "original_filename": "30454.jfif",
+    "original_sha256": "91705a17439c22d312eeb54d966650c68bc8d7897c174dcf4ff5b5d6aa079140",
+    "original_dimensions": [
+      180,
+      180
+    ],
+    "source": "user_supplied",
+    "modifications": "Square crop and WebP conversion"
+  }
+}

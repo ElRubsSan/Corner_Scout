@@ -1,6 +1,7 @@
 """Bounded OpenAI agent over the three canonical read-only analytics tools."""
 from __future__ import annotations
 
+from datetime import date
 import json
 import logging
 import os
@@ -8,6 +9,7 @@ import time
 from typing import Any, Protocol
 
 from pydantic import ValidationError
+from analytics.tactical_report import EvidenceContract
 
 from analytics.agent_tools import (
     OUT_OF_SCOPE,
@@ -31,6 +33,38 @@ from backend import service
 from backend.schemas import AgentResponse, Run
 
 logger = logging.getLogger(__name__)
+
+_MONTHS = ("enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto",
+           "septiembre", "octubre", "noviembre", "diciembre")
+
+
+def _public_answer(run: Run, question: str, result: AgentAnswer, evidence: EvidenceContract) -> str:
+    if result.status != "answered":
+        return result.answer
+    if run.matches and "L_SAMPLE" in result.evidence_ids and any(
+        term in question.lower() for term in ("partidos", "historial")
+    ):
+        fixtures = []
+        for match in sorted(run.matches, key=lambda item: (item.match_date, item.kick_off, item.match_id)):
+            day = date.fromisoformat(match.match_date[:10])
+            fixtures.append(f"- 🗓️ {day.day:02d}/{_MONTHS[day.month - 1][:3].capitalize()}/{day.year}: "
+                            f"{match.home_team} vs. {match.away_team}")
+        return (f"Para este análisis revisamos **{len(fixtures)} partidos anteriores**, "
+                "del más antiguo al más reciente:\n\n" + "\n".join(fixtures) +
+                "\n\n*Para los indicadores de tiro se cuentan solo los córners evaluables.*")
+    if "E_SCR15" in result.evidence_ids:
+        indicator = next((item for item in evidence.indicadores if item.evidence_id == "E_SCR15"), None)
+        if indicator and indicator.numerador is not None and indicator.denominador and indicator.denominador > 0:
+            percentage = f"{100 * indicator.numerador / indicator.denominador:.1f}".replace(".", ",")
+            return (f"De los **{int(indicator.denominador)} córners evaluables** en estos "
+                    f"{len(run.matches)} partidos, **{int(indicator.numerador)} terminaron en tiro** "
+                    f"({percentage} %).\n\n**Sobre la predicción:** Para estimar el siguiente partido "
+                    "se prefiere la tasa histórica de la liga, que fue más fiable que "
+                    "la regresión logística evaluada. El porcentaje anterior describe lo observado aquí; "
+                    "no es una predicción.")
+    return "**Lo observado**\n\n" + result.answer.replace(
+        "Ventana disponible:", "Partidos anteriores analizados:"
+    ).replace("modelo candidato", "modelo evaluado")
 
 
 class AgentProvider(Protocol):
@@ -56,7 +90,10 @@ def openai_provider(question: str, session: Any, state: AgentState, budget: Budg
     if len(tools) != 3:
         raise RuntimeError("agent_requires_exactly_three_tools")
     system_prompt = (
-        "Selecciona evidencia mediante las herramientas y redacta solo una interpretacion cualitativa. "
+        "Selecciona evidencia mediante las herramientas y redacta una interpretacion cualitativa "
+        "natural, cercana y breve, en espanol claro. Evita jerga como 'ventana disponible' y "
+        "'modelo candidato'. Puedes usar parrafos y negritas Markdown; no generes enlaces ni HTML. "
+        "El backend formateara las listas y cifras verificadas; distingue observacion de prediccion. "
         "qualitative_answer no puede contener digitos, cantidades, porcentajes, fechas, ordinales, "
         "probabilidades, identificadores numericos ni cifras escritas con simbolos. "
         "El backend agregara todos los valores. "
@@ -184,7 +221,7 @@ def answer(run: Run, question: str, provider: AgentProvider | None = None, budge
     budget = budget or Budget()
     if _out_of_scope(question):
         result, state = deterministic_fallback(question, session, budget=budget)
-        return AgentResponse(mode="deterministic", status=result.status, answer=result.answer,
+        return AgentResponse(mode="deterministic", status=result.status, answer=_public_answer(run, question, result, session.evidence),
                              evidence_ids=list(result.evidence_ids), tool_calls=result.tool_calls,
                              input_tokens=state.input_tokens, output_tokens=state.output_tokens,
                              total_tokens=state.total_tokens,
@@ -192,14 +229,14 @@ def answer(run: Run, question: str, provider: AgentProvider | None = None, budge
     if provider is None and not os.environ.get("OPENAI_API_KEY"):
         result, state = deterministic_fallback(question, session, budget=budget)
         return AgentResponse(mode="deterministic", fallback_reason="missing_api_key", status=result.status,
-                             answer=result.answer, evidence_ids=list(result.evidence_ids), tool_calls=result.tool_calls,
+                              answer=_public_answer(run, question, result, session.evidence), evidence_ids=list(result.evidence_ids), tool_calls=result.tool_calls,
                              input_tokens=state.input_tokens, output_tokens=state.output_tokens,
                              total_tokens=state.total_tokens,
                              traces=[trace.model_dump(mode="json") for trace in state.traces])
     state = AgentState()
     try:
         result = (provider or openai_provider)(question, session, state, budget)
-        return AgentResponse(mode="openai", status=result.status, answer=result.answer,
+        return AgentResponse(mode="openai", status=result.status, answer=_public_answer(run, question, result, session.evidence),
                              evidence_ids=list(result.evidence_ids), tool_calls=result.tool_calls,
                              input_tokens=state.input_tokens, output_tokens=state.output_tokens,
                              total_tokens=state.total_tokens,
@@ -229,7 +266,7 @@ def answer(run: Run, question: str, provider: AgentProvider | None = None, budge
     )
     result, fallback_state = deterministic_fallback(question, session, budget=budget, state=state)
     return AgentResponse(mode="deterministic", fallback_reason=fallback_reason, status=result.status,
-                         answer=result.answer, evidence_ids=list(result.evidence_ids), tool_calls=result.tool_calls,
+                         answer=_public_answer(run, question, result, session.evidence), evidence_ids=list(result.evidence_ids), tool_calls=result.tool_calls,
                          input_tokens=fallback_state.input_tokens,
                          output_tokens=fallback_state.output_tokens,
                          total_tokens=fallback_state.total_tokens,

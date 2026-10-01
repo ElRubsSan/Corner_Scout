@@ -1,110 +1,119 @@
-# Restauracion de datos desde Google Drive
+# Preparar o restaurar los datos
 
-## Objetivo
+CornerScout analiza **LaLiga 2015/16** (`competition_id=11`, `season_id=27`).
+Los eventos, Parquet y modelos no están en Git. Una clonación del código necesita
+preparar datos antes de que `/api/v1/ready` pueda responder `ready`.
 
-La copia canonica actual de los datos exportados por Colab permanece en Google Drive, en `/content/drive/MyDrive/Corner_Scout/data/raw`. La restauracion local se realiza en `data/raw/`, que esta excluido de Git.
+Todos los comandos de esta guía se ejecutan desde la raíz del repositorio,
+después de `uv sync --locked --all-extras`.
 
-Alternativa implementada y autorizada: `uv run cornerscout ingest` descarga explicitamente archivos faltantes desde la revision publica fijada de StatsBomb. No usa credenciales ni sustituye raw existente. La copia nueva usa eventos anidados; el adaptador tambien admite la exportacion aplanada del notebook original. `CORNERSCOUT_DATA_DIR` permite apuntar al padre de raw/ en Drive o en una restauracion local.
+## Ruta A: construir desde la fuente pública
 
-## Archivos que deben permanecer en Google Drive
-
-La estructura canonica actual es:
-
-```text
-/content/drive/MyDrive/Corner_Scout/data/raw/
-|-- competitions.csv
-|-- matches_laliga_2015_16.csv
-|-- metadata_ingesta.json
-|-- registro_ingesta.csv
-`-- events/
-    |-- <match_id_1>.jsonl.gz
-    |-- <match_id_2>.jsonl.gz
-    `-- ... 380 archivos en total
+```powershell
+uv run cornerscout ingest
+uv run --all-extras cornerscout build
+uv run --all-extras cornerscout train
 ```
 
-Archivos obligatorios:
+1. `ingest` descarga los archivos faltantes de una revisión fija de StatsBomb.
+   Necesita Internet. No sobrescribe raw existente; un archivo incompatible
+   debe investigarse, no editarse para que pase un hash.
+2. `build` ejecuta limpieza, SCR-15 y variables en ese orden.
+3. `train` evalúa los objetivos y publica la etapa `05_modeling`.
 
-- `competitions.csv`: catalogo de competiciones y temporadas usado durante la ingesta.
-- `matches_laliga_2015_16.csv`: metadatos de los 380 partidos de LaLiga 2015/16.
-- `metadata_ingesta.json`: metadatos generales de la ejecucion de ingesta.
-- `registro_ingesta.csv`: registro producido por Colab para auditar la ingesta por archivo o partido.
-- `events/<match_id>.jsonl.gz`: un objeto de evento por linea y un archivo por partido, 380 archivos esperados.
+Son procesos offline; pueden tardar y requieren espacio para raw y derivados.
+No existe una duración universal. Las etapas derivadas se vuelven a publicar al
+reconstruirlas: si ya tienes un conjunto útil, conserva su copia antes de hacerlo.
 
-No existe `matches.jsonl.gz`. Los cinco nombres y formatos actuales deben conservarse sin migrarlos, renombrarlos ni sobrescribirlos. Cualquier cambio futuro requerira una decision de migracion explicita y trazable.
+## Ruta B: restaurar raw y reconstruir
 
-No son obligatorios para el MVP inicial los archivos de video, tracking, 360, alineaciones separadas o datos actuales. Si Colab genero alguno, debe mantenerse fuera del conjunto de entrada hasta documentar su necesidad.
-
-## Archivos derivados que pueden llevarse a Git
-
-Los archivos raw anteriores permanecen en Google Drive y en la copia local ignorada. Solo los manifiestos derivados, sin filas de eventos ni informacion privada, podran incorporarse posteriormente al repositorio:
-
-- `data/manifests/statsbomb_laliga_2015_16.csv`: inventario sin datos de eventos, generado a partir de `raw_manifest.template.csv`.
-- `data/manifests/statsbomb_laliga_2015_16_summary.json`: resumen agregado de cobertura, cuando se defina su contrato final.
-
-El notebook actual se llama `Third_Man_Analytics_Ingesta_de_Datos.ipynb` y debe permanecer fuera del repositorio hasta confirmar su incorporacion. Mas adelante se evaluara una copia sanitizada y el nombre consistente `01_ingesta_statsbomb.ipynb`.
-
-Antes de una eventual incorporacion del notebook se deben eliminar:
-
-- Tokens, cookies, IDs privados de Drive y credenciales.
-- Rutas como `C:\Users\...` o rutas privadas de Google Drive.
-- Outputs que contengan eventos completos o grandes tablas.
-- Archivos incrustados y datos descargados dentro del notebook.
-
-La eventual copia sanitizada debe conservar las versiones de dependencias usadas, la URL publica de StatsBomb Open Data, los identificadores 11 y 27 y una explicacion del formato exportado.
-
-## Archivos que no deben llevarse a Git
-
-- Los 380 archivos de eventos.
-- `competitions.csv`, `matches_laliga_2015_16.csv`, `metadata_ingesta.json` y `registro_ingesta.csv`.
-- El notebook `Third_Man_Analytics_Ingesta_de_Datos.ipynb` mientras no se apruebe su incorporacion.
-- Parquet interim o processed.
-- Bases DuckDB locales.
-- Modelos entrenados.
-- Credenciales o archivos `.env`.
-- Enlaces privados de Google Drive.
-
-## Destino local esperado
-
-Una vez copiados desde Drive, los archivos deben quedar asi:
+Descarga la carpeta raw de tu copia de Drive y extráela conservando esta forma:
 
 ```text
-data/raw/competitions.csv
-data/raw/matches_laliga_2015_16.csv
-data/raw/metadata_ingesta.json
-data/raw/registro_ingesta.csv
-data/raw/events/<match_id>.jsonl.gz
+data/raw/
+  competitions.csv
+  matches_laliga_2015_16.csv
+  metadata_ingesta.json
+  registro_ingesta.csv
+  events/
+    <match_id>.jsonl.gz          380 archivos
 ```
 
-No se debe editar, recomprimir ni renombrar un archivo despues de calcular su checksum. Cualquier normalizacion posterior se escribe en `data/interim/`.
+La ubicación académica habitual es `/content/drive/MyDrive/Corner_Scout/data/raw`.
+No se necesita un enlace privado para instalar desde StatsBomb. No existe un
+archivo de entrada llamado `matches.jsonl.gz`.
 
-## Manifiesto requerido
+Ejecuta los tres comandos de la ruta A: `ingest` valida la copia existente y
+publica su contrato; `build` y `train` producen los derivados. No renombres,
+recomprimas ni normalices archivos dentro de raw. El adaptador acepta eventos
+anidados y exportaciones aplanadas compatibles.
 
-El manifiesto versionable debe incluir una fila para cada uno de los cuatro archivos de metadatos y una por archivo de eventos. Sus columnas se definen en `data/manifests/README.md`.
+## Ruta C: restaurar artefactos ya preparados para servir
 
-El manifiesto no debe incluir rutas absolutas. `relative_path` siempre parte desde `data/raw/`.
+Necesitas una copia **completa y coherente de una misma cadena de etapas**.
+No hay un enlace público de descarga de estos artefactos en el repositorio.
+Si no dispones de esa copia, usa la ruta A.
 
-## Verificaciones previas al procesamiento
+1. Detén el backend y conserva cualquier conjunto local que quieras recuperar.
+2. Extrae la copia en un directorio vacío, conservando las rutas siguientes.
+3. Incluye cada `contract.json` y **todos** los archivos que declara, incluso
+   particiones o artefactos que la interfaz no consulta directamente.
+4. Usa el directorio restaurado como raíz de datos y arranca el backend.
+5. Comprueba `/api/v1/ready`. Una respuesta 503 requiere revisar el error del
+   backend y restaurar el conjunto coherente; no modificar los hashes.
 
-Estas verificaciones se ejecutan mediante analytics/pipeline.py; sus resultados reales y excepciones auditadas estan en docs/data-audit.md. El manifiesto efectivo es data/manifests/raw.json (ruta relativa, bytes y SHA-256); quality-summary.json contiene conteos agregados. Las plantillas CSV/JSON de fase 1 son referencias documentales y no sustituyen estos manifiestos generados.
+```text
+<raíz de datos>/
+  interim/02_clean/contract.json
+  interim/02_clean/...          todos sus archivos declarados
+  interim/03_scr15/contract.json
+  interim/03_scr15/...
+  processed/04_features/contract.json
+  processed/04_features/...
+  processed/05_modeling/contract.json
+  processed/05_modeling/...
+  processed/runs/               escritura para análisis creados en la app
+```
 
-- Existen exactamente 380 archivos en `events/`.
-- Los nombres de archivo son `match_id` validos y unicos.
-- Cada `match_id` de eventos existe en `matches_laliga_2015_16.csv`.
-- Cada archivo puede descomprimirse y cada linea contiene JSON valido.
-- Los checksums coinciden con el manifiesto.
-- La competicion y temporada corresponden a 11 y 27.
-- Hay 380 partidos y 20 equipos distintos.
-- No hay archivos vacios ni partidos sin eventos.
-- `metadata_ingesta.json` y `registro_ingesta.csv` son coherentes con los archivos presentes.
+Para esta ruta de servicio no hace falta montar raw ni `01_ingestion`. Sí hacen
+falta las cuatro capas `02`–`05`: FastAPI verifica versiones, hashes y linaje.
+Restaurar solo `corners_engineered.parquet` no es suficiente.
 
-## Datos derivados de Colab que no se reutilizaran automaticamente
+## Elegir otra raíz de datos
 
-Si Colab contiene CSV, Parquet, clusters, variables o KPIs adicionales, deben quedarse en Drive hasta documentar:
+En PowerShell, en cada terminal que vaya a usar esos datos:
 
-- Codigo y version que los produjo.
-- Fuente raw exacta.
-- Esquema y granularidad.
-- Reglas de limpieza.
-- Presencia o ausencia de fuga temporal.
+```powershell
+$env:CORNERSCOUT_DATA_DIR = "D:\CornerScout-data"
+uv run --all-extras uvicorn backend.main:app --host 127.0.0.1 --port 8000
+```
 
-No se usaran como fuente productiva solo por existir. Podran compararse con el nuevo pipeline durante la auditoria.
+La variable apunta al **padre** de `raw`, `interim` y `processed`, no a raw.
+También puede definirse en `.env`; Uvicorn lo carga cuando se añade
+`--env-file .env`. Los comandos del pipeline no cargan `.env` automáticamente:
+para ellos configura la variable en la terminal. Reinicia el backend si cambias
+la raíz o los artefactos.
+
+Docker Compose usa los montajes de `./data` declarados en su archivo. Cambiar
+esta variable en el host no cambia sus rutas de volumen; adapta esos montajes
+si restauraste en otro lugar. Ver [despliegue](deployment.md).
+
+## Comprobar el resultado
+
+Con el backend activo, abre http://127.0.0.1:8000/api/v1/ready o ejecuta:
+
+```powershell
+Invoke-RestMethod http://127.0.0.1:8000/api/v1/ready
+```
+
+Debe devolver `status: ready`. Después crea Barcelona con corte `2016-03-01`
+desde Angular. Los conteos del corpus son 380 partidos, 1.295.354 eventos,
+3.841 córners, 3.835 evaluables, seis excluidos y 1.245 con tiro; los de una
+ventana de ocho partidos son menores y no deben confundirse con ellos.
+
+## Qué se conserva fuera de Git
+
+Raw, interim, processed, modelos, bases locales, runs y ZIP académicos. Las
+40 etiquetas de `data/manual_labels/short_corner_review.csv` sí se preservan
+como fuente exploratoria versionada; no se regeneran desde el proxy.
+Los contratos efectivos están junto a sus etapas, no en plantillas antiguas.

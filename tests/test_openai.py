@@ -9,7 +9,7 @@ from backend.schemas import Claim, Evidence, Match, Narrative, ReportInput, Summ
 @pytest.fixture()
 def payload():
     summary = Summary(rival="A", cutoff_date="2016-03-01", matches=8, corners=10,
-                      evaluable_corners=10, excluded_corners=0, shots=3, scr15=0.3,
+                      evaluable_corners=10, excluded_corners=0, classified_direct_corners=0, shots=3, scr15=0.3,
                       xg_per_corner=0.02, probability=0.3, probability_method="reference",
                       players=[], sides=[], deliveries=[], zones=[])
     matches = [Match(match_id=index, match_date=f"2016-02-{index:02d}", kick_off="12:00:00", home_team="A", away_team="B") for index in range(1, 9)]

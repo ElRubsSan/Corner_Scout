@@ -1,11 +1,14 @@
 services:
   backend:
     build: .
+    read_only: true
+    tmpfs:
+      - /tmp
     ports:
       - "127.0.0.1:8000:8000"
     environment:
       CORNERSCOUT_DATA_DIR: /data
-      CORNERSCOUT_ORIGINS: http://localhost:4200,http://127.0.0.1:4200
+      CORNERSCOUT_ORIGINS: ${CORNERSCOUT_ORIGINS:-http://localhost:4200,http://127.0.0.1:4200}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4.1-mini}
     volumes:

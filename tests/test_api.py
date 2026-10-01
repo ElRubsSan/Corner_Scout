@@ -4,6 +4,7 @@ import json
 import pandas as pd
 import pytest
 from fastapi.testclient import TestClient
+from fastapi import HTTPException
 
 from analytics.contracts import Artifact as ContractArtifact
 from analytics.contracts import StageContract
@@ -146,12 +147,29 @@ def test_repository_rejects_duplicate_across_exports_and_artifacts(tmp_path):
 def test_existing_routes_and_agent_route_are_registered():
     paths = {route.path for route in app.routes}
     expected = {"/api/v1/teams", "/api/v1/matches", "/api/v1/scouting-runs",
-                "/api/v1/scouting-runs/{run_id}/summary", "/api/v1/scouting-runs/{run_id}/corners",
-                "/api/v1/scouting-runs/{run_id}/patterns", "/api/v1/scouting-runs/{run_id}/quality",
+                 "/api/v1/scouting-runs/{run_id}/summary", "/api/v1/scouting-runs/{run_id}/corners",
+                 "/api/v1/scouting-runs/{run_id}/matches-profile",
+                 "/api/v1/scouting-runs/{run_id}/destination-heatmap",
+                 "/api/v1/scouting-runs/{run_id}/habits",
+                 "/api/v1/scouting-runs/{run_id}/patterns", "/api/v1/scouting-runs/{run_id}/quality",
                 "/api/v1/scouting-runs/{run_id}/model", "/api/v1/scouting-runs/{run_id}/report",
                 "/api/v1/scouting-runs/{run_id}/agent"}
     assert expected <= paths
     assert TestClient(app).get("/api/v1/health").json()["status"] == "ok"
+
+
+def test_ready_checks_canonical_mounts_instead_of_only_process_liveness(monkeypatch):
+    from backend import service
+
+    monkeypatch.setattr(service, "repo", lambda: object())
+    monkeypatch.setattr(service, "query", lambda *args: [{"match_id": 1}])
+    assert TestClient(app).get("/api/v1/ready").json()["status"] == "ready"
+
+    def unavailable():
+        raise HTTPException(503, "Artefactos canonicos no disponibles")
+
+    monkeypatch.setattr(service, "repo", unavailable)
+    assert TestClient(app).get("/api/v1/ready").status_code == 503
 
 
 def test_openapi_documents_real_error_responses():

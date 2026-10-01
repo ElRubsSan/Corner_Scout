@@ -10,11 +10,11 @@ export function zoneLabel(value: string): string {
     franja_lejana: 'Zona alejada del punto de cobro',
     fuera_area: 'Fuera del área',
     no_disponible: 'Destino no disponible',
-  } as Record<string, string>)[value] ?? value.replaceAll('_', ' ');
+  } as Record<string, string>)[value] ?? 'Zona sin clasificar';
 }
 
 export function deliveryLabel(value: string): string {
-  return ({ corto: 'En corto', envio: 'Envío directo', desconocido: 'Sin clasificar' } as Record<string, string>)[value] ?? value.replaceAll('_', ' ');
+  return ({ corto: 'En corto', envio: 'Envío directo', desconocido: 'Sin clasificar' } as Record<string, string>)[value] ?? 'Sin clasificar';
 }
 
 export function patternLabel(zone: string): string {

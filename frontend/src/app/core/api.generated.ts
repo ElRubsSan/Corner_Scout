@@ -21,6 +21,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/ready": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Ready
+         * @description Verify the mounted canonical contracts, hashes and readable matches.
+         */
+        get: operations["readiness"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/teams": {
         parameters: {
             query?: never;
@@ -89,6 +109,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/scouting-runs/{run_id}/matches-profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Match Profiles */
+        get: operations["getMatchProfiles"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/scouting-runs/{run_id}/summary": {
         parameters: {
             query?: never;
@@ -106,6 +143,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/scouting-runs/{run_id}/habits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Habits */
+        get: operations["getHabits"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/scouting-runs/{run_id}/corners": {
         parameters: {
             query?: never;
@@ -115,6 +169,23 @@ export interface paths {
         };
         /** Corners */
         get: operations["getCorners"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/scouting-runs/{run_id}/destination-heatmap": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Destination Heatmap */
+        get: operations["getDestinationHeatmap"];
         put?: never;
         post?: never;
         delete?: never;
@@ -319,6 +390,10 @@ export interface components {
             event_id: string;
             /** Player */
             player: string;
+            /** Player Id */
+            player_id?: number | null;
+            /** Team Id */
+            team_id?: number | null;
             /** X */
             x: number;
             /** Y */
@@ -354,6 +429,42 @@ export interface components {
             /** Cluster */
             cluster?: number | null;
         };
+        /** DestinationCell */
+        DestinationCell: {
+            /** X */
+            x: number;
+            /** Y */
+            y: number;
+            /** Count */
+            count: number;
+        };
+        /** DestinationHeatmap */
+        DestinationHeatmap: {
+            /**
+             * Cell Width
+             * @default 10
+             */
+            cell_width: number;
+            /**
+             * Cell Height
+             * @default 10
+             */
+            cell_height: number;
+            /** Filtered Corners */
+            filtered_corners: number;
+            /** Included */
+            included: number;
+            /** Excluded Spatial */
+            excluded_spatial: number;
+            /** Excluded Non Direct */
+            excluded_non_direct: number;
+            /** Max Count */
+            max_count: number;
+            /** Cells */
+            cells: components["schemas"]["DestinationCell"][];
+            /** Zones */
+            zones: components["schemas"]["Group"][];
+        };
         /** ErrorResponse */
         ErrorResponse: {
             /** Detail */
@@ -384,6 +495,58 @@ export interface components {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
+        /** HabitProfile */
+        HabitProfile: {
+            /** Corners */
+            corners: number;
+            /** Direct */
+            direct: number;
+            /** Max Match Corners */
+            max_match_corners: number;
+            /** Sides */
+            sides: components["schemas"]["HabitSide"][];
+            /** Takers */
+            takers: components["schemas"]["HabitTaker"][];
+            /** Zones */
+            zones: components["schemas"]["HabitZone"][];
+        };
+        /** HabitSide */
+        HabitSide: {
+            /** Label */
+            label: string;
+            /** Corners */
+            corners: number;
+            /** Direct */
+            direct: number;
+            /** Zones */
+            zones: components["schemas"]["HabitZone"][];
+        };
+        /** HabitTaker */
+        HabitTaker: {
+            /** Name */
+            name: string;
+            /** Player Id */
+            player_id: number | null;
+            /** Corners */
+            corners: number;
+            /** Matches */
+            matches: number;
+            /** Short */
+            short: number;
+            /** Sides */
+            sides: components["schemas"]["Group"][];
+            /** Zones */
+            zones: components["schemas"]["HabitZone"][];
+        };
+        /** HabitZone */
+        HabitZone: {
+            /** Label */
+            label: string;
+            /** Count */
+            count: number;
+            /** Matches */
+            matches: number;
+        };
         /** Match */
         Match: {
             /** Match Id */
@@ -396,6 +559,39 @@ export interface components {
             home_team: string;
             /** Away Team */
             away_team: string;
+            /** Home Team Id */
+            home_team_id?: number | null;
+            /** Away Team Id */
+            away_team_id?: number | null;
+            /** Home Score */
+            home_score?: number | null;
+            /** Away Score */
+            away_score?: number | null;
+        };
+        /** MatchProfile */
+        MatchProfile: {
+            /** Match Id */
+            match_id: number;
+            /** Match Date */
+            match_date: string;
+            /** Kick Off */
+            kick_off: string;
+            /** Home Team */
+            home_team: string;
+            /** Away Team */
+            away_team: string;
+            /** Home Team Id */
+            home_team_id?: number | null;
+            /** Away Team Id */
+            away_team_id?: number | null;
+            /** Home Score */
+            home_score?: number | null;
+            /** Away Score */
+            away_score?: number | null;
+            /** Rival Corners */
+            rival_corners: number;
+            /** Main Takers */
+            main_takers: string[];
         };
         /** ModelEvaluation */
         ModelEvaluation: {
@@ -570,6 +766,8 @@ export interface components {
             evaluable_corners: number;
             /** Excluded Corners */
             excluded_corners: number;
+            /** Classified Direct Corners */
+            classified_direct_corners: number;
             /** Shots */
             shots: number;
             /** Scr15 */
@@ -593,6 +791,8 @@ export interface components {
         Team: {
             /** Name */
             name: string;
+            /** Team Id */
+            team_id?: number | null;
         };
         /** TemporalMetric */
         TemporalMetric: {
@@ -665,6 +865,37 @@ export interface operations {
                     "application/json": {
                         [key: string]: string;
                     };
+                };
+            };
+        };
+    };
+    readiness: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: string;
+                    };
+                };
+            };
+            /** @description Artefactos canonicos no disponibles */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -867,6 +1098,64 @@ export interface operations {
             };
         };
     };
+    getMatchProfiles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MatchProfile"][];
+                };
+            };
+            /** @description Recurso no encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicto con la version o ventana canonica */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Artefactos canonicos no disponibles */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     getSummary: {
         parameters: {
             query?: never;
@@ -885,6 +1174,64 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Summary"];
+                };
+            };
+            /** @description Recurso no encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicto con la version o ventana canonica */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Artefactos canonicos no disponibles */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    getHabits: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HabitProfile"];
                 };
             };
             /** @description Recurso no encontrado */
@@ -950,6 +1297,69 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Corner"][];
+                };
+            };
+            /** @description Recurso no encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflicto con la version o ventana canonica */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Solicitud no procesable */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Artefactos canonicos no disponibles */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    getDestinationHeatmap: {
+        parameters: {
+            query?: {
+                player?: string | null;
+                side?: ("y_bajo" | "y_alto") | null;
+                delivery?: ("corto" | "envio" | "desconocido") | null;
+                cluster?: number | null;
+            };
+            header?: never;
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DestinationHeatmap"];
                 };
             };
             /** @description Recurso no encontrado */

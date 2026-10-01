@@ -1,17 +1,37 @@
-# Datos locales
-
-Esta carpeta representa las capas de datos de CornerScout.
+# Datos locales de CornerScout
 
 ```text
 data/
-|-- raw/        Copia local inmutable restaurada desde Google Drive
-|-- interim/    Salidas auditadas, contratos y secuencias
-|-- processed/  Futuros KPIs y agregados de producto
-`-- manifests/  Inventarios pequenos y versionables
+  raw/                         fuente inmutable
+  interim/01_ingestion/        contrato de ingesta
+  interim/02_clean/            eventos y contexto previo
+  interim/03_scr15/            secuencias y auditorías
+  processed/04_features/       históricos, geometría y clusters descriptivos
+  processed/05_modeling/       modelos, métricas y decisiones
+  processed/runs/              análisis creados por la aplicación
+  manifests/                  inventarios auxiliares
+  manual_labels/              40 etiquetas exploratorias preservadas
 ```
 
-`raw`, `interim` y `processed` estan excluidas de Git salvo sus archivos `.gitkeep`. La copia canonica actual de raw esta en `/content/drive/MyDrive/Corner_Scout/data/raw`. Los directorios `interim/01_ingestion`, `02_clean` y `03_scr15` contienen la ejecucion local auditada de fase B. Los ZIP locales son evidencia anterior aportada por el usuario; permanecen ignorados y no se extraen ni promueven automaticamente. No coloque credenciales ni enlaces privados en ningun manifiesto.
+Raw, interim y processed están fuera de Git salvo sus `.gitkeep`. La app
+necesita las cuatro etapas `02`–`05` completas y permiso de escritura para
+`processed/runs`. No descarga ni entrena al arrancar.
 
-`manual_labels/short_corner_review.csv` contiene 40 etiquetas humanas que deben preservarse sin reconstruirlas desde el proxy. Sus notas y metodologia se auditaran antes de presentar concordancia como validacion independiente.
+Desde la raíz del repositorio, después de instalar dependencias:
 
-Consulte `../docs/data-restoration.md` antes de copiar archivos.
+```powershell
+uv run cornerscout ingest
+uv run --all-extras cornerscout build
+uv run --all-extras cornerscout train
+```
+
+Para restaurar una copia o elegir otra raíz, seguir
+[la guía de datos](../docs/data-restoration.md). No mezclar una etapa nueva con
+una etapa anterior incompatible. Reiniciar FastAPI después de sustituir datos.
+
+`manual_labels/short_corner_review.csv` no se regenera desde el proxy: conserva
+las 40 etiquetas originales. Su revisión fue asistida y no independiente.
+La nota sobre sus límites está en [modelado](../docs/model-card.md).
+
+Los ZIP y artefactos antiguos que puedan existir en una instalación local no
+se promueven automáticamente. Los contratos de etapa son la autoridad vigente.

@@ -1,130 +1,112 @@
-# Metodologia provisional de SCR-15
+# Metodología vigente de SCR-15
 
-## Definicion
+Regla implementada: `scr15-research-v1.2-first-limit` en `analytics/scr15.py`.
+Contrato de salida: `03-scr15-v2`. El indicador describe córners ofensivos del
+caso histórico LaLiga 2015/16; mide tiro, no gol ni eficacia causal.
 
 ```text
-SCR-15 = corners ofensivos que generan al menos un tiro valido en 15 segundos
-         ------------------------------------------------------------------
-                         total de corners ofensivos
+SCR-15 = córners evaluables con al menos un tiro válido en la secuencia
+         ------------------------------------------------------------
+                       total de córners evaluables
 ```
 
-La unidad de observacion es un corner ofensivo. El resultado `shot_within_15s` es booleano y cada corner contribuye una sola vez al numerador, aunque su secuencia contenga mas de un tiro valido.
+Cada córner contribuye una sola vez al numerador aunque origine varios tiros.
+Los desconocidos se muestran por separado y no son negativos.
 
-Implementacion cientifica validada localmente `scr15-research-v1.2-first-limit`: si el reloj hace indeterminada una secuencia antes de su cierre, target/xG son nulos, no falsos. SCR-15 y xG por corner se publican sobre corners evaluables, mostrando tambien totales y excluidos. En el dataset auditado hay 3,841 corners, 3,835 evaluables y seis secuencias excluidas. La geometria invalida no excluye del KPI temporal, solo de analisis espaciales. La demo conserva por separado su implementacion productiva hasta probar equivalencia.
+## Inicio y orden
 
-## Inicio
+La secuencia comienza en un evento `Pass` con `pass_type=Corner` normalizado.
+Requiere tiempo finito, equipo conocido y equipo en posesión coincidente con
+el ejecutor. Los eventos conservan el orden original por periodo e índice
+StatsBomb; el tiempo mide la duración, no sustituye ese orden.
 
-Una secuencia comienza en un evento StatsBomb que cumpla simultaneamente:
+## Primer cierre
 
-- El tipo de evento es `Pass`.
-- `pass.type.name` es `Corner`, o su identificador equivalente confirmado por el contrato fuente.
-- El equipo ejecutor es conocido.
-- El periodo y el tiempo del evento se pueden ordenar.
+Se recorre la secuencia hasta el primero de estos límites:
 
-Los corners que no cumplan los campos minimos no se reparan silenciosamente. Se excluyen o se conservan con una bandera de calidad segun el resultado de la auditoria.
+1. Un evento posterior a los 15 segundos desde el córner.
+2. Cambio de `possession_team` respecto del ejecutor.
+3. Fin de periodo o evento `Half End`.
+4. Un nuevo pase de córner.
 
-## Orden de eventos
+Un tiro exactamente a los **15 segundos** entra si no hubo otro cierre antes.
+Después de una pérdida de posesión la secuencia no se reabre, aunque el equipo
+recupere el balón. Un cambio de ID `possession` con el mismo equipo se audita
+y no cierra.
 
-Se conservara el `index` original de StatsBomb. La ordenacion provisional dentro de un partido sera:
+Un saque de banda, meta, libre u otra reanudación distinta de un nuevo córner
+se registra para auditoría; no agrega un cierre automático. Este comportamiento
+es parte de la regla versionada, no un supuesto pendiente de implementación.
 
-```text
-period, index
-```
+## Reloj ambiguo y campos ausentes
 
-El timestamp se usara para calcular tiempo transcurrido, no como unico criterio de orden. Los timestamps duplicados, regresivos o invalidos se registraran en calidad de datos.
+El recorrido verifica la ambigüedad dentro de la ventana activa. Una regresión
+que aparece después del primer cierre no invalida retrospectivamente la
+secuencia. Un tiempo no finito, retroceso dentro de ventana o posesión
+desconocida puede producir un resultado no evaluable; no se repara con datos
+inventados. Si no se observa un cierre válido, el caso también es desconocido.
 
-## Cierre provisional
+La geometría inválida limita el análisis espacial, pero por sí sola no elimina
+una secuencia del denominador temporal.
 
-La observacion termina en el primer limite aplicable:
+## Tiro válido y xG
 
-1. Han transcurrido mas de 15 segundos desde el corner.
-2. `possession_team` deja de ser el equipo ejecutor.
-3. Finaliza el periodo.
-4. Comienza otro corner, para impedir que un mismo tiro se atribuya a dos ejecuciones consecutivas.
+Un tiro atribuido es un evento `Shot` del equipo ejecutor, posterior al córner
+según el índice original, entre cero y 15 segundos y anterior a cualquier otro
+cierre. Ningún tiro puede atribuirse a dos córners.
 
-Un tiro a exactamente 15.000 segundos se incluye si ocurre antes de que `possession_team` deje de ser el equipo ejecutor o finalice el periodo.
-
-Un cambio del identificador `possession` con el mismo `possession_team` se registra para auditoria, pero no cierra automaticamente la secuencia. Si falta `possession_team`, el caso se marca como problema de calidad; el identificador `possession` no se usa por si solo para inferir el cierre.
-
-## Tiro valido
-
-Un evento cuenta como tiro asociado cuando:
-
-- Su tipo StatsBomb es `Shot`.
-- Ocurre despues del evento de corner segun el orden original.
-- Su tiempo transcurrido es mayor o igual que cero y menor o igual que 15 segundos.
-- No se ha alcanzado antes ningun criterio de cierre.
-
-Si `possession_team` cambia a otro equipo, la secuencia queda cerrada y no se reincorpora aunque el equipo ejecutor recupere rapidamente el balon.
-
-## Reanudaciones a auditar
-
-En esta fase, un saque de banda, saque de meta, tiro libre u otra reanudacion no cierra por si solo la secuencia. Se deben registrar, cuando aparezcan dentro de la ventana:
-
-- Tipo de reanudacion.
-- `event_id` e `index`.
-- Segundos transcurridos desde el corner.
-- Equipo del evento y equipo en posesion.
-- Resultado SCR-15 que se obtendria con y sin ese cierre adicional.
-
-La regla definitiva solo cambiara despues de revisar su frecuencia, coherencia con las posesiones StatsBomb y efecto sobre el KPI.
-
-## Campos de trazabilidad
-
-Cada secuencia futura debe conservar como minimo:
-
-- `match_id`.
-- `corner_event_id`.
-- `corner_index`.
-- `team_id`.
-- `period`.
-- Tiempo de inicio y fin.
-- `sequence_end_reason`.
-- `shot_within_15s`.
-- Identificadores de tiros validos.
-- xG de tiros validos.
-- Reanudaciones observadas.
-- Banderas de calidad.
-- Version de esta regla.
-
-## KPIs relacionados
-
-El xG por corner es descriptivo:
+La existencia de tiro no depende de tener xG. `xg_complete` exige una secuencia
+válida y xG finito entre cero y uno para todos sus tiros. En secuencias válidas
+sin tiros la suma es cero. El indicador descriptivo de xG utiliza solo los
+córners evaluables con xG completo y muestra su cobertura:
 
 ```text
-xG por corner = suma del StatsBomb xG de tiros validos atribuidos
+xG por córner = suma del xG de secuencias evaluables con xG completo
                 -------------------------------------------------
-                          total de corners ofensivos
+                 córners evaluables con xG completo
 ```
 
-El xG posterior nunca sera una variable predictora prepartido.
+El xG posterior nunca es predictor prepartido del córner que se evalúa.
 
-## Auditorias obligatorias
+## Trazabilidad y resultados del corpus
 
-- Comparar el tiempo derivado del timestamp con `minute` y `second`.
-- Contar corners sin posesion, equipo, periodo o timestamp valido.
-- Revisar cambios de posesion con el mismo equipo y cambios de equipo sin nuevo identificador.
-- Cuantificar cambios de `possession` que conservan el mismo `possession_team` sin usarlos como cierre.
-- Revisar manualmente una muestra positiva y una negativa de cada causa de cierre.
-- Cuantificar reanudaciones dentro de 15 segundos.
-- Probar corners cercanos al final de cada periodo.
-- Verificar que ningun tiro atribuido pertenece a una posesion posterior.
-- Verificar que ningun tiro se atribuya a mas de un corner.
+Cada fila conserva partido, evento e índice de córner, periodo, tiempo,
+equipo, cierre y evento terminal, IDs de tiros y reinicios, tiempos de tiros,
+etiqueta, completitud xG y versión de regla. Las exportaciones completas y
+hashes se declaran en `data/interim/03_scr15/contract.json`.
 
-## Resultado de la auditoria local
+| Comprobación | Resultado canónico |
+|---|---:|
+| Partidos | 380 |
+| Eventos | 1.295.354 |
+| Córners | 3.841 |
+| Evaluables | 3.835 |
+| Desconocidos por reloj ambiguo | 6 |
+| Evaluables con tiro | 1.245 |
+| Tiros compartidos | 0 |
+| Cierres por nuevo córner | 29 |
+| Reinicios auditados | 105 |
 
-La ejecucion ordenada local de los notebooks `01` a `03` produjo el contrato `03-scr15-v2` con estos resultados:
+La tasa del corpus es aproximadamente **32,46 %**. Las cinco exclusiones
+adicionales de una versión anterior se debían a retrocesos posteriores al
+cierre: dejaron de ser falsos desconocidos al aplicar el primer límite.
+La copia ejecutada de Colab se entrega por separado; el producto usa módulos
+Python y no requiere notebooks.
 
-- 380 partidos, 1,295,354 eventos y 3,841 corners.
-- 3,835 secuencias evaluables y seis desconocidas por regresion del reloj dentro de la ventana activa.
-- 1,245 corners evaluables con al menos un tiro valido.
-- Cero tiros compartidos entre corners.
-- 29 cierres por comienzo de un nuevo corner y 105 reanudaciones conservadas para auditoria.
-- Las once exclusiones de la investigacion anterior se conciliaron por `event_id`: seis regresiones dentro de ventana permanecen excluidas y cinco eran falsos positivos causados por inspeccionar regresiones ocurridas despues del primer cierre.
-- Once pruebas sinteticas de limites pasaron, incluido un tiro exactamente a 15 segundos, perdida de posesion sin reapertura, cambio de ID con el mismo equipo, cambio de periodo, nuevo corner y regresiones antes o despues del cierre.
+## Reproducir y verificar
 
-Los contratos y Parquet de esta ejecucion permanecen ignorados en `data/interim/01_ingestion`, `02_clean` y `03_scr15`. La copia ejecutada de cada notebook se conserva bajo `data/processed/executed_notebooks`. Falta repetir la ejecucion en un runtime limpio de Colab antes de declarar reproducibilidad remota.
+Desde la raíz, con dependencias y raw preparado:
 
-## Estado
+```powershell
+uv run --all-extras cornerscout clean
+uv run --all-extras cornerscout scr15
+uv run --all-extras pytest tests/test_sequences.py tests/test_full_regression.py
+```
 
-Contrato metodologico de investigacion `scr15-research-v1.2-first-limit`, validado localmente sobre los datos restaurados. Permanece provisional hasta la ejecucion limpia en Colab, la revision academica y la comprobacion de equivalencia con el modulo productivo.
+`clean` exige el contrato previo de ingesta. Las pruebas cubren la frontera
+inclusiva, pérdida sin reapertura, mismo equipo con nuevo ID, nuevo córner y
+regresiones antes/después del cierre. La regresión completa requiere los datos
+locales correspondientes; ver el resultado de validación registrado.
+
+Cambiar una regla científica requiere una solicitud explícita, versión nueva,
+auditoría de diferencias y reconstrucción de las etapas dependientes.

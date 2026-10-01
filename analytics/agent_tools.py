@@ -515,7 +515,7 @@ def deterministic_fallback(
                 candidates = ("E_SHORT", "E_HIGH")
             elif any(term in lowered for term in ("patron", "patrón", "envio", "envío", "entrega", "delivery")):
                 candidates = ("E_SHORT", "E_HIGH")
-            elif "scr" in lowered:
+            elif "scr" in lowered or contains_scope_term(lowered, ("tiro", "tiros")):
                 candidates = ("E_SCR15",)
             else:
                 candidates = ("E_CORNERS",)

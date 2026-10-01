@@ -2,9 +2,25 @@
 
 ## Preparacion
 
-Generar previamente las etapas canonicas `01`-`05`. Levantar FastAPI con `uv run --extra api --extra llm uvicorn backend.main:app --host 127.0.0.1 --port 8000` y Angular con `npm --prefix frontend start`. Abrir http://127.0.0.1:4200. No descargar ni entrenar durante la presentacion.
+Instalar dependencias y generar o restaurar previamente las etapas canónicas
+`01`–`05` siguiendo el [README](../README.md). Desde la raíz, en dos terminales:
 
-`OPENAI_API_KEY` y `OPENAI_MODEL`, si se usan, solo pueden existir en FastAPI. La demo funciona sin clave mediante fallback determinista visible. Como no se ha realizado una llamada real a OpenAI, no presentar el modo OpenAI como validado.
+```powershell
+uv run --all-extras uvicorn backend.main:app --env-file .env --host 127.0.0.1 --port 8000
+```
+
+```powershell
+npm --prefix frontend start
+```
+
+Si no hay `.env`, omitir `--env-file .env`. Comprobar
+http://127.0.0.1:8000/api/v1/ready y abrir http://127.0.0.1:4200.
+No descargar ni entrenar durante la presentación.
+
+`OPENAI_API_KEY` y `OPENAI_MODEL`, si se usan, solo existen en FastAPI.
+Las llamadas reales locales sí se validaron; ver [registro](deployment.md).
+La demo también funciona sin clave mediante fallback determinista visible.
+Identificar el modo realmente mostrado y no atribuir al proveedor una plantilla.
 
 ## Recorrido
 
@@ -21,3 +37,6 @@ Generar previamente las etapas canonicas `01`-`05`. Levantar FastAPI con `uv run
 SCR-15 termina por el primer cierre entre 15 segundos, cambio de `possession_team`, fin de periodo y nuevo corner. Un tiro exactamente en 15 segundos entra si no hubo cierre anterior; las reanudaciones distintas de un nuevo corner se auditan.
 
 Si falta historial, elegir una fecha posterior. Si OpenAI no esta disponible, explicar el fallback sin atribuir una llamada al proveedor. Si falla la API o faltan contratos canonicos `02`-`05`, detener la demo; no sustituir datos reales con artefactos demo ni mocks de producto.
+
+Al terminar, detener ambos procesos con Ctrl+C. La demostración local no es un
+despliegue público; Vercel sigue pendiente.

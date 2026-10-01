@@ -10,8 +10,12 @@
 
 **2:40-3:25 - Modelos.** «La evaluacion temporal decidio `scr15=league_reference`, `short_direct=candidate`, `delivery_zone=not_modelled` y `corner_count=candidate`. El periodo final no decide ganadores.» Mostrar evidencia, no garantias causales.
 
-**3:25-4:15 - Reporte y agente.** «OpenAI se invoca exclusivamente desde FastAPI con salidas estructuradas. La clave nunca llega a Angular; falta de clave, fallo o salida invalida activa fallback determinista. El agente solo tiene tres tools de lectura.» No afirmar una llamada real a OpenAI; identificar el fallback si es lo mostrado.
+**3:25-4:15 - Reporte y agente.** «OpenAI se invoca exclusivamente desde FastAPI con salidas estructuradas. La clave nunca llega a Angular; falta de clave, fallo o salida inválida activa fallback determinista. El agente solo tiene tres tools de lectura.» Las llamadas reales se validaron localmente: identificar el modo de la respuesta que se muestra y distinguirlo del registro histórico.
 
-**4:15-5:00 - Arquitectura y cierre.** «FastAPI verifica contratos, hashes y linaje `02`-`05`; DuckDB hace consultas controladas y Angular consume OpenAPI. Python calculo toda la evidencia.» Cerrar con credito StatsBomb y decir que Vercel y Docker no se han validado externamente.
+**4:15-5:00 - Arquitectura y cierre.** «FastAPI verifica contratos, hashes y linaje `02`–`05`; DuckDB hace consultas controladas y Angular consume OpenAPI. Python calculó toda la evidencia.» Cerrar con crédito StatsBomb: Docker se validó localmente; publicación externa y Vercel siguen pendientes.
 
-Usar cinco diapositivas: problema, datos/SCR-15, pipeline/patrones, modelos, arquitectura/limites. No grabar secretos. Incorporar el logo oficial StatsBomb antes de publicar.
+Usar cinco diapositivas: problema, datos/SCR-15, pipeline/patrones, modelos,
+arquitectura/límites. Preparar el entorno según [demo](demo.md) y consultar
+[validación](validation.md) antes de citar cifras de pruebas. Los notebooks
+comentados se entregan por separado. No grabar secretos. Mantener el crédito
+a StatsBomb y las fuentes de imágenes visibles.

@@ -17,7 +17,7 @@ from analytics.agent_tools import (
 )
 from analytics.tactical_report import EvidenceContract, EvidenceLimitation, Indicator
 from backend.agent import answer, openai_provider
-from backend.schemas import Run
+from backend.schemas import Match, Run
 
 
 def _run():
@@ -106,6 +106,48 @@ def test_mock_provider_uses_pydantic_tool_arguments(monkeypatch):
     assert result.mode == "openai"
     assert result.tool_calls == 1
     assert result.traces[0].arguments_validated is True
+
+
+def test_history_question_names_matches_without_exposing_match_ids(monkeypatch):
+    monkeypatch.setattr("backend.service.agent_evidence", lambda _: _evidence())
+    run = _run().model_copy(update={"matches": [Match(
+        match_id=123456, match_date="2016-02-28T00:00:00", kick_off="20:00",
+        home_team="Barcelona", away_team="Sevilla"
+    )]})
+    result = answer(run, "¿Qué partidos se analizaron?", provider=lambda *_: AgentAnswer(
+        status="answered", answer="Historial consultado.", evidence_ids=("L_SAMPLE",), tool_calls=1
+    ))
+    assert "Barcelona vs. Sevilla" in result.answer
+    assert "28/Feb/2016" in result.answer
+    assert "- 🗓️" in result.answer
+    assert "123456" not in result.answer
+
+
+def test_history_is_chronological_and_scr15_is_observed_not_forecast(monkeypatch):
+    run = _run().model_copy(update={"matches": [Match(
+        match_id=index, match_date=f"2016-02-{day:02d}", kick_off="20:00",
+        home_team="Barcelona", away_team="Sevilla"
+    ) for index, day in ((2, 28), (1, 21))]})
+    indicator = Indicator(evidence_id="E_SCR15", nombre="tasa_historica_scr15",
+                          numerador=19, denominador=52, valor=19 / 52,
+                          referencia_liga_previa=None, cobertura=1.0)
+    evidence = _evidence().model_copy(update={"indicadores": (*_evidence().indicadores, indicator)})
+    monkeypatch.setattr("backend.service.agent_evidence", lambda _: evidence)
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+
+    history = answer(run, "¿Qué partidos se analizaron?")
+    assert history.answer.index("21/Feb/2016") < history.answer.index("28/Feb/2016")
+    assert history.answer.count("- 🗓️") == 2
+    observed = answer(run, "¿Cuántos córners evaluables acabaron con tiro en SCR-15?")
+    assert "**52 córners evaluables**" in observed.answer
+    assert "**19 terminaron en tiro** (36,5 %)" in observed.answer
+    assert "tasa histórica de la liga" in observed.answer
+    assert "no es una predicción" in observed.answer
+    assisted = answer(run, "¿Cuántos córners evaluables acabaron con tiro en SCR-15?",
+                      provider=lambda *_: AgentAnswer(status="answered", answer="Lectura cualitativa.",
+                                                     evidence_ids=("E_SCR15",), tool_calls=1))
+    assert assisted.mode == "openai"
+    assert assisted.answer == observed.answer
 
 
 def test_openai_zone_answer_is_readable_and_grounded(monkeypatch):
