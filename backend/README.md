@@ -112,24 +112,34 @@ sequenceDiagram
     participant B as FastAPI
     participant O as OpenAI
     participant T as Tools Python
+
     U->>F: Pregunta sobre el análisis
     F->>B: POST /agent + contexto firmado
     B->>O: Pregunta, tools y alcance de sesión
+
     loop Hasta los límites de la sesión
         O-->>B: Tool call tipada
         B->>T: Ejecuta sobre evidencia inmutable
         T-->>B: Resultado calculado
         B->>O: Resultado de la tool
     end
+
     O-->>B: AgentDraft cualitativo + IDs de evidencia
     B->>B: Valida texto, citas y conteo de tools
+
     opt Borrador inválido y presupuesto disponible
         B->>O: Única corrección con la misma evidencia
         O-->>B: Borrador corregido
-        B->>B: Valida; rechaza nuevas llamadas a tools
+        B->>B: Valida y rechaza nuevas llamadas a tools
     end
-    B->>B: Compone cifras con Python si es válido; fallback si falla
-    B-->>F: Respuesta OpenAI o fallback identificado
+
+    alt Respuesta validada
+        B->>B: Compone cifras verificadas con Python
+        B-->>F: Respuesta OpenAI identificada
+    else Fallo de validación o presupuesto agotado
+        B->>B: Construye respaldo determinista
+        B-->>F: Fallback identificado
+    end
 ```
 
 ## Configuración

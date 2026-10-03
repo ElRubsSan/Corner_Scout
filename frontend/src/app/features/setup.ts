@@ -10,7 +10,7 @@ import { clubImage } from '../core/visual-assets';
 <p class="section-intro">Elige el rival y el partido que preparas. Estudiaremos sus ocho encuentros anteriores: el partido elegido nunca entra en la muestra.</p>
 @if(error()){<div role="alert" class="alert">{{error()}} <button type="button" class="secondary" (click)="reload()">Reintentar</button></div>}
 <div class="grid md:grid-cols-2 gap-6"><section class="card"><span class="eyebrow">PASO 1 / SELECCIONAR</span><h2>Rival y corte</h2>
-@if(loadingTeams()){<p role="status">Cargando equipos…</p>}
+@if(loadingTeams()){<p role="status">Cargando equipos…Por favor espera un momento</p>}
 <label>Equipo rival<select [(ngModel)]="rival" (ngModelChange)="changed()" [disabled]="loadingTeams()||busy()"><option value="" disabled>Selecciona un rival</option>@for(t of teams();track t.name){<option [value]="t.name">{{t.name}}</option>}</select></label>
 <label>Cómo elegir la muestra<select [(ngModel)]="mode" (ngModelChange)="resetWindow()" [disabled]="busy()"><option value="match">Partido que preparas</option><option value="date">Hasta una fecha histórica</option></select></label>
  @if(mode==='date'){<label>Fecha de corte (exclusiva)<input type="date" [(ngModel)]="cutoff" (ngModelChange)="resetWindow()" min="2015-08-01" max="2016-06-01" [disabled]="busy()"></label>}
