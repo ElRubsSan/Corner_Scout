@@ -93,10 +93,17 @@ El modelo solo puede solicitar tres herramientas tipadas y de solo lectura:
 | `consultar_evidencia` | Uno a doce `evidence_ids` existentes | El detalle exacto de las evidencias solicitadas. |
 
 El registro no incluye web, escritura, SQL libre, entrenamiento ni acceso a
-otros análisis. Python fija la evidencia y valida citas y cifras; el modelo
-redacta. Hay límites de cuatro tools, cuatro turnos reales, 45 segundos y
-12.000 tokens por sesión. Una reparación final no puede ejecutar nuevas tools;
-si también falla, se devuelve el respaldo determinista.
+otros análisis. El modelo devuelve un `AgentDraft` con interpretación cualitativa
+sin cifras y citas a la evidencia consultada. Python valida ese borrador y
+compone las cantidades, porcentajes y fechas desde los resultados de tools;
+la respuesta final se construye como `AgentAnswer` y se publica mediante
+`AgentResponse`.
+
+Hay límites de cuatro tools, cuatro turnos reales, 45 segundos y 12.000 tokens
+por sesión. Un borrador inválido puede repararse una sola vez con idéntica
+evidencia y dentro de esos límites. Si el proveedor solicita nuevas tools
+durante la reparación, se rechazan antes de ejecutarlas. Un segundo fallo
+o un presupuesto agotado devuelve el respaldo determinista.
 
 ```mermaid
 sequenceDiagram

@@ -33,7 +33,13 @@ Los E2E arrancan FastAPI en 8001 y Angular en 4201, usan Chromium y deshabilitan
 OpenAI. Las integraciones pesadas del pipeline requieren sus variables explícitas
 y regeneran datos; no forman parte de una comprobación ordinaria del producto.
 
-## Cobertura verificada
+## Cobertura de las pruebas
+
+La lista resume las áreas cubiertas por la suite y los recorridos del producto;
+no es un registro fechado de la última ejecución. Los comandos anteriores
+permiten comprobar el estado local. Sus resultados y omisiones deben conservarse
+por corrida, sin sustituirlos por conteos históricos ni comprobaciones del
+servicio público.
 
 - Contratos, hashes, linaje y rechazo de artefactos alterados.
 - Regla SCR-15 y sus cierres, incluido el límite exacto de 15 segundos.

@@ -1,4 +1,4 @@
-"""Canonical temporal evaluation and descriptive modeling from notebooks 04-05."""
+"""Canonical temporal evaluation and descriptive modeling for stages 04-05."""
 
 from __future__ import annotations
 
@@ -206,7 +206,7 @@ def descriptive_kmeans(
     seeds: tuple[int, ...] = (7, 21, 42, 84, 168),
     random_state: int = 42,
 ) -> KMeansDescription:
-    """Fit notebook-04 K-Means only on direct deliveries before the cutoff."""
+    """Fit stage-04 descriptive K-Means on direct deliveries before the cutoff."""
     cutoff = pd.Timestamp(development_cutoff).normalize()
     dates = pd.to_datetime(corners["match_date"]).dt.normalize()
     pool = corners[corners["direct_delivery_valid"] & dates.lt(cutoff)].copy()
@@ -393,7 +393,7 @@ def count_metrics(y: pd.Series | np.ndarray, prediction: np.ndarray) -> dict[str
 
 
 def choose_binary_winner(metrics: pd.DataFrame, objective: str) -> tuple[str, pd.DataFrame]:
-    """Apply notebook-05's 2-of-3 development-window decision rule."""
+    """Apply the stage-05 2-of-3 development-window decision rule."""
     development = metrics[
         metrics["objective"].eq(objective) & metrics["role"].eq("selection")
     ]
@@ -546,7 +546,7 @@ def count_dispersion_gate(
     *,
     maximum_conditional_dispersion: float = 1.5,
 ) -> CountDispersionGate:
-    """Fit the notebook Poisson probe and reject unsupported count families."""
+    """Fit the canonical Poisson probe and reject unsupported count families."""
     cutoff = pd.Timestamp(first_development_start).normalize()
     dates = pd.to_datetime(count_data["match_date"]).dt.normalize()
     train = count_data[dates.lt(cutoff)].copy()
@@ -758,7 +758,7 @@ def tune_binary_smoothing(
 
 
 def tune_count_smoothing(train: pd.DataFrame) -> tuple[float, pd.DataFrame]:
-    """Tune the notebook's eight-match historical count reference."""
+    """Tune the canonical eight-match historical count reference."""
     fit, validation = inner_temporal_split(train)
     prior = float(fit["n_corners"].mean())
     rows: list[dict[str, float | str]] = []
@@ -1106,7 +1106,7 @@ def run_canonical_modeling(
     *,
     bootstrap_iterations: int = 200,
 ) -> CanonicalModelingResult:
-    """Recreate stage 05 without notebooks and without using K-Means as a predictor."""
+    """Evaluate canonical stage 05 without using K-Means as a predictor."""
     count_data = _eligible(tables["model_corner_count"])
     development, final = temporal_windows(count_data)
     windows = [*development, final]
