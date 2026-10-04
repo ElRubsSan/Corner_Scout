@@ -43,6 +43,7 @@ test('six tactical tabs tell a visual, grounded story',async({page})=>{
   await expect(stepTwoBadges).toHaveCount(2);
   await expect(stepTwoBadges.first()).toBeVisible();
   await expect.poll(()=>stepTwoBadges.first().evaluate(image=>(image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+  await page.screenshot({path:'test-results/selection-visual-desktop.png',fullPage:true});
   await page.getByRole('button',{name:'Crear análisis'}).click();
   await expect(page.getByRole('navigation',{name:'Secciones del análisis'}).getByRole('link')).toHaveCount(6);
   await expect(page.getByRole('heading',{name:'¿Qué debemos preparar?'})).toBeVisible();
@@ -104,6 +105,31 @@ test('six tactical tabs tell a visual, grounded story',async({page})=>{
   await page.getByRole('link',{name:'Patrones'}).click();
   await expect(page.getByRole('heading',{name:'Patrones de envío'})).toBeVisible();
   await expect(page.locator('.pattern-panel cs-pitch').first()).toBeVisible();
+  await page.screenshot({path:'test-results/patterns-visual-desktop.png',fullPage:true});
+  await expect(page.locator('.pattern-gallery')).not.toContainText('Envíos hacia zona');
+  await expect(page.locator('.sample-note').first()).toContainText('destinos similares');
+  await page.getByLabel('Mostrar pases desde').selectOption('y_bajo');
+  for(const panel of await page.locator('.pattern-panel').all()){
+    const points=await panel.locator('.pitch-mark').count();
+    await expect(panel.locator('.pattern-top .eyebrow')).toContainText(`Apareció ${points}`);
+    expect(points).toBeGreaterThan(0);
+  }
+  await expect(page.locator('cs-zone-guide')).toHaveCount(0);
+  await page.getByLabel('Mostrar pases desde').selectOption('');
+  await page.getByRole('link',{name:'Resumen',exact:true}).click();
+  await expect(page.locator('.summary-destinations .destination-row')).toHaveCount(4);
+  const centralZone=page.locator('.destination-row[data-zone="franja_central"]');
+  await centralZone.click();
+  await expect(centralZone).toHaveAttribute('aria-pressed','true');
+  const zoneCount=Number((await centralZone.locator('strong').innerText()).match(/\d+/)?.[0]);
+  await expect(page.locator('.summary-destinations .zone-highlighted')).toHaveCount(zoneCount);
+  await centralZone.click();
+  await expect(centralZone).toHaveAttribute('aria-pressed','false');
+  await expect(page.locator('.summary-destinations .zone-highlighted')).toHaveCount(0);
+  await expect(page.locator('cs-zone-guide')).toHaveCount(1);
+  await page.getByText('Cómo leer las zonas',{exact:true}).click();
+  await expect(page.locator('.summary-destinations cs-zone-guide svg')).toBeVisible();
+  await page.getByRole('link',{name:'Patrones',exact:true}).click();
   await coachText(page);
   await page.getByRole('link',{name:'Reporte táctico'}).click();
   await expect(page.getByRole('heading',{name:'Reporte táctico'})).toBeVisible();
@@ -121,7 +147,13 @@ test('six tactical tabs tell a visual, grounded story',async({page})=>{
   await expect(page.locator('.shot-help')).not.toHaveAttribute('open');
   await page.screenshot({path:'test-results/report-visual-desktop.png',fullPage:true});
   await page.getByRole('button',{name:'Generar lectura táctica'}).click();
-  await expect(page.getByText('Redactada con plantilla determinista · Caso histórico')).toBeVisible();
+  await expect(page.getByText('Redactada con plantilla determinista', {exact:true})).toBeVisible();
+  await page.getByRole('button',{name:'Ver todas las observaciones',exact:true}).click();
+  await expect(page.locator('.report-claims > div').first().locator('li')).toHaveCount(6);
+  await page.getByRole('button',{name:'Ver menos',exact:true}).click();
+  await expect(page.locator('.report-claims > div').first().locator('li')).toHaveCount(3);
+  await expect(page.getByRole('heading',{name:'Qué vimos',exact:true})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'Qué revisar en vídeo',exact:true})).toBeVisible();
   await coachText(page);
   await page.getByRole('link',{name:'Calidad'}).click();
   await expect(page.getByRole('heading',{name:'¿Cuánto peso dar a estos hallazgos?'})).toBeVisible();

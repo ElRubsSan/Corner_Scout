@@ -39,6 +39,10 @@ _MONTHS = ("enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agos
 
 
 def _public_answer(run: Run, question: str, result: AgentAnswer, evidence: EvidenceContract) -> str:
+    if result.status == "answered" and any(term in question.lower() for term in ("kmeans", "k-means", "k means")):
+        return ("Los grupos K-Means están disponibles en la pestaña **Patrones**, pero no forman parte "
+                "de la evidencia que puedo consultar aquí. Puedo ayudarte con la distribución por "
+                "zonas geométricas, que es una clasificación distinta.")
     if result.status != "answered":
         return result.answer
     if run.matches and "L_SAMPLE" in result.evidence_ids and any(

@@ -32,9 +32,9 @@ let nextPitchId = 0;
       </g>
     }@else{
       @for(corner of corners();track corner.event_id){
-        <g class="pitch-mark"><title>{{corner.player}} · {{deliveryLabel(corner.delivery)}} · destino del pase</title>
+        <g class="pitch-mark" [class.zone-highlighted]="highlightZone()!==''&&corner.zone===highlightZone()" [attr.opacity]="highlightZone()&&corner.zone!==highlightZone() ? 0.2 : 1"><title>{{corner.player}} · {{deliveryLabel(corner.delivery)}} · destino del pase</title>
           @if(mode()==='passes'){<line class="pass-line" [attr.x1]="corner.x" [attr.y1]="corner.y" [attr.x2]="corner.end_x" [attr.y2]="corner.end_y"/>}
-          <circle [attr.cx]="corner.end_x" [attr.cy]="corner.end_y" [attr.r]="compact()?1.25:.85" [attr.fill]="corner.shot_within_15s===null?'#d9e3df':corner.shot_within_15s?'#f7c76b':'#c9ee8b'"/>
+          <circle [attr.cx]="corner.end_x" [attr.cy]="corner.end_y" [attr.r]="highlightZone()&&corner.zone===highlightZone()?1.4:compact()?1.25:.85" [attr.stroke]="highlightZone()&&corner.zone===highlightZone()?'white':null" [attr.stroke-width]="highlightZone()&&corner.zone===highlightZone() ? 0.35 : null" [attr.fill]="corner.shot_within_15s===null?'#d9e3df':corner.shot_within_15s?'#f7c76b':'#c9ee8b'"/>
         </g>
       }
     }
@@ -54,6 +54,7 @@ export class PitchView {
   readonly maskId = `heat-mask-${this.instanceId}`;
   readonly deliveryLabel=deliveryLabel;
   corners=input<Models['Corner'][]>([]);
+  highlightZone=input('');
   heatmap=input<Models['DestinationHeatmap']|null>(null);
   mode=input<'passes'|'destinations'|'heat'>('destinations');
   compact=input(false);

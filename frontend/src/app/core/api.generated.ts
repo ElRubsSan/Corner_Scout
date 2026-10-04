@@ -632,6 +632,15 @@ export interface components {
         Pattern: {
             /** Cluster */
             cluster: number;
+            /**
+             * Display Name
+             * @default Destinos similares
+             */
+            display_name: string;
+            /** Centroid X */
+            centroid_x?: number | null;
+            /** Centroid Y Relative */
+            centroid_y_relative?: number | null;
             /** Count */
             count: number;
             /** Evaluable */

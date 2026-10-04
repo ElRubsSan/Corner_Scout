@@ -9,8 +9,9 @@ import { clubImage, playerImage } from '../core/visual-assets';
 import { PitchView } from '../core/pitch-view';
 import { AnswerMarkdown } from '../core/answer-markdown';
 import { ShotExplanation } from '../core/shot-explanation';
+import { ZoneGuide } from '../core/zone-guide';
 
-@Component({standalone:true,imports:[RouterLink,DecimalPipe,PercentPipe,FormsModule,PitchView,AnswerMarkdown,ShotExplanation],templateUrl:'./analysis.html'})
+@Component({standalone:true,imports:[RouterLink,DecimalPipe,PercentPipe,FormsModule,PitchView,AnswerMarkdown,ShotExplanation,ZoneGuide],templateUrl:'./analysis.html'})
 export class Analysis {
   api=inject(Api);route=inject(ActivatedRoute);router=inject(Router);
   id='';view=signal('summary');
@@ -36,6 +37,10 @@ export class Analysis {
     '¿Qué partidos se analizaron?'
   ];
   readonly sideLabel=sideLabel;readonly zoneLabel=zoneLabel;readonly deliveryLabel=deliveryLabel;
+  readonly geometricZones=['franja_cercana','franja_central','franja_lejana','fuera_area'];
+  zoneCount(label:string):number{return this.habits()?.zones.find(zone=>zone.label===label)?.count??0;}
+  selectedDestinationZone=signal('');
+  toggleDestinationZone(zone:string):void{this.selectedDestinationZone.update(current=>current===zone?'':zone);}
   readonly patternLabel=patternLabel;readonly dateLabel=dateLabel;
   private loadRequest=0;private heatRequest=0;
 
@@ -68,6 +73,14 @@ export class Analysis {
     (!this.cluster||String(c.cluster)===this.cluster));}
   patternCorners(cluster:number){return this.corners().filter(c=>c.cluster===cluster&&c.spatial_valid&&c.delivery==='envio'&&
     (!this.patternSide||c.side===this.patternSide));}
+  visiblePatterns(){return this.patterns().map(pattern=>{
+    const members=this.patternCorners(pattern.cluster);
+    const counts=new Map<string,number>();
+    for(const corner of members)counts.set(corner.player,(counts.get(corner.player)??0)+1);
+    const taker=[...counts].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]))[0]?.[0]??'Sin cobrador conocido';
+    return {...pattern,count:members.length,evaluable:members.filter(c=>c.valid_sequence).length,main_taker:taker};
+  }).filter(pattern=>pattern.count>0).sort((a,b)=>b.count-a.count||a.cluster-b.cluster);}
+  patternTotal(){return this.destinationCorners().filter(c=>!this.patternSide||c.side===this.patternSide).length;}
   destinationCorners(){return this.corners().filter(c=>c.spatial_valid&&c.delivery==='envio');}
   objectiveWinners(){return this.model()?.evaluations.objective_winners??[];}
   objectiveLabel(objective:string){return ({scr15:'Tiro tras córner',short_direct:'En corto o directo',

@@ -158,6 +158,9 @@ class Summary(Contract):
 
 class Pattern(Contract):
     cluster: int
+    display_name: str = "Destinos similares"
+    centroid_x: float | None = None
+    centroid_y_relative: float | None = None
     count: int
     evaluable: int
     scr15: float | None
