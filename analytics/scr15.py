@@ -1,4 +1,4 @@
-"""Canonical SCR-15 sequence extraction from notebook 03."""
+"""Canonical stage-03 SCR-15 sequence extraction."""
 
 from __future__ import annotations
 

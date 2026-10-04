@@ -93,10 +93,17 @@ El modelo solo puede solicitar tres herramientas tipadas y de solo lectura:
 | `consultar_evidencia` | Uno a doce `evidence_ids` existentes | El detalle exacto de las evidencias solicitadas. |
 
 El registro no incluye web, escritura, SQL libre, entrenamiento ni acceso a
-otros análisis. Python fija la evidencia y valida citas y cifras; el modelo
-redacta. Hay límites de cuatro tools, cuatro turnos reales, 45 segundos y
-12.000 tokens por sesión. Una reparación final no puede ejecutar nuevas tools;
-si también falla, se devuelve el respaldo determinista.
+otros análisis. El modelo devuelve un `AgentDraft` con interpretación cualitativa
+sin cifras y citas a la evidencia consultada. Python valida ese borrador y
+compone las cantidades, porcentajes y fechas desde los resultados de tools;
+la respuesta final se construye como `AgentAnswer` y se publica mediante
+`AgentResponse`.
+
+Hay límites de cuatro tools, cuatro turnos reales, 45 segundos y 12.000 tokens
+por sesión. Un borrador inválido puede repararse una sola vez con idéntica
+evidencia y dentro de esos límites. Si el proveedor solicita nuevas tools
+durante la reparación, se rechazan antes de ejecutarlas. Un segundo fallo
+o un presupuesto agotado devuelve el respaldo determinista.
 
 ```mermaid
 sequenceDiagram
@@ -105,18 +112,34 @@ sequenceDiagram
     participant B as FastAPI
     participant O as OpenAI
     participant T as Tools Python
+
     U->>F: Pregunta sobre el análisis
     F->>B: POST /agent + contexto firmado
     B->>O: Pregunta, tools y alcance de sesión
+
     loop Hasta los límites de la sesión
         O-->>B: Tool call tipada
         B->>T: Ejecuta sobre evidencia inmutable
         T-->>B: Resultado calculado
         B->>O: Resultado de la tool
     end
-    O-->>B: Respuesta final estructurada
-    B->>B: Verifica evidencia, cifras y alcance
-    B-->>F: Respuesta OpenAI o fallback identificado
+
+    O-->>B: AgentDraft cualitativo + IDs de evidencia
+    B->>B: Valida texto, citas y conteo de tools
+
+    opt Borrador inválido y presupuesto disponible
+        B->>O: Única corrección con la misma evidencia
+        O-->>B: Borrador corregido
+        B->>B: Valida y rechaza nuevas llamadas a tools
+    end
+
+    alt Respuesta validada
+        B->>B: Compone cifras verificadas con Python
+        B-->>F: Respuesta OpenAI identificada
+    else Fallo de validación o presupuesto agotado
+        B->>B: Construye respaldo determinista
+        B-->>F: Fallback identificado
+    end
 ```
 
 ## Configuración

@@ -42,7 +42,7 @@ La lógica ejecutable vive en módulos Python probados. No modificar contratos c
 ## Modelado
 
 - Las ventanas usan los ocho partidos estrictamente anteriores y cortes exclusivos.
-- Decisiones `05`: `scr15=league_reference`, `short_direct=candidate`, `delivery_zone=not_modelled`, `corner_count=candidate`.
+- Decisiones `05`: `scr15=league_reference`, `short_direct=candidate`, `delivery_zone=not_modeled`, `corner_count=candidate`.
 - K-Means esta fijado con datos predesarrollo, solo describe destinos y nunca entra como predictor.
 - No presentar clusters como jugadas ensayadas ni modelos candidatos como garantia causal.
 - FastAPI sirve decisiones y artefactos canonicos; no entrena por solicitud.

@@ -1,4 +1,4 @@
-"""Canonical nested/flat event normalization extracted from notebook 02."""
+"""Canonical stage-02 normalization of nested and flat provider events."""
 
 from __future__ import annotations
 
@@ -53,7 +53,7 @@ def xy(value: object) -> list[float]:
 
 
 def normalized_id(flat_value: object, nested_value: object = None) -> int | None:
-    """Normalize an ID from flat notebook output or nested provider data."""
+    """Normalize an ID from flat event fields or nested provider data."""
     value = flat_value if present(flat_value) else get_id(nested_value)
     result = numeric(value)
     return int(result) if math.isfinite(result) else None

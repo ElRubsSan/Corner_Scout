@@ -21,8 +21,3 @@ Las versiones instaladas se consultan en `uv.lock` y `frontend/package-lock.json
 La operación local y pública se describe en [despliegue](deployment.md); las
 comprobaciones reproducibles y el estado HTTPS están en
 [validación](validation.md).
-
-Referencia de organización del README:
-[Inver-AI del profesor](https://github.com/FernandoBRdgz/inverai-claude).
-La organización sirve como referencia de comunicación. CornerScout adapta
-Services a artefactos verificados y sesiones firmadas sin persistencia de runs.

@@ -31,7 +31,7 @@ StatsBomb Open Data / Google Drive
 
 `01_ingestion` registra raw, conteos y SHA-256. `02_clean` normaliza eventos y reconstruye contexto previo sin mirar eventos futuros. `03_scr15` aplica cuatro cierres por primer limite: 15 segundos, cambio de equipo en posesion, fin de periodo o nuevo corner. `04_features` construye historiales de ocho partidos, variables geometricas y K-Means fijo predesarrollo. `05_modeling` evalua cronologicamente y registra ganadores.
 
-Decisiones de `05`: SCR-15 usa `league_reference`; `short_direct` y `corner_count` seleccionan `candidate`; `delivery_zone` queda `not_modelled`. K-Means no se usa como predictor.
+Decisiones de `05`: SCR-15 usa `league_reference`; `short_direct` y `corner_count` seleccionan `candidate`; `delivery_zone` queda `not_modeled`. K-Means no se usa como predictor.
 
 ## FastAPI y repositorio
 
@@ -82,6 +82,16 @@ sequenceDiagram
 `backend.openai` usa Responses API y Structured Outputs/Pydantic para el reporte. `OPENAI_API_KEY` y `OPENAI_MODEL` existen solo en backend. Una clave ausente, fallo de proveedor o salida no validable activa una plantilla determinista identificada.
 
 `backend.agent` expone exactamente tres tools de solo lectura: `obtener_historial`, `obtener_perfil_corners` y `consultar_evidencia`. Estan limitadas a la sesion, validan argumentos y evidencia y aplican presupuestos de llamadas, tiempo, tokens y turnos. No acceden a web, raw, escritura, SQL libre o entrenamiento.
+
+El proveedor devuelve un `AgentDraft` con interpretación cualitativa, IDs de
+evidencia y conteo de herramientas. El texto cualitativo se valida sin cifras;
+Python compone los indicadores, cantidades y fechas desde los resultados de
+las herramientas. La respuesta pública usa `AgentAnswer` y el esquema HTTP
+`AgentResponse`. Ante un borrador inválido se permite una sola reparación con
+la misma evidencia y dentro de los presupuestos. Si el proveedor solicita
+nuevas tools durante esa reparación, se rechaza antes de ejecutarlas. Un
+segundo fallo o un presupuesto agotado activa el fallback visible. El flujo se
+detalla en [reporte y agente](openai.md).
 
 ## Angular
 
