@@ -24,6 +24,13 @@ LIMITATIONS = [
     "Los modelos proceden de una evaluación temporal histórica; no garantizan el próximo partido.",
 ]
 
+ZONE_PHRASES = {
+    "franja_cercana": "en la zona cercana al punto de cobro",
+    "franja_central": "en la zona central del área",
+    "franja_lejana": "en la zona alejada del punto de cobro",
+    "fuera_area": "fuera del área",
+}
+
 
 def repo():
     try:
@@ -325,12 +332,23 @@ def summary(run: Run) -> Summary:
 
 def patterns(run: Run) -> list[Pattern]:
     corners = corners_for(run)
+    centers = {int(row["cluster_id"]): row for row in query("cluster_centers")}
+    names = {"destino_y03_x112": "Centro del área, cerca de la portería",
+             "destino_y01_x099": "Fuera del área, hacia el lado del cobro",
+             "destino_y04_x110": "Lado opuesto al cobro, junto al borde del área",
+             "destino_y02_x114": "Lado del cobro, cerca de la portería"}
     result = []
     for label in sorted({corner.cluster for corner in corners if corner.cluster is not None}):
-        members = [corner for corner in corners if corner.cluster == label]
+        members = [corner for corner in corners if corner.cluster == label
+                   and corner.delivery == "envio" and corner.spatial_valid]
+        if not members:
+            continue
+        center = centers.get(label, {})
         valid = [corner for corner in members if corner.valid_sequence]
         xg_values = [corner.xg for corner in valid if corner.xg is not None]
-        result.append(Pattern(cluster=label, count=len(members), evaluable=len(valid),
+        result.append(Pattern(cluster=label, display_name=names.get(str(center.get("geometric_name")), "Destinos similares"),
+                               centroid_x=center.get("end_x"), centroid_y_relative=center.get("end_y_relative"),
+                               count=len(members), evaluable=len(valid),
                               scr15=sum(bool(corner.shot_within_15s) for corner in valid) / len(valid) if valid else None,
                               xg_per_corner=sum(xg_values) / len(valid) if valid and len(xg_values) == len(valid) else None,
                               dominant_zone=groups(members, "zone")[0].label, main_taker=groups(members, "player")[0].label,
@@ -367,14 +385,20 @@ def model_result(run: Run) -> ModelResult:
 
 def report_input(run: Run) -> ReportInput:
     result, pattern_rows = summary(run), patterns(run)
-    evidence = [Evidence(id="scr15", description="SCR-15 observado", value=(
+    evidence = [Evidence(id="scr15", description="Tiro tras el córner hasta 15 segundos (SCR-15)", value=(
         f"{result.shots} de {result.evaluable_corners} córners evaluables ({result.scr15 * 100:.1f} %)"
         if result.scr15 is not None else "No evaluable")),
                 Evidence(id="corners", description="Córners totales", value=str(result.corners)),
                 Evidence(id="xg", description="xG por córner evaluable", value=f"{result.xg_per_corner:.4f}" if result.xg_per_corner is not None else "No evaluable")]
+    direct = [corner for corner in corners_for(run) if corner.delivery == "envio" and corner.spatial_valid
+              and corner.zone != "no_disponible"]
+    evidence.extend(Evidence(id=f"zone-{group.label}",
+                              description=f"Pases que terminaron {ZONE_PHRASES.get(group.label, destination_label(group.label))}",
+                              value=f"{group.count} de {len(direct)} envíos directos")
+                    for group in groups(direct, "zone"))
     evidence.extend(Evidence(id=f"cluster-{item.cluster}",
-                             description=f"Envíos hacia {destination_label(item.dominant_zone)}; cobrador más frecuente: {item.main_taker}",
-                             value=str(item.count), event_ids=item.example_event_ids) for item in pattern_rows)
+                              description=f"Grupo de destinos similares: {item.display_name}; puede abarcar varias zonas; cobrador más frecuente: {item.main_taker}",
+                              value=str(item.count), event_ids=item.example_event_ids) for item in pattern_rows)
     return ReportInput(rival=run.rival, cutoff_date=run.cutoff_date, matches=run.matches, summary=result,
                        patterns=pattern_rows, evidence=evidence, limitations=LIMITATIONS)
 

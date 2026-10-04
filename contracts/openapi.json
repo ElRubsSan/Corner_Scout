@@ -2290,6 +2290,33 @@
             "type": "integer",
             "title": "Cluster"
           },
+          "display_name": {
+            "type": "string",
+            "title": "Display Name",
+            "default": "Destinos similares"
+          },
+          "centroid_x": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Centroid X"
+          },
+          "centroid_y_relative": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Centroid Y Relative"
+          },
           "count": {
             "type": "integer",
             "title": "Count"

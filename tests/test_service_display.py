@@ -48,10 +48,11 @@ def test_report_uses_destination_names_but_preserves_evidence_ids(monkeypatch):
     assert payload.evidence[-1].id == "cluster-3"
     assert payload.evidence[-1].value == "1"
     assert payload.evidence[0].value == "0 de 1 córners evaluables (0.0 %)"
-    assert "fuera del área" in payload.evidence[-1].description
+    assert "puede abarcar varias zonas" in payload.evidence[-1].description
+    assert any(e.id == "zone-fuera_area" and e.value == "1 de 1 envíos directos" for e in payload.evidence)
     assert "Patron 3" not in payload.evidence[-1].description
     assert report.narrative.recommendations[0].evidence_ids == ["cluster-3"]
-    assert "hacia fuera del área" in report.narrative.recommendations[0].text
+    assert "Revisar en vídeo" in report.narrative.recommendations[0].text
     assert "la fuera" not in report.narrative.recommendations[0].text
 
 
